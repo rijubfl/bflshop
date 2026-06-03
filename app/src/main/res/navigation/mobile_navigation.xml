@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.bflgroup.bflshop.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_price_check"
+        android:name="com.bflgroup.bflshop.ui.pricecheck.PriceCheckFragment"
+        android:label="@string/menu_price_check"
+        tools:layout="@layout/fragment_price_check" />
+
+    <fragment
+        android:id="@+id/nav_grn_transfer"
+        android:name="com.bflgroup.bflshop.ui.grntransfer.grnold.GrnTransferFragment"
+        android:label="@string/menu_grn_transfer"
+        tools:layout="@layout/fragment_grn_transfer" />
+
+    <fragment
+        android:id="@+id/nav_rfid_grn_transfer"
+        android:name="com.bflgroup.bflshop.ui.grntransfer.grnrfid.GrnTransferRfidFragment"
+        android:label="@string/menu_rfid_grn_transfer"
+        tools:layout="@layout/fragment_grn_transfer_rfid" />
+
+    <fragment
+        android:id="@+id/nav_grn_transfer_new"
+        android:name="com.bflgroup.bflshop.ui.grntransfer.grnnew.GrnTransferNewFragment"
+        android:label="@string/menu_grn_transfer_new"
+        tools:layout="@layout/fragment_grn_transfer_new" />
+
+    <fragment
+        android:id="@+id/nav_stock_taking"
+        android:name="com.bflgroup.bflshop.ui.ageingstocktaking.manual.AgeingStockTakingFragment"
+        android:label="@string/menu_stock_taking"
+        tools:layout="@layout/fragment_ageing_stock_taking" />
+
+    <fragment
+        android:id="@+id/nav_stock_taking_verification"
+        android:name="com.bflgroup.bflshop.ui.ageingstocktakingverification.StocktakingZoneFragment"
+        android:label="@string/menu_stock_taking_verify"
+        tools:layout="@layout/fragment_stocktaking_zone" />
+
+    <fragment
+        android:id="@+id/nav_stock_taking_reports"
+        android:name="com.bflgroup.bflshop.ui.ageingstocktaking.manual.AgeingStockTakingReportFragment"
+        android:label="@string/menu_stock_taking_report"
+        tools:layout="@layout/fragment_ageing_stock_taking_report" />
+
+    <fragment
+        android:id="@+id/nav_stock_taking_rfid"
+        android:name="com.bflgroup.bflshop.ui.ageingstocktaking.rfid.StocktakeRfidFragment"
+        android:label="@string/menu_stock_taking_rfid"
+        tools:layout="@layout/fragment_ageing_stock_taking_rfid" />
+
+    <fragment
+        android:id="@+id/nav_add_discount"
+        android:name="com.bflgroup.bflshop.ui.discount.AddDiscountFragment"
+        android:label="@string/menu_add_disount"
+        tools:layout="@layout/fragment_add_discount" />
+
+    <fragment
+        android:id="@+id/nav_sales_invoice"
+        android:name="com.bflgroup.bflshop.ui.salesinvoice.SalesInvoiceFragment"
+        android:label="@string/menu_sales_invoice"
+        tools:layout="@layout/fragment_sales_invoice" />
+
+    <fragment
+        android:id="@+id/nav_store_entry"
+        android:name="com.bflgroup.bflshop.ui.shopreturns.ShopReturnsFragment"
+        android:label="@string/menu_store_entry"
+        tools:layout="@layout/fragment_shop_returns" />
+
+    <fragment
+        android:id="@+id/nav_grn_direct_delivery"
+        android:name="com.bflgroup.bflshop.ui.grndirectdelivery.GrnDirectDeliveryFragment"
+        android:label="@string/menu_grn_direct_delivery"
+        tools:layout="@layout/fragment_grn_direct_delivery" />
+
+    <fragment
+        android:id="@+id/nav_gin_verification"
+        android:name="com.bflgroup.bflshop.ui.ginverification.GinVerificationFragment"
+        android:label="@string/menu_gin_verification"
+        tools:layout="@layout/fragment_gin_verification" />
+
+    <fragment
+        android:id="@+id/nav_ageing_print"
+        android:name="com.bflgroup.bflshop.ui.ageingslashing.local.AgeingSlashingFragment"
+        android:label="@string/menu_ageing_print"
+        tools:layout="@layout/fragment_ageing_slashing" />
+
+    <fragment
+        android:id="@+id/nav_ageing_print_wify"
+        android:name="com.bflgroup.bflshop.ui.ageingslashing.wify.AgeingSlashingWifyFragment"
+        android:label="@string/menu_ageing_print_wify"
+        tools:layout="@layout/fragment_ageing_slashing_wify" />
+
+    <fragment
+        android:id="@+id/nav_ageing_print_wify_report"
+        android:name="com.bflgroup.bflshop.ui.ageingslashing.reports.AgeingSlashingReportFragment"
+        android:label="@string/menu_ageing_print_report"
+        tools:layout="@layout/fragment_ageing_slashing_report" />
+
+    <fragment
+        android:id="@+id/nav_ho_pricechange_print_wify"
+        android:name="com.bflgroup.bflshop.ui.hopricechange.HoPriceChangeFragment"
+        android:label="@string/menu_ho_pricechange_print_wify"
+        tools:layout="@layout/fragment_ho_price_change" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.bflgroup.bflshop.ui.settings.SettinFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settin" />
+
+    <fragment
+        android:id="@+id/nav_user_create"
+        android:name="com.bflgroup.bflshop.ui.pdausercreation.PdaUserCreationFragment"
+        android:label="@string/menu_user_create"
+        tools:layout="@layout/fragment_pda_user_creation" />
+
+    <fragment
+        android:id="@+id/nav_logoff"
+        android:name="com.bflgroup.bflshop.ui.logout.LogoutFragment"
+        android:label="@string/menu_logout"
+        tools:layout="@layout/fragment_logout" />
+
+
+</navigation>

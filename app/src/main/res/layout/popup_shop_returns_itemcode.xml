@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:padding="5dp"
+    android:background="@color/colorBackPopup"
+    android:layout_gravity="center"
+    android:layout_height="wrap_content">
+
+  <!-- android:layout_width="360dp" -->
+
+<!--    <Spinner-->
+<!--        android:id="@+id/sp_remarks"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:background="@drawable/et_custom"-->
+
+<!--        android:textAlignment="center"-->
+<!--        android:padding="10dp"-->
+<!--        android:textSize="18dp"-->
+<!--        android:layout_margin="5dp"-->
+<!--        android:textColor="@color/coloBlack"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        />-->
+
+
+
+<!--    <AutoCompleteTextView-->
+<!--        android:id="@+id/et_remarks_item"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_alignLeft="@+id/textView2"-->
+<!--        android:background="@drawable/et_custom"-->
+<!--        android:hint="Enter Remarks"-->
+<!--        android:layout_below="@+id/textView2"-->
+<!--        android:layout_marginTop="54dp"-->
+<!--        android:ems="10" />-->
+
+
+    <EditText
+        android:id="@+id/et_scan_itemcode"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/et_custom"
+        android:hint="Scan Itemcode"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:padding="10dp"
+        android:textSize="18dp"
+        android:layout_margin="5dp"
+        android:textColor="@color/coloBlack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bt_Scan_item"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <Button
+        android:id="@+id/bt_Scan_item"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="@color/colorBtn"
+        android:text="Scan"
+        app:layout_constraintTop_toTopOf="@+id/et_scan_itemcode"
+        app:layout_constraintStart_toEndOf="@+id/et_scan_itemcode"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+    </Button>
+
+    <AutoCompleteTextView
+        android:id="@+id/et_remarks_item"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/et_custom"
+        android:hint="Enter Remarks"
+        android:textAlignment="center"
+        android:padding="10dp"
+        android:textSize="14dp"
+        android:layout_margin="5dp"
+        android:textColor="@color/coloBlack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        android:ems="10"
+        app:layout_constraintTop_toBottomOf="@+id/et_scan_itemcode"
+        />
+
+    <TextView
+        android:id="@+id/tv_error_message"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_margin="5dp"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        android:padding="10dp"
+        android:textColor="@color/coloRed"
+        app:layout_constraintTop_toBottomOf="@+id/et_remarks_item"
+        android:background="@drawable/et_custom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/tv_last_scanned_itemcode"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+
+        android:textColor="@color/colorGreen"
+        android:textSize="17dp"
+        android:hint="Last Scanned Itemcode"
+        android:padding="10dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/tv_error_message"
+        android:background="@drawable/et_custom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        >
+    </TextView>
+
+  <Button
+      android:id="@+id/btn_close"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+
+      android:layout_margin="5dp"
+      android:layout_marginTop="5dp"
+      android:background="@drawable/btn_custom1"
+      android:text="CLOSE"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+
+      app:layout_constraintTop_toBottomOf="@+id/tv_last_scanned_itemcode"></Button>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

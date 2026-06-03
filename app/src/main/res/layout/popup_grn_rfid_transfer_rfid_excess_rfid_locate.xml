@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="325dp"
+    android:padding="6dp"
+    android:background="@color/colorBackPopup"
+    android:layout_gravity="center"
+    android:layout_height="550dp">
+
+    <TextView
+        android:id="@+id/tv_popup_grn_rfid_transfer_popup_excess_locate_upc"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:background="@drawable/et_custom_total"
+        android:gravity="center"
+        android:hint=""
+        android:padding="6dp"
+        android:text="EPC"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bt_popup_grn_rfid_transfer_popup_excess_close_locate"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Close"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_popup_grn_rfid_transfer_popup_excess_start_locate"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Start"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_rfid_transfer_popup_excess_locate_upc" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/bt_popup_grn_rfid_transfer_popup_excess_close_locate"
+        app:layout_constraintTop_toBottomOf="@+id/bt_popup_grn_rfid_transfer_popup_excess_start_locate"
+        tools:layout_editor_absoluteX="6dp">
+
+        <com.bflgroup.bflshop.ui.grntransfer.grnrfid.view.UhfLocationCanvasView
+            android:id="@+id/llChart"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

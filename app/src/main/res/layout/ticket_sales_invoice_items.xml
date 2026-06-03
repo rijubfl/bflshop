@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@drawable/dr_wave_list_main"
+    android:orientation="horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_itemcode"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="4043002621220"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_sales_invoice_qty"
+            app:layout_constraintStart_toEndOf="@+id/tv_sales_invoice_slno"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_qty"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="999"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_sales_invoice_salesrate"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_slno"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="99"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_rowno"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="99"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_salesrate"
+            android:layout_width="65dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="99.99"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_sales_invoice_discount"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_discount"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="999.99"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_sales_invoice_edit"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_total"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="999.99"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/bt_sales_invoice_edit"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sales_invoice_itemcode" />
+
+        <TextView
+            android:id="@+id/tv_sales_invoice_description"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="The Ladies high briefs, set of 3, 18/20"
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_sales_invoice_total"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sales_invoice_itemcode" />
+
+        <Button
+            android:id="@+id/bt_sales_invoice_edit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Delete"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

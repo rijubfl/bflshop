@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backColor"
+    tools:context=".ui.grntransfer.grnrfid.GrnTransferRfidFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_din_rec_date"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom"
+            android:hint=""
+            android:padding="10dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/coloBlack"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_grn_transfer_rfid_load_gin"
+            app:layout_constraintTop_toTopOf="@+id/et_grn_transfer_rfid_ginno" />
+
+        <Button
+            android:id="@+id/bt_grn_transfer_rfid_load_gin"
+            android:layout_width="75dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Load GIN"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/ly_grn_transfer_rfid_baterry_percentage"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ly_grn_transfer_rfid_baterry_percentage"
+            android:layout_width="75dp"
+            android:layout_height="0dp"
+            android:padding="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/TextView1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_grn_transfer_rfid_user">
+
+            <TextView
+                android:id="@+id/TextView45"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/et_custom"
+                android:gravity="center|center"
+                android:hint=""
+                android:padding="8dp"
+                android:text="Battery"
+                android:textColor="@color/coloBlack"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></TextView>
+
+            <TextView
+                android:id="@+id/tv_ageing_slashing_battery_percentage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/et_custom"
+                android:gravity="center|center"
+                android:hint=""
+                android:padding="0dp"
+                android:text="100 %"
+                android:textColor="@color/colorGreen"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TextView45"></TextView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_user"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom"
+            android:hint=""
+            android:padding="10dp"
+            android:text="1743"
+            android:textAlignment="center"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_shop"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom"
+            android:hint=""
+            android:padding="10dp"
+            android:text="BFLDFC"
+            android:textAlignment="center"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/ly_grn_transfer_rfid_baterry_percentage"
+            app:layout_constraintStart_toEndOf="@+id/tv_grn_transfer_rfid_user"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/TextView1"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/et_custom"
+            android:gravity="left"
+            android:hint=""
+            android:padding="10dp"
+            android:text="GIN."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_grn_transfer_rfid_user" />
+
+        <EditText
+            android:id="@+id/et_grn_transfer_rfid_ginno"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom"
+            android:padding="8dp"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_din_rec_date"
+            app:layout_constraintStart_toEndOf="@+id/TextView1"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <Button
+            android:id="@+id/bt_grn_transfer_rfid_add"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Scan RFID"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_grn_transfer_rfid_view_excess"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView1" />
+
+        <Button
+            android:id="@+id/bt_grn_transfer_rfid_view_excess"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Load Excess"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_grn_transfer_rfid_view_verify_totes"
+            app:layout_constraintTop_toTopOf="@+id/bt_grn_transfer_rfid_add" />
+
+        <Button
+            android:id="@+id/bt_grn_transfer_rfid_view_verify_totes"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Verify Tote"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/ch_grn_transfer_rfid_view_showpending"
+            app:layout_constraintTop_toTopOf="@+id/bt_grn_transfer_rfid_add" />
+
+        <CheckBox
+            android:id="@+id/ch_grn_transfer_rfid_view_showpending"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:checked="true"
+            android:background="@drawable/et_custom"
+            android:text="Show Diff."
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/bt_grn_transfer_rfid_add" />
+
+        <TextView
+            android:id="@+id/TextView111"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Total Totes"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_totes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bt_grn_transfer_rfid_add" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Total Quantity"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_quantity"
+            app:layout_constraintTop_toTopOf="@+id/TextView111" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_quantity"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textStyle="bold"
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/TextView111" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_totes"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="@+id/TextView111" />
+
+        <TextView
+            android:id="@+id/TextView112"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Total RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_rfid_system"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView111" />
+
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Scan RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_rfid_scan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView112" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Total Non RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_nonrfid_system"
+            app:layout_constraintTop_toTopOf="@+id/TextView112" />
+
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Scan Non RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_nonrfid_scan"
+            app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+        <TextView
+            android:id="@+id/textView35"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Diff. Non RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_nonrfid_diff"
+            app:layout_constraintTop_toTopOf="@+id/TextView113" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_nonrfid_system"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textStyle="bold"
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/TextView112" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_nonrfid_scan"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_rfid_system"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView18"
+            app:layout_constraintTop_toTopOf="@+id/TextView112" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_rfid_scan"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView32"
+            app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+        <TextView
+            android:id="@+id/TextView113"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="3dp"
+            android:text="Diff. RFID"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:textSize="14dp"
+            android:textColor="@color/coloBlack"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_transfer_rfid_total_rfid_diff"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView28" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_rfid_diff"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textColor="@color/coloRed"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView35"
+            app:layout_constraintTop_toTopOf="@+id/TextView113" />
+
+        <TextView
+            android:id="@+id/tv_grn_transfer_rfid_total_nonrfid_diff"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="0"
+            android:textColor="@color/coloRed"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/TextView113" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="2dp"
+            android:gravity="center"
+            android:background="@drawable/et_custom_total"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Trf.No."
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView113" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="90dp"
+            android:layout_height="26dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Difference"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView20"
+            app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+        <TextView
+            android:id="@+id/textView23"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textView21"
+            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="NON"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/textView21"
+            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="90dp"
+            android:layout_height="26dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Scan"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView21"
+            app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="NON"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textView24"
+            app:layout_constraintTop_toBottomOf="@+id/textView24" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="NON"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/textView24"
+            app:layout_constraintTop_toBottomOf="@+id/textView24" />
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="90dp"
+            android:layout_height="26dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="Total"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView22"
+            app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+        <TextView
+            android:id="@+id/textView26"
+            android:layout_width="45dp"
+            android:layout_height="26dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="5dp"
+            android:text="RFID"
+            android:textColor="@color/coloBlack"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="40dp"
+            android:layout_height="52dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint=""
+            android:padding="5dp"
+            android:text=""
+            android:textColor="@color/coloBlack"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView19" />
+
+        <ListView
+            android:id="@+id/lv_grn_transfer_rfid_details"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/et_custom_total"
+            app:layout_constraintBottom_toTopOf="@+id/bt_grn_transfer_rfid_clear_all"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+        <Button
+            android:id="@+id/bt_grn_transfer_rfid_save"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/bt_grn_transfer_rfid_clear_all" />
+
+        <Button
+            android:id="@+id/bt_grn_transfer_rfid_clear_all"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Clear"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="   "
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

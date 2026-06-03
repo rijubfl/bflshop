@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@drawable/dr_wave_list_main"
+    android:orientation="horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_division"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:orientation="vertical">
+
+
+
+<!--        <Button-->
+<!--            android:id="@+id/bt_grn_transfer_rfid_excess"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_marginTop="3dp"-->
+<!--            android:layout_marginBottom="3dp"-->
+<!--            android:background="@drawable/btn_custom1"-->
+<!--            android:text="Locate"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:textSize="14sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/tv_rfid_missing_items" />-->
+
+
+        <TextView
+            android:id="@+id/tv_itemcode"
+            android:layout_width="160dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Itemcode"
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_sysQty"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Description"
+            android:textColor="@color/coloBlack"
+            android:textSize="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_groupcode"
+            app:layout_constraintTop_toBottomOf="@+id/tv_itemcode" />
+        <TextView
+            android:id="@+id/tv_groupcode"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Groupcode"
+            android:textColor="@color/coloBlack"
+            android:textSize="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_description"
+            app:layout_constraintTop_toTopOf="@+id/tv_description" />
+
+        <TextView
+            android:id="@+id/tv_sysQty"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Sys Qty"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_itemcode"
+            app:layout_constraintEnd_toStartOf="@+id/tv_scanqty"
+            app:layout_constraintTop_toTopOf="@+id/tv_itemcode" />
+        <TextView
+            android:id="@+id/tv_scanqty"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Scan Qty"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_diff"
+            app:layout_constraintStart_toEndOf="@+id/tv_sysQty"
+            app:layout_constraintTop_toTopOf="@+id/tv_sysQty" />
+
+
+        <TextView
+            android:id="@+id/tv_diff"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Diff."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_scanqty"
+            app:layout_constraintTop_toTopOf="@id/tv_itemcode" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</RelativeLayout>

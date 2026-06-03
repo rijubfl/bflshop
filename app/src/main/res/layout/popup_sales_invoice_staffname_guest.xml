@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:padding="6dp"
+    android:background="@color/colorBackPopup"
+    android:layout_gravity="center"
+    android:layout_height="145dp">
+
+    <TextView
+        android:id="@+id/TextView2"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="@drawable/et_custom"
+        android:gravity="left"
+        android:hint=""
+        android:padding="10dp"
+        android:text="Emp.Code."
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_sales_invoice_popup_guestpurchase_empcode"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/et_custom"
+        android:gravity="left"
+        android:hint=""
+        android:inputType="numberDecimal"
+        android:padding="10dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/bt_sales_invoice_popup_guestpurchase_show"
+        app:layout_constraintStart_toEndOf="@+id/TextView2"
+        app:layout_constraintTop_toTopOf="@+id/TextView2" />
+
+    <Button
+        android:id="@+id/bt_sales_invoice_popup_guestpurchase_show"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Show"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/TextView2" />
+
+    <TextView
+        android:id="@+id/et_sales_invoice_popup_guestpurchase_empname"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:gravity="left"
+        android:hint="Employee Name"
+        android:padding="10dp"
+        android:text=""
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextView2" />
+
+    <Button
+        android:id="@+id/bt_sales_invoice_popup_guestpurchase_close"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Close"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

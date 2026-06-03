@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="375dp"
+    android:padding="6dp"
+    android:background="@color/colorBackPopup"
+    android:layout_gravity="center"
+    android:layout_height="650dp">
+
+    <TextView
+        android:id="@+id/TextView1"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:background="@drawable/et_custom"
+        android:gravity="left"
+        android:hint=""
+        android:padding="10dp"
+        android:text="Zone."
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/sp_ageing_stock_taking_delete_zone"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/et_custom"
+        android:ems="10"
+        android:padding="10dp"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/bt_ageing_stock_taking_delete_load"
+        app:layout_constraintStart_toEndOf="@+id/TextView1"
+        app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+    <TextView
+        android:id="@+id/TextView2"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:gravity="left"
+        android:hint=""
+        android:padding="10dp"
+        android:text="Itemcode"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextView1" />
+
+    <Button
+        android:id="@+id/bt_ageing_stock_taking_delete_load"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Search"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+
+    <EditText
+        android:id="@+id/et_ageing_stock_taking_delete_itemcode"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/et_custom"
+        android:hint=""
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/TextView2"
+        app:layout_constraintTop_toTopOf="@+id/TextView2" />
+
+    <Button
+        android:id="@+id/bt_ageing_stock_taking_delete_delete_close"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Close"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+    <Button
+        android:id="@+id/bt_ageing_stock_taking_delete_delete_clear"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Clear"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/TextView13"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/et_custom"
+        android:hint=""
+        android:padding="5dp"
+        android:text="Total"
+        android:textColor="@color/coloBlack"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_ageing_stock_taking_delete_delete_device"
+        app:layout_constraintEnd_toStartOf="@+id/tv_ageing_stock_taking_total_del_qty"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_ageing_stock_taking_total_del_qty"
+        android:layout_width="120dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/et_custom"
+        android:gravity="right"
+        android:hint=""
+        android:padding="5dp"
+        android:text="0"
+        android:textColor="@color/coloBlack"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_ageing_stock_taking_delete_delete_device"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/bt_ageing_stock_taking_delete_delete_device"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_custom1"
+        android:text="DELETE (DEVICE)"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_ageing_stock_taking_delete_delete_close"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_ageing_stock_taking_delete_delete_zone"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_custom1"
+        android:text="DELETE (ZONE)"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_ageing_stock_taking_delete_delete_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/TextView7"
+        android:layout_width="0dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/et_custom_total"
+        android:gravity="left|center"
+        android:hint=""
+        android:padding="8dp"
+        android:text="Scan Details"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextView2" />
+
+    <ListView
+        android:id="@+id/lv_ageing_stock_delete_taking"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/et_custom_total"
+        app:layout_constraintBottom_toTopOf="@+id/TextView13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextView7" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="   "
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

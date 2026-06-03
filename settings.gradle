@@ -1,0 +1,2 @@
+include ':app',':Sewoo_Android_1110.jar'
+rootProject.name='BFLShop'

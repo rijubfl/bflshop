@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp">
+
+    <TextView
+        android:id="@+id/tv_aging_scashing_new_barcode"
+        android:layout_width="0dp"
+        android:layout_height="33dp"
+        android:background="@drawable/et_custom_total"
+        android:gravity="left|center"
+        android:hint=""
+        android:padding="8dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_aging_scashing_curr_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_aging_scashing_new_price"
+        android:layout_width="70dp"
+        android:layout_height="33dp"
+        android:background="@drawable/et_custom_total"
+        android:gravity="right|center"
+        android:hint=""
+        android:padding="8dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_aging_scashing_label"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_aging_scashing_label"
+        android:layout_width="40dp"
+        android:layout_height="33dp"
+        android:background="@drawable/et_custom_total"
+        android:gravity="left|center"
+        android:hint=""
+        android:padding="8dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_aging_scashing_curr_price"
+        android:layout_width="70dp"
+        android:layout_height="33dp"
+        android:background="@drawable/et_custom_total"
+        android:gravity="right|center"
+        android:hint=""
+        android:padding="8dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_aging_scashing_new_price"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

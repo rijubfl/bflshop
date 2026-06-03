@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backColor"
+    tools:context=".ui.ageingslashing.reports.AgeingSlashingReportFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <Spinner
+            android:id="@+id/sp_ageing_slashing_rpt_batchno"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="8dp"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/sp_ageing_slashing_rpt_type"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="8dp"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sp_ageing_slashing_rpt_batchno"
+            app:layout_constraintTop_toTopOf="@+id/sp_ageing_slashing_rpt_batchno" />
+
+        <TextView
+            android:id="@+id/TextView1"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/et_custom"
+            android:gravity="left"
+            android:hint=""
+            android:padding="10dp"
+            android:text="Search"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sp_ageing_slashing_rpt_batchno" />
+
+        <EditText
+            android:id="@+id/et_ageing_slashing_rpt_search"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom"
+            android:hint=""
+            android:layout_marginLeft="5dp"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/TextView1"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <TextView
+            android:id="@+id/TextView2"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/et_custom"
+            android:gravity="left"
+            android:hint=""
+            android:padding="10dp"
+            android:text="Sort"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView1" />
+
+        <Spinner
+            android:id="@+id/sp_ageing_slashing_rpt_sort_field"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="8dp"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/sp_ageing_slashing_rpt_sort_type"
+            app:layout_constraintStart_toEndOf="@+id/TextView2"
+            app:layout_constraintTop_toTopOf="@+id/TextView2" />
+
+        <Spinner
+            android:id="@+id/sp_ageing_slashing_rpt_sort_type"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="8dp"
+            android:textSize="14dp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_ageing_slashing_report_refresh"
+            app:layout_constraintTop_toTopOf="@+id/TextView2" />
+
+        <Button
+            android:id="@+id/bt_ageing_slashing_report_refresh"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Refresh"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/TextView2" />
+
+        <TextView
+            android:id="@+id/tv_ageing_slashing_report_fieldname"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Itemcode"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/TextView9"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView2" />
+
+        <TextView
+            android:id="@+id/TextView10"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Print."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/TextView7"
+            app:layout_constraintTop_toTopOf="@+id/tv_ageing_slashing_report_fieldname" />
+
+        <TextView
+            android:id="@+id/TextView7"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Bal."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_ageing_slashing_report_fieldname" />
+
+        <TextView
+            android:id="@+id/TextView8"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Scan."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/TextView10"
+            app:layout_constraintTop_toTopOf="@+id/tv_ageing_slashing_report_fieldname" />
+
+        <TextView
+            android:id="@+id/TextView9"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Eligb."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/TextView8"
+            app:layout_constraintTop_toTopOf="@+id/tv_ageing_slashing_report_fieldname" />
+
+        <ListView
+            android:id="@+id/lv_ageing_slashing_rpt"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/et_custom_total"
+            app:layout_constraintBottom_toTopOf="@+id/TextView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_ageing_slashing_report_fieldname" />
+
+        <TextView
+            android:id="@+id/TextView6"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="6dp"
+            android:text="Total"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_ageing_slashing_rpt_total_eligible"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_ageing_slashing_rpt_total_balance"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint="0"
+            android:padding="8dp"
+            android:text=""
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/TextView6" />
+
+        <TextView
+            android:id="@+id/tv_ageing_slashing_rpt_total_scan"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint="0"
+            android:padding="8dp"
+            android:text=""
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_ageing_slashing_rpt_total_print"
+            app:layout_constraintTop_toTopOf="@+id/TextView6" />
+
+        <TextView
+            android:id="@+id/tv_ageing_slashing_rpt_total_print"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint="0"
+            android:padding="8dp"
+            android:text=""
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_ageing_slashing_rpt_total_balance"
+            app:layout_constraintTop_toTopOf="@+id/TextView6" />
+
+        <TextView
+            android:id="@+id/tv_ageing_slashing_rpt_total_eligible"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="right|center"
+            android:hint="0"
+            android:padding="8dp"
+            android:text=""
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_ageing_slashing_rpt_total_scan"
+            app:layout_constraintTop_toTopOf="@+id/TextView6" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text=""
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:padding="0dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <TextView
+            android:id="@+id/tv_srno"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:layout_weight="0.6"
+            android:padding="8dp"
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tv_Itemcode_details"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:layout_weight="1.3"
+            android:padding="8dp"
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_description"
+            app:layout_constraintStart_toEndOf="@+id/tv_srno"
+            app:layout_constraintTop_toTopOf="@+id/tv_srno" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:layout_weight="1.5"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_qty"
+            app:layout_constraintStart_toEndOf="@+id/tv_Itemcode_details"
+            app:layout_constraintTop_toTopOf="@+id/tv_Itemcode_details" />
+
+
+        <TextView
+            android:id="@+id/tv_qty"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:layout_weight="0.8"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="8dp"
+
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_sprice"
+            app:layout_constraintTop_toTopOf="@+id/tv_srno" />
+
+        <TextView
+            android:id="@+id/tv_sprice"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:layout_weight="0.85"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="center"
+            android:hint=""
+            android:padding="8dp"
+            android:textColor="@color/coloBlack"
+            android:textSize="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_Itemcode_details" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

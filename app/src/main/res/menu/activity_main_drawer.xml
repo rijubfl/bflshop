@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:id="@+id/group1" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/menu_home" />
+
+        <item android:title="@string/menu_sales">
+            <menu>
+                <item
+                    android:id="@+id/nav_sales_invoice"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_sales_invoice" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_inventory">
+            <menu>
+                <item
+                    android:id="@+id/nav_stock_taking"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_stock_taking" />
+                <item
+                    android:id="@+id/nav_stock_taking_verification"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_stock_taking_verify" />
+                <item
+                    android:id="@+id/nav_stock_taking_reports"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_stock_taking_report" />
+                <item
+                    android:id="@+id/nav_stock_taking_rfid"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_stock_taking_rfid" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_grn">
+            <menu>
+                <item
+                    android:id="@+id/nav_gin_verification"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_gin_verification" />
+                <item
+                    android:id="@+id/nav_grn_transfer_new"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_grn_transfer_new" />
+                <item
+                    android:id="@+id/nav_rfid_grn_transfer"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_rfid_grn_transfer" />
+                <!--<item
+                    android:id="@+id/nav_grn_transfer"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_grn_transfer" />-->
+                <item
+                    android:id="@+id/nav_grn_direct_delivery"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_grn_direct_delivery" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_shop">
+            <menu>
+                <item
+                    android:id="@+id/nav_store_entry"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_store_entry" />
+                <item
+                    android:id="@+id/nav_price_check"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_price_check" />
+                <item
+                    android:id="@+id/nav_add_discount"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_add_disount" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_ageing">
+            <menu>
+               <!-- <item
+                    android:id="@+id/nav_ageing_print"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_ageing_print" />-->
+                <item
+                    android:id="@+id/nav_ageing_print_wify"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_ageing_print_wify" />
+                <item
+                    android:id="@+id/nav_ageing_print_wify_report"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_ageing_print_report" />
+                <item
+                    android:id="@+id/nav_ho_pricechange_print_wify"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_ho_pricechange_print_wify" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_file">
+            <menu>
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_settings" />
+                <item
+                    android:id="@+id/nav_user_create"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_user_create" />
+                <item
+                    android:id="@+id/nav_logoff"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_logout" />
+            </menu>
+        </item>
+    </group>
+
+</menu>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backColor"
+    tools:context=".ui.grntransfer.delivery.GrnDeliveryFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/et_grn_delivery_transfer_number"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/et_custom"
+            android:ems="10"
+            android:hint="Transfer No. / Tote Id."
+            android:inputType="textEmailAddress"
+            android:padding="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_grn_delivery_transfer_scan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/TextView1"
+            android:layout_width="96dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Trf.No."
+            android:layout_marginTop="10dp"
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_grn_delivery_transfer_number" />
+
+        <TextView
+            android:id="@+id/TextView2"
+            android:layout_width="82dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="ToteId."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/TextView1"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <TextView
+            android:id="@+id/TextView3"
+            android:layout_width="83dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="Pallet No."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/TextView2"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <TextView
+            android:id="@+id/TextView4"
+            android:layout_width="73dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text="GIN.No."
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/TextView3"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <TextView
+            android:id="@+id/TextView5"
+            android:layout_width="0dp"
+            android:layout_height="33dp"
+            android:background="@drawable/et_custom_total"
+            android:gravity="left|center"
+            android:hint=""
+            android:padding="8dp"
+            android:text=""
+            android:textColor="@color/coloBlack"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/TextView4"
+            app:layout_constraintTop_toTopOf="@+id/TextView1" />
+
+        <ListView
+            android:id="@+id/lv_grn_delivery_details"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/et_custom_total"
+            app:layout_constraintBottom_toTopOf="@+id/bt_grn_delivery_transfer_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextView3" />
+
+        <Button
+            android:id="@+id/bt_grn_delivery_transfer_scan"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_custom1"
+            android:text="SCAN"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/et_grn_delivery_transfer_number" />
+
+        <Button
+            android:id="@+id/bt_grn_delivery_transfer_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/btn_custom1"
+            android:text="SAVE"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/bt_grn_delivery_transfer_clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:background="@drawable/btn_custom1"
+            android:text="CLEAR"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_grn_delivery_transfer_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.448"
+            app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="24dp"
+            android:text="."
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

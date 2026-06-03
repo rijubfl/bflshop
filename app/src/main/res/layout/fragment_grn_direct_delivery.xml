@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backColor"
+    tools:context=".ui.grndirectdelivery.GrnDirectDeliveryFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/coloBlack"
+            android:background="@drawable/et_custom_total"
+            android:padding="7dp"
+            android:text="Item Details"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_grn_direct_delivery_number" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom_total"
+            android:padding="7dp"
+            android:text="Scan."
+            android:textColor="@color/coloBlack"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView15"
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom_total"
+            android:padding="7dp"
+            android:text="Trf."
+            android:textColor="@color/coloBlack"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textView16"
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom_total"
+            android:padding="7dp"
+            android:text="Diff."
+            android:textColor="@color/coloBlack"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:padding="7dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/coloBlack"
+            android:background="@drawable/et_custom_total"
+            android:text="  Total"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/bt_grn_direct_delivery_save"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_direct_delivery_scan_total"
+            app:layout_constraintStart_toStartOf="@+id/lv_grn_direct_delivery_det" />
+
+        <TextView
+            android:id="@+id/tv_grn_direct_delivery_scan_total"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:textColor="@color/coloBlack"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/et_custom_total"
+            android:text="0"
+            android:gravity="right"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_grn_direct_delivery_clear"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_direct_delivery_trf_total" />
+
+        <TextView
+            android:id="@+id/tv_grn_direct_delivery_trf_total"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:textColor="@color/coloBlack"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/et_custom_total"
+            android:text="0"
+            android:gravity="right"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_grn_direct_delivery_clear"
+            app:layout_constraintEnd_toStartOf="@+id/tv_grn_direct_delivery_diff_total" />
+
+        <TextView
+            android:id="@+id/tv_grn_direct_delivery_diff_total"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp"
+            android:textColor="@color/coloBlack"
+            android:background="@drawable/et_custom_total"
+            android:text="0"
+            android:textSize="22sp"
+            android:gravity="right"
+            app:layout_constraintBottom_toTopOf="@+id/btn_grn_direct_delivery_clear"
+            app:layout_constraintEnd_toEndOf="@+id/lv_grn_direct_delivery_det" />
+
+        <ListView
+            android:id="@+id/lv_grn_direct_delivery_det"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/et_custom_total"
+            app:layout_constraintBottom_toTopOf="@+id/textView12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <EditText
+            android:id="@+id/et_grn_direct_delivery_number"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/et_custom"
+            android:ems="10"
+            android:hint="PO. No."
+            android:inputType="textEmailAddress"
+            android:padding="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/bt_grn_direct_delivery_scan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/bt_grn_direct_delivery_scan"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="SCAN"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/chk_grn_view_saved"
+            app:layout_constraintTop_toTopOf="@+id/et_grn_direct_delivery_number" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:text="."
+            android:textColor="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/bt_grn_direct_delivery_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="SAVE"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/btn_grn_direct_delivery_clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/btn_custom1"
+            android:text="CLEAR"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_grn_direct_delivery_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.448"
+            app:layout_constraintStart_toEndOf="@+id/textView2" />
+
+        <CheckBox
+            android:id="@+id/chk_grn_view_saved"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="View"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_grn_direct_delivery_scan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/bt_grn_direct_delivery_scan"
+            tools:ignore="TouchTargetSizeCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

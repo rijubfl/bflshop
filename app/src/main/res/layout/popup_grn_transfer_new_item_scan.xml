@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="370dp"
+    android:padding="8dp"
+    android:background="@color/colorBackPopup"
+    android:layout_gravity="center"
+    android:layout_height="565dp">
+
+    <EditText
+        android:id="@+id/et_popup_grn_transfer_barcode"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/et_custom"
+        android:hint="Scan Barcode / RFID"
+        android:padding="10dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toStartOf="@+id/et_popup_grn_transfer_qty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_popup_grn_transfer_qty"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:background="@drawable/et_custom"
+        android:gravity="right|center"
+        android:hint="Qty"
+        android:padding="10dp"
+        android:textColor="@color/coloBlack"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/et_popup_grn_transfer_barcode" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_itemcode"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/et_custom"
+        android:hint="Itemcode"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloBlack"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tv_popup_grn_transfer_current_stock"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_transfer_last" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_system_price"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:hint="System Price"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloBlack"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_transfer_itemcode" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_scan_price"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:hint="Scan Price"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloBlack"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_transfer_itemcode" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_current_stock"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:background="@drawable/et_custom"
+        android:hint="Stock"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloBlack"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_popup_grn_transfer_itemcode" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_description"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:hint="Description"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloBlack"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_transfer_system_price" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_last"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:hint="Last Scan"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloBlack"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_transfer_result" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_result"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/et_custom"
+        android:hint="Message"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloRed"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_popup_grn_transfer_add" />
+
+    <TextView
+        android:id="@+id/TextView13"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/et_custom"
+        android:gravity="center"
+        android:hint=""
+        android:padding="5dp"
+        android:text="Scan Qty"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_popup_grn_transfer_scan_qty"
+        app:layout_constraintEnd_toEndOf="@+id/tv_popup_grn_transfer_scan_qty"
+        app:layout_constraintStart_toStartOf="@+id/tv_popup_grn_transfer_scan_qty" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_scan_qty"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/et_custom"
+        android:hint=""
+        android:padding="8dp"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/colorGreen"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tv_popup_grn_transfer_trf_qty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_popup_grn_transfer_trf_qty" />
+
+    <TextView
+        android:id="@+id/TextView16"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/et_custom"
+        android:gravity="center"
+        android:hint=""
+        android:padding="5dp"
+        android:text="Transfer Qty"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_popup_grn_transfer_trf_qty"
+        app:layout_constraintStart_toStartOf="@+id/tv_popup_grn_transfer_trf_qty"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popup_grn_transfer_description" />
+
+    <TextView
+        android:id="@+id/TextView19"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/et_custom"
+        android:gravity="center"
+        android:hint=""
+        android:padding="5dp"
+        android:text="Difference"
+        android:textColor="@color/coloBlack"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_popup_grn_transfer_diff_qty"
+        app:layout_constraintEnd_toEndOf="@+id/tv_popup_grn_transfer_diff_qty"
+        app:layout_constraintStart_toStartOf="@+id/tv_popup_grn_transfer_diff_qty" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_trf_qty"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/et_custom"
+        android:hint=""
+        android:padding="8dp"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/colorGreen"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextView16" />
+
+    <TextView
+        android:id="@+id/tv_popup_grn_transfer_diff_qty"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/et_custom"
+        android:hint=""
+        android:padding="8dp"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="@color/coloRed"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_popup_grn_transfer_trf_qty"
+        app:layout_constraintTop_toTopOf="@+id/tv_popup_grn_transfer_trf_qty" />
+
+    <Button
+        android:id="@+id/bt_popup_grn_transfer_close"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_custom1"
+        android:text="Close"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_popup_grn_transfer_add"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_custom1"
+        android:text="ADD / EDIT"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_popup_grn_transfer_barcode" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="  "
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

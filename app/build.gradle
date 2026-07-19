@@ -7,7 +7,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 34
         versionCode 1
-        versionName "11.25"
+        versionName "11.27"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -19,10 +19,17 @@ android {
     buildFeatures {
         viewBinding = true //for databinding
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     namespace 'com.bflgroup.bflshop'
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment:2.9.8'
+    implementation 'androidx.navigation:navigation-ui:2.9.8'
+    implementation 'com.amazon.ion:ion-java:1.11.9'
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
@@ -44,4 +51,5 @@ dependencies {
     implementation files('libs/core-3.3.0.jar')
     implementation 'com.sunmi:printerlibrary:1.0.18'
     implementation files('libs/Sewoo_Android_1110.jar')
+    implementation 'com.ibm.icu:icu4j:78.3'
 }

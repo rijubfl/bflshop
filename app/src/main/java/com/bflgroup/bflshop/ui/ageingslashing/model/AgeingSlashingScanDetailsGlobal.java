@@ -203,6 +203,8 @@ public class AgeingSlashingScanDetailsGlobal {
         AgeingSlashingScanDetailsGlobal.addInfo = addInfo;
     }
 
+
+
     public static synchronized AgeingSlashingScanDetailsGlobal getInstance() {
         if (instance == null) {
             instance = new AgeingSlashingScanDetailsGlobal();

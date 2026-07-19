@@ -1,11 +1,18 @@
 package com.bflgroup.bflshop;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,8 +26,11 @@ import com.bflgroup.bflshop.comm.Global;
 import com.bflgroup.bflshop.comm.SaredRef;
 import com.bflgroup.bflshop.db.DBConnection;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.UUID;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -95,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
     private boolean checkPassMain() {
         try {
             objGlobal.setSqUserName("");

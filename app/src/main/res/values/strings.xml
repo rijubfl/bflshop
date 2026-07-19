@@ -28,7 +28,7 @@
     <string name="menu_file">File</string>
     <string name="menu_ageing">Ageing or Price Change</string>
     <string name="menu_logout">Logout</string>
-    <string name="menu_version">11.25</string>
+    <string name="menu_version">11.27</string>
     <string name="menu_sales">Sales</string>
     <string name="menu_sales_invoice">Sales Invoice</string>
     <string name="menu_store_entry">Store Entry</string>

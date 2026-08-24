@@ -13,8 +13,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -247,7 +249,7 @@ public class AgeingStockTakingFragment extends Fragment {
         return view;
     }
 
-    private void openPopupPassword(String typs,String dval) {
+    private void openPopupPassword(String typs, String dval) {
         Dialog myDialog;
         myDialog = new Dialog(getContext());
         myDialog.setCancelable(false);
@@ -260,64 +262,70 @@ public class AgeingStockTakingFragment extends Fragment {
         bt_ageing_stock_taking_popup_password_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String passOrg="",passOrgMsg="";
+                String passOrgMsg = "";
                 String pass = et_ageing_stock_taking_popup_password.getText().toString();
-                if(typs.equals("ITEM")) {passOrg="1122"; passOrgMsg="ITEM";}
-                if(typs.equals("ZONE")) {passOrg="3344"; passOrgMsg="ZONE";}
-                if(typs.equals("DEVI")) {passOrg="5588"; passOrgMsg="DEVICE";}
-                if (pass.isEmpty()){
-                    okMessage("Stock Taking","Please enter password");
-                } else if(!pass.equals(passOrg)){
-                    okMessage("Stock Taking","Invalid password");
-                } else {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                    alert.setMessage("Are you sure to delete the selected " + passOrgMsg + "?")
-                            .setTitle("Conformation")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    b_Result = objAgeingStockTakingDbManager.deleteStockTakeMain(getContext(), typs, dval);
-                                    if (!b_Result) {
-                                        okMessage("Stock Taking", objGlobal.getErrorMessage());
-                                    } else {
-                                        if (typs.equals("ITEM")) {
-                                            myDialog.dismiss();
-                                            b_Result = loadStockTakeItemsForDelete();
-                                            if (!b_Result) {
-                                                okMessage("Stock Taking", objGlobal.getErrorMessage());
-                                            }
+                boolean isValid = objAgeingStockTakingControl.validateManagerPassword(typs, pass);
+                if (pass.isEmpty()) {
+                    okMessage("Stock Taking", "Please enter password");
+                } else if (!isValid) {
+                    okMessage("Stock Taking", "Invalid password");
+                }
+                else{
+                    if(typs.equals("ITEM")) {passOrgMsg="ITEM";}
+                    if(typs.equals("ZONE")) { passOrgMsg="ZONE";}
+                    if(typs.equals("DEVI")) {passOrgMsg="DEVICE";}
+//                 else if(!pass.equals(passOrg)){
+//                    okMessage("Stock Taking","Invalid password");
+
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                        alert.setMessage("Are you sure to delete the selected " + passOrgMsg + "?")
+                                .setTitle("Conformation")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        b_Result = objAgeingStockTakingDbManager.deleteStockTakeMain(getContext(), typs, dval);
+                                        if (!b_Result) {
+                                            okMessage("Stock Taking", objGlobal.getErrorMessage());
                                         } else {
-                                            b_Result = loadStockTakeItemsForDelete();
-                                            if (!b_Result) {
-                                                okMessage("Stock Taking", objGlobal.getErrorMessage());
+                                            if (typs.equals("ITEM")) {
+                                                myDialog.dismiss();
+                                                b_Result = loadStockTakeItemsForDelete();
+                                                if (!b_Result) {
+                                                    okMessage("Stock Taking", objGlobal.getErrorMessage());
+                                                }
                                             } else {
-                                                b_Result = objAgeingStockTakingControl.loadZone(false);
+                                                b_Result = loadStockTakeItemsForDelete();
                                                 if (!b_Result) {
                                                     okMessage("Stock Taking", objGlobal.getErrorMessage());
                                                 } else {
-                                                    List<String> arr;
-                                                    ArrayAdapter<String> arrayAdp;
-                                                    arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objAgeingStockTakingGlobal.getZoneList());
-                                                    sp_ageing_stock_taking_delete_zone.setAdapter(arrayAdp);
-                                                    myDialog.dismiss();
-                                                    sp_ageing_stock_taking_delete_zone.setEnabled(true);
-                                                    bt_ageing_stock_taking_delete_load.setEnabled(true);
-                                                    bt_ageing_stock_taking_delete_delete_zone.setEnabled(false);
-                                                    //bt_ageing_stock_taking_delete_delete_device.setEnabled(false);
+                                                    b_Result = objAgeingStockTakingControl.loadZone(false);
+                                                    if (!b_Result) {
+                                                        okMessage("Stock Taking", objGlobal.getErrorMessage());
+                                                    } else {
+                                                        List<String> arr;
+                                                        ArrayAdapter<String> arrayAdp;
+                                                        arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objAgeingStockTakingGlobal.getZoneList());
+                                                        sp_ageing_stock_taking_delete_zone.setAdapter(arrayAdp);
+                                                        myDialog.dismiss();
+                                                        sp_ageing_stock_taking_delete_zone.setEnabled(true);
+                                                        bt_ageing_stock_taking_delete_load.setEnabled(true);
+                                                        bt_ageing_stock_taking_delete_delete_zone.setEnabled(false);
+                                                        //bt_ageing_stock_taking_delete_delete_device.setEnabled(false);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                }
-                            })
-                            .show();
+                                    }
+                                })
+                                .show();
+
                 }
             }
         });
@@ -366,7 +374,7 @@ public class AgeingStockTakingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 b_Result = loadStockTakeItemsForDelete();
-                if(!b_Result){
+                if (!b_Result) {
                     okMessage("Stock Taking", objGlobal.getErrorMessage());
                 }
                 sp_ageing_stock_taking_delete_zone.setEnabled(false);
@@ -378,14 +386,14 @@ public class AgeingStockTakingFragment extends Fragment {
         bt_ageing_stock_taking_delete_delete_device.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openPopupPassword("DEVI",objGlobal.getDeviceName());
+                openPopupPassword("DEVI", objGlobal.getDeviceName());
             }
         });
         bt_ageing_stock_taking_delete_delete_zone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String zone=sp_ageing_stock_taking_delete_zone.getSelectedItem().toString();
-                openPopupPassword("ZONE",zone);
+                String zone = sp_ageing_stock_taking_delete_zone.getSelectedItem().toString();
+                openPopupPassword("ZONE", zone);
             }
         });
 
@@ -416,6 +424,7 @@ public class AgeingStockTakingFragment extends Fragment {
         });
         myDialog.show();
     }
+
     private class AgeingStockTakingReportSearchItemForDeleteAdp extends BaseAdapter {
         public ArrayList<AgeingStockTakingReportsForDelete> listAgeingStockTakingReportsForDelete;
 
@@ -454,7 +463,7 @@ public class AgeingStockTakingFragment extends Fragment {
             bt_aging_stock_taking_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openPopupPassword("ITEM",s.srid);
+                    openPopupPassword("ITEM", s.srid);
                 }
             });
 
@@ -478,7 +487,8 @@ public class AgeingStockTakingFragment extends Fragment {
         ch_ageing_stock_taking_popup_main_server = (CheckBox) myDialog.findViewById(R.id.ch_ageing_stock_taking_popup_main_server);
 
         ch_ageing_stock_taking_popup_main_server.setChecked(false);
-        if(objPosGlobal.getStockTakeValServer().equals("Y")) ch_ageing_stock_taking_popup_main_server.setChecked(true);
+        if (objPosGlobal.getStockTakeValServer().equals("Y"))
+            ch_ageing_stock_taking_popup_main_server.setChecked(true);
 
         et_ageing_stock_taking_popup_barcode.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -665,7 +675,7 @@ public class AgeingStockTakingFragment extends Fragment {
         }
     }
 
-    private boolean loadStockTakeItemsForDelete(){
+    private boolean loadStockTakeItemsForDelete() {
         String zone = sp_ageing_stock_taking_delete_zone.getSelectedItem().toString();
         String itemcode = et_ageing_stock_taking_delete_itemcode.getText().toString().toUpperCase();
         try {
@@ -717,12 +727,14 @@ public class AgeingStockTakingFragment extends Fragment {
             return false;
         }
     }
-    private void exportToServer(){
+
+    private void exportToServer() {
         new AgeingStockTakingFragment.ExportToServer().execute();
     }
 
     private class ExportToServer extends AsyncTask<Void, Void, Integer> {
         private ProgressDialog dialog;
+
         public ExportToServer() {
             dialog = new ProgressDialog(getContext());
         }
@@ -764,13 +776,13 @@ public class AgeingStockTakingFragment extends Fragment {
         }
     }
 
-    void vibrate(int duration){
-        Vibrator v = (Vibrator) getContext().getSystemService(Context. VIBRATOR_SERVICE );
+    void vibrate(int duration) {
+        Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         assert v != null;
-        if (Build.VERSION. SDK_INT >= Build.VERSION_CODES. O ) {
-            v.vibrate(VibrationEffect. createOneShot (duration , VibrationEffect. DEFAULT_AMPLITUDE )) ;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
-            v.vibrate( duration ) ;
+            v.vibrate(duration);
         }
     }
 

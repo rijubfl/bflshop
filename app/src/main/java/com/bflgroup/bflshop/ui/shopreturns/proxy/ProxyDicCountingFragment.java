@@ -1,11 +1,9 @@
-package com.bflgroup.bflshop.ui.shopreturns;
+package com.bflgroup.bflshop.ui.shopreturns.proxy;
 
 import static com.bflgroup.bflshop.ui.shopreturns.ShopReturnsGlobal.getCount;
 import static com.bflgroup.bflshop.ui.shopreturns.ShopReturnsGlobal.setCount;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -38,13 +36,16 @@ import com.bflgroup.bflshop.R;
 import com.bflgroup.bflshop.comm.Controls;
 import com.bflgroup.bflshop.comm.Global;
 import com.bflgroup.bflshop.comm.PosGlobal;
+import com.bflgroup.bflshop.ui.shopreturns.AddScanItemDetails;
+import com.bflgroup.bflshop.ui.shopreturns.ShopReturnsControl;
+import com.bflgroup.bflshop.ui.shopreturns.ShopReturnsGlobal;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ShopReturnsFragment extends Fragment {
+public class ProxyDicCountingFragment extends Fragment {
 
 
     public Spinner sp_category_spinner;
@@ -74,7 +75,7 @@ public class ShopReturnsFragment extends Fragment {
     private Button bt_Scan_item;
     private ProgressBar pr_shop_returns;
     Integer count = 0;
-    ShopReturnsSharedRef objShopReturnsSharedRef;
+    ShopProxyReturnsSharedRef objShopReturnsSharedRef;
 
 
     private PosGlobal objPosGlobal = PosGlobal.getInstance();
@@ -85,10 +86,10 @@ public class ShopReturnsFragment extends Fragment {
 
     Controls objControls = new Controls();
     private Global objGlobal = Global.getInstance();
-    ShopReturnsControl objShopReturnsControl;
+    ShopProxyReturnsControl objShopReturnsControl;
 
 
-    public ShopReturnsFragment() {
+    public ProxyDicCountingFragment() {
         // Required empty public constructor
     }
 
@@ -116,7 +117,7 @@ public class ShopReturnsFragment extends Fragment {
 
 
             sp_select_shop.setVisibility(View.GONE);
-            objShopReturnsSharedRef = new ShopReturnsSharedRef(getContext());
+            objShopReturnsSharedRef = new ShopProxyReturnsSharedRef(getContext());
 //        String[] catItems = {"---Select One---","Damaged In Shop","Recalls","Non Saleable Items", "Online Returns","No Barcode, No RFID", "Quality issues","Shop to Shop Transfer (Direct)","Repair" };
 //        ArrayAdapter<String> SpinerAdapter = new ArrayAdapter<String>(getContext(),
 //                android.R.layout.simple_dropdown_item_1line, catItems){
@@ -247,14 +248,19 @@ public class ShopReturnsFragment extends Fragment {
                                 openPopupInvoiceItems();
                             }
                         } else {
-                            objShopReturnsSharedRef.SaveCategory(String.valueOf(sp_category_spinner.getSelectedItem()));
-                            objShopReturnsSharedRef.SaveCategoryName(String.valueOf(tv_shop_returns_category_name.getText()));
-                            objShopReturnsSharedRef.SaveShopName(String.valueOf(sp_select_shop.getText()));
-                            sp_category_spinner.setEnabled(false);
-                            sp_select_shop.setEnabled(false);
-                            openPopupInvoiceItems();
+                            if (sp_category_spinner.getSelectedItem() != null) {
+                                objShopReturnsSharedRef.SaveCategory(String.valueOf(sp_category_spinner.getSelectedItem()));
+                                objShopReturnsSharedRef.SaveCategoryName(String.valueOf(tv_shop_returns_category_name.getText()));
+                                objShopReturnsSharedRef.SaveShopName(String.valueOf(sp_select_shop.getText()));
+                                sp_category_spinner.setEnabled(false);
+                                sp_select_shop.setEnabled(false);
+                                openPopupInvoiceItems();
+                            } else {
+                                okMessage("", "This option not available for " + objPosGlobal.getShopName());
+                            }
                         }
                     }
+
                 }
             });
             bt_shop_returns_add.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +269,7 @@ public class ShopReturnsFragment extends Fragment {
                     selected_shopname = sp_select_shop.getText().toString();
                     String remarks = et_remarks.getText().toString();
                     String shopreturnCat = objShopReturnsControl.loadCategoryName(String.valueOf(sp_category_spinner.getSelectedItem()));
-                    if (objShopReturnsAdp != null && sp_category_spinner.getSelectedItemId() != 0) {
+                    if (objShopReturnsAdp != null) {
                         Log.e("Here", "clicked inside");
                         if (objShopReturnsAdp != null) {
                             if (shopreturnCat.equals("Online Returns"))
@@ -365,7 +371,7 @@ public class ShopReturnsFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                objShopReturnsControl = new ShopReturnsControl();
+                objShopReturnsControl = new ShopProxyReturnsControl();
 
                 stocktakeBlocked = objShopReturnsControl.checkStocktakeDate();
                 if (!stocktakeBlocked) {

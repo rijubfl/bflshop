@@ -51,7 +51,7 @@ public class BarcodePrinting {
      │   └────── Font/Style
      └────────── Text Command Prefix
      */
-    private static final String ARABIC_PRICE_FONT_ID = "U51";
+    private static final String ARABIC_PRICE_FONT_ID = "U50";
     public byte[] getSlashingBarcodeArabic(String mainHead, String subHead, String itemCode, String itemName, String barcode, String trfno, String was, String currency,String price, String mark,
                                            String usid, String pQty, String addinfo, String arabicDesc) {
         String mainHead1 = "1911A1000780019" + mainHead + "\r\n";

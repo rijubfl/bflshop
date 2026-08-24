@@ -130,6 +130,8 @@ public class Controls {
 
             rs = dbConnection.getResultSet("select * from settings", objGlobal.getConnection());
             while (rs.next()) {
+                if (rs.getString("descr").toUpperCase().equals("TYPEPASSREQUIRED"))
+                    objPosGlobal.setTypePassRequired(rs.getString("status"));
                 if (rs.getString("descr").toUpperCase().equals("ARABICDESCPRINT"))
                     objPosGlobal.setArabicDescription(rs.getString("status"));
                 if (rs.getString("descr").toUpperCase().equals("GROUPDISCOUNT"))

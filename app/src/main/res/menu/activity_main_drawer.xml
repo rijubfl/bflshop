@@ -70,6 +70,10 @@
                     android:icon="@drawable/ic_menu_send"
                     android:title="@string/menu_store_entry" />
                 <item
+                    android:id="@+id/nav_proxy_dic"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/menu_proxy_dic" />
+                <item
                     android:id="@+id/nav_price_check"
                     android:icon="@drawable/ic_menu_send"
                     android:title="@string/menu_price_check" />

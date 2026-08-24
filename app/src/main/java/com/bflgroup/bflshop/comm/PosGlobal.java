@@ -20,6 +20,7 @@ public class PosGlobal {
     private static float staffCeiling;
     private static String applyGroupDiscount;
     private static String arabicDescription;
+    private static String typePassRequired;
     private static String applyItemDiscount;
     private static Date discStartDate;
     private static Date discEndDate;
@@ -116,6 +117,14 @@ public class PosGlobal {
 
     public static void setArabicDescription(String arabicDescription) {
         PosGlobal.arabicDescription = arabicDescription;
+    }
+
+    public static String getTypePassRequired() {
+        return typePassRequired;
+    }
+
+    public static void setTypePassRequired(String typePassRequired) {
+        PosGlobal.typePassRequired = typePassRequired;
     }
 
     public static Date getDiscStartDate() {

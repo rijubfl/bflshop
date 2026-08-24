@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_grn_transfer,R.id.nav_grn_transfer,R.id.nav_grn_transfer_new, R.id.nav_settings, R.id.nav_price_check, R.id.nav_stock_taking, R.id.nav_stock_taking_reports,
-                R.id.nav_add_discount, R.id.nav_sales_invoice, R.id.nav_store_entry, R.id.nav_ageing_print, R.id.nav_grn_direct_delivery, R.id.nav_store_entry,R.id.nav_gin_verification,
+                R.id.nav_add_discount, R.id.nav_sales_invoice, R.id.nav_store_entry,R.id.nav_proxy_dic, R.id.nav_ageing_print, R.id.nav_grn_direct_delivery, R.id.nav_store_entry,R.id.nav_gin_verification,
                 R.id.nav_ageing_print_wify, R.id.nav_ageing_print_wify_report, R.id.nav_user_create, R.id.nav_stock_taking_verification,R.id.nav_rfid_grn_transfer,R.id.nav_ho_pricechange_print_wify,R.id.nav_stock_taking_rfid)
                 .setDrawerLayout(drawer)
                 .build();

@@ -110,7 +110,7 @@ public class AgeingSlashingWifyControl {
                 objGlobal.setErrorMessage("Not Aged");
                 return false;
             }
-            rs = dbConnection.getResultSet("select AddInfo=isnull(AddInfo,'') from itemmh where itemcode='" + itemcode + "'", objGlobal.getConnection());
+            rs = dbConnection.getResultSet("select AddInfo = ISNULL(AddInfo, '') +'-'+ FORMAT(GETDATE(), 'MMyy') from itemmh where itemcode='" + itemcode + "'", objGlobal.getConnection());
             if (rs.next()) {
                 objAgeingSlashingScanDetailsGlobal.setAddInfo(rs.getString("AddInfo"));
             }

@@ -6,6 +6,7 @@ import com.bflgroup.bflshop.ui.ageingstocktaking.model.AgeingStockTakingReports;
 import com.bflgroup.bflshop.ui.ageingstocktaking.model.AgeingStockTakingReportsForDelete;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,22 @@ public class AgeingStockTakingControl {
             objGlobal.setErrorMessage("getStockTakeDate:" + e);
             return false;
         }
+    }
+
+    public boolean validateManagerPassword(String type, String pwd){
+        boolean isValid ;
+        rs = dbConnection.getResultSet("select * from bfldata..ShopZoneAccess where type = '"+type+"' and pwd = '"+pwd+"'", objGlobal.getCloudCon());
+        try {
+            if (rs.next()){
+                isValid = true;
+            }
+            else{
+                isValid = false;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return isValid;
     }
 
     public boolean loadZone(boolean all) {

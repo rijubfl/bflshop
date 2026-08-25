@@ -19,6 +19,8 @@ public class PosGlobal {
     private static float vatCalcAmount;
     private static float staffCeiling;
     private static String applyGroupDiscount;
+    private static String arabicDescription;
+    private static String typePassRequired;
     private static String applyItemDiscount;
     private static Date discStartDate;
     private static Date discEndDate;
@@ -107,6 +109,22 @@ public class PosGlobal {
 
     public static void setApplyGroupDiscount(String applyGroupDiscount) {
         PosGlobal.applyGroupDiscount = applyGroupDiscount;
+    }
+
+    public static String getArabicDescription() {
+        return arabicDescription;
+    }
+
+    public static void setArabicDescription(String arabicDescription) {
+        PosGlobal.arabicDescription = arabicDescription;
+    }
+
+    public static String getTypePassRequired() {
+        return typePassRequired;
+    }
+
+    public static void setTypePassRequired(String typePassRequired) {
+        PosGlobal.typePassRequired = typePassRequired;
     }
 
     public static Date getDiscStartDate() {

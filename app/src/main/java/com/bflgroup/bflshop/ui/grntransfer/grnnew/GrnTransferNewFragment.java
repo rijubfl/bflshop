@@ -19,13 +19,16 @@ import androidx.fragment.app.Fragment;
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,12 +36,15 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bflgroup.bflshop.R;
 import com.bflgroup.bflshop.comm.Global;
+import com.bflgroup.bflshop.comm.PosGlobal;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GrnTransferNewFragment extends Fragment {
 
@@ -103,10 +109,19 @@ public class GrnTransferNewFragment extends Fragment {
     DecimalFormat numformatdec = new DecimalFormat("###,###.##");
 
     Dialog myDialog;
+    private PosGlobal objPosGlobal = new PosGlobal();
 
     ArrayList<GrnTransferNewTrfScanItems> listGrnTransferNewTrfScanItems = new ArrayList<GrnTransferNewTrfScanItems>();
     MyGrnNewTransferScanItemsAdp objMyGrnNewTransferScanItemsAdp;
     GrnTransferNewSharedRef objGrnTransferNewSharedRef;
+    private long startTime = 0L;
+    boolean isScan = false;
+    private static final long SCAN_INPUT_INTERVAL_MS = 100;
+    private static final long SCAN_TOTAL_INPUT_MS = 500;
+    boolean isPopupScan = false;
+    private EditText et_ageing_stock_taking_popup_password;
+    private Button bt_ageing_stock_taking_popup_password_ok;
+    private Button bt_ageing_stock_taking_popup_password_close;
 
     public GrnTransferNewFragment() {
         // Required empty public constructor
@@ -177,21 +192,47 @@ public class GrnTransferNewFragment extends Fragment {
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
                     new LoadTransferDetails().execute();
                     return true;
+
                 }
                 return false;
             }
         });
 
+//        et_grn_transfer_trfno_entryno.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                long now = System.currentTimeMillis();
+//                if (s.length() == 0) {
+//                    isScan = false;
+//                    startTime = 0L;
+//                    return;
+//                }
+//                if (s.length() == 1) {
+//                    isScan = true;
+//                } else if (now - startTime > SCAN_INPUT_INTERVAL_MS) {
+//                    isScan = false;
+//                }
+//                startTime = now;
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//            }
+//        });
+
         ch_grn_transfer_trffrom_oth_shop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     et_grn_transfer_trfno_entryno.setHint("Transfer No. / Tote Id");
                     et_grn_transfer_rfid_ginno.setHint("");
                     et_grn_transfer_rfid_ginno.setEnabled(false);
                     et_grn_transfer_rfid_ginno.requestFocus();
-                }
-                else {
+                } else {
                     et_grn_transfer_trfno_entryno.setHint("Entry No.");
                     et_grn_transfer_rfid_ginno.setHint("GIN Number");
                     et_grn_transfer_rfid_ginno.setEnabled(true);
@@ -224,7 +265,7 @@ public class GrnTransferNewFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 clearAll(true);
-                                if(ch_grn_transfer_trffrom_oth_shop.isChecked()) {
+                                if (ch_grn_transfer_trffrom_oth_shop.isChecked()) {
                                     et_grn_transfer_trfno_entryno.requestFocus();
                                 } else {
                                     et_grn_transfer_rfid_ginno.requestFocus();
@@ -255,7 +296,7 @@ public class GrnTransferNewFragment extends Fragment {
                 }
             }
         });
-        if(ch_grn_transfer_trffrom_oth_shop.isChecked()) {
+        if (ch_grn_transfer_trffrom_oth_shop.isChecked()) {
             et_grn_transfer_trfno_entryno.requestFocus();
         } else {
             et_grn_transfer_rfid_ginno.requestFocus();
@@ -439,12 +480,12 @@ public class GrnTransferNewFragment extends Fragment {
             objGrnTransferNewSharedRef.saveToteId("");
             et_grn_transfer_trfno_entryno.setEnabled(true);
             bt_grn_transfer_load.setEnabled(true);
-            if(ch_grn_transfer_trffrom_oth_shop.isChecked()) {
+            if (ch_grn_transfer_trffrom_oth_shop.isChecked()) {
                 et_grn_transfer_rfid_ginno.setText("");
                 objGrnTransferNewSharedRef.saveGinNo("");
                 et_grn_transfer_rfid_ginno.setEnabled(false);
             } else {
-                if(all) {
+                if (all) {
                     et_grn_transfer_rfid_ginno.setText("");
                     objGrnTransferNewSharedRef.saveGinNo("");
                     et_grn_transfer_rfid_ginno.setEnabled(true);
@@ -626,6 +667,67 @@ public class GrnTransferNewFragment extends Fragment {
         et_grn_transfer_popup_excess_qty.requestFocus();
     }
 
+    private void openPopupPassword() {
+        Dialog myDialog;
+        myDialog = new Dialog(getContext());
+        myDialog.setCancelable(false);
+        myDialog.setContentView(R.layout.popup_ageing_stock_taking_clear_password);
+
+        et_ageing_stock_taking_popup_password = (EditText) myDialog.findViewById(R.id.et_ageing_stock_taking_popup_password);
+        bt_ageing_stock_taking_popup_password_ok = (Button) myDialog.findViewById(R.id.bt_ageing_stock_taking_popup_password_ok);
+        bt_ageing_stock_taking_popup_password_close = (Button) myDialog.findViewById(R.id.bt_ageing_stock_taking_popup_password_close);
+
+        bt_ageing_stock_taking_popup_password_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pass = et_ageing_stock_taking_popup_password.getText().toString();
+                if (pass.isEmpty()) {
+                    okMessage("Grn Transfer: Please enter password");
+                } else {
+                    String verifyMgrname = "";
+                    verifyMgrname = objGrnTransferNewControl.validateManagerVerify(pass);
+                    if (verifyMgrname.isEmpty()) {
+                        okMessage(objGlobal.getErrorMessage());
+                        vibrate(500);
+                        et_ageing_stock_taking_popup_password.requestFocus();
+                    } else {
+                        itemAdd();
+                        myDialog.dismiss();
+                    }
+                }
+            }
+        });
+
+        bt_ageing_stock_taking_popup_password_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                et_popup_grn_transfer_barcode.setText("");
+                myDialog.dismiss();
+                et_popup_grn_transfer_barcode.requestFocus();
+            }
+        });
+
+        et_ageing_stock_taking_popup_password.requestFocus();
+        myDialog.show();
+    }
+
+    private void itemAdd() {
+        if (et_popup_grn_transfer_qty.getText().toString().isEmpty())
+            et_popup_grn_transfer_qty.setText("1");
+        b_Result = grnItemScan(et_popup_grn_transfer_barcode.getText().toString().trim().toUpperCase(), Integer.valueOf(et_popup_grn_transfer_qty.getText().toString()));
+        if (!b_Result) {
+        } else {
+            if (!loadScanTrfScanItems()) {
+                okMessage(objGlobal.getErrorMessage());
+            } else {
+                if (flagEdit) myDialog.dismiss();
+                flagEdit = false;
+            }
+        }
+        et_popup_grn_transfer_barcode.setText("");
+        et_popup_grn_transfer_barcode.requestFocus();
+    }
+
     void openPopupScanWindow() {
         myDialog = new Dialog(getContext());
         myDialog.setCancelable(false);
@@ -649,6 +751,11 @@ public class GrnTransferNewFragment extends Fragment {
         et_popup_grn_transfer_qty.setText("1");
         et_popup_grn_transfer_qty.setEnabled(objGlobal.getEnterQty());
 
+
+        isPopupScan = false;
+        startTime = 0L;
+
+
         et_popup_grn_transfer_barcode.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -664,39 +771,52 @@ public class GrnTransferNewFragment extends Fragment {
         et_popup_grn_transfer_barcode.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
-                    if (et_popup_grn_transfer_qty.getText().toString().isEmpty())
-                        et_popup_grn_transfer_qty.setText("1");
-                    b_Result = grnItemScan(et_popup_grn_transfer_barcode.getText().toString().trim().toUpperCase(), Integer.valueOf(et_popup_grn_transfer_qty.getText().toString()));
-                    if (!b_Result) {
-                    } else {
-                        if (!loadScanTrfScanItems()) {
-                            okMessage(objGlobal.getErrorMessage());
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                        isPopupScan = startTime != 0L && (System.currentTimeMillis() - startTime) <= SCAN_TOTAL_INPUT_MS;
+                        if (objPosGlobal.getTypePassRequired().equalsIgnoreCase("Y")) {
+                            if (!isPopupScan) {
+                                Toast.makeText(getContext(), "Manager Pasword Required to type the itemcode, otherwise Scan the barcode", Toast.LENGTH_LONG).show();
+                                openPopupPassword();
+                            } else {
+                                itemAdd();
+                            }
                         } else {
-                            if (flagEdit) myDialog.dismiss();
-                            flagEdit = false;
+                            itemAdd();
                         }
                     }
+                    return true;
                 }
                 return false;
+            }
+        });
+
+        et_popup_grn_transfer_barcode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    startTime = 0L;
+                } else if (startTime == 0L) {
+                    startTime = System.currentTimeMillis();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
         bt_popup_grn_transfer_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (et_popup_grn_transfer_qty.getText().toString().isEmpty())
-                    et_popup_grn_transfer_qty.setText("1");
-                b_Result = grnItemScan(et_popup_grn_transfer_barcode.getText().toString().trim().toUpperCase(), Integer.valueOf(et_popup_grn_transfer_qty.getText().toString()));
-                if (!b_Result) {
-                } else {
-                    if (!loadScanTrfScanItems()) {
-                        okMessage(objGlobal.getErrorMessage());
-                    } else {
-                        if (flagEdit) myDialog.dismiss();
-                        flagEdit = false;
-                    }
-                }
+                if (objPosGlobal.getTypePassRequired().equalsIgnoreCase("Y"))
+                    openPopupPassword();
+                else
+                    itemAdd();
             }
         });
 

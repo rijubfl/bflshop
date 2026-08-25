@@ -1,5 +1,7 @@
 package com.bflgroup.bflshop.ui.ageingslashing;
 
+import com.bflgroup.bflshop.ui.ageingslashing.model.AgeingSlashingScanDetailsGlobal;
+
 import java.util.List;
 
 public class AgeingSlashingGlobal {
@@ -19,6 +21,9 @@ public class AgeingSlashingGlobal {
     private static double rptTotalDiff;
 
     private static String batchno;
+    private static String arabicDesc;
+    private static String arabicBrand;
+
 
     public static String getPdaPrefix() {
         return pdaPrefix;
@@ -106,6 +111,22 @@ public class AgeingSlashingGlobal {
 
     public static void setRptTotalDiff(double rptTotalDiff) {
         AgeingSlashingGlobal.rptTotalDiff = rptTotalDiff;
+    }
+
+
+    public static String getArabicDesc() {
+        return arabicDesc;
+    }
+
+    public static void setArabicDesc(String arabicDesc) {
+        AgeingSlashingGlobal.arabicDesc = arabicDesc;
+    }
+    public static String getArabicBrand() {
+        return arabicBrand;
+    }
+
+    public static void setArabicBrand(String arabicBrand) {
+        AgeingSlashingGlobal.arabicBrand = arabicBrand;
     }
     public static synchronized AgeingSlashingGlobal getInstance() {
         if (instance == null) {

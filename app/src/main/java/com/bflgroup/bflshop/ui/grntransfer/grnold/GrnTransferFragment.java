@@ -13,7 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,6 +29,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -82,6 +86,7 @@ public class GrnTransferFragment extends Fragment {
     private EditText et_grn_transfer_popup_missing_qty;
     private Button bt_grn_transfer_popup_miss_ok;
     private EditText et_grn_transfer_popup_diff_verify;
+
 
     public GrnTransferFragment() {
         // Required empty public constructor

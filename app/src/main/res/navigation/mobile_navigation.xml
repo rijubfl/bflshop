@@ -76,6 +76,11 @@
         android:name="com.bflgroup.bflshop.ui.shopreturns.ShopReturnsFragment"
         android:label="@string/menu_store_entry"
         tools:layout="@layout/fragment_shop_returns" />
+    <fragment
+        android:id="@+id/nav_proxy_dic"
+        android:name="com.bflgroup.bflshop.ui.shopreturns.proxy.ProxyDicCountingFragment"
+        android:label="@string/menu_proxy_dic"
+        tools:layout="@layout/fragment_shop_returns" />
 
     <fragment
         android:id="@+id/nav_grn_direct_delivery"

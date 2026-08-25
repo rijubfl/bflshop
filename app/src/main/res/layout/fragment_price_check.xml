@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@color/backColor"
     tools:context=".ui.pricecheck.PriceCheckFragment">
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -244,4 +246,6 @@
             app:layout_constraintTop_toTopOf="@+id/tv_price_check_current_price" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
+
 </FrameLayout>

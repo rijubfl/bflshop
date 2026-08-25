@@ -1,4 +1,4 @@
-package com.bflgroup.bflshop.ui.shopreturns;
+package com.bflgroup.bflshop.ui.shopreturns.proxy;
 
 import static com.bflgroup.bflshop.ui.shopreturns.ShopReturnsGlobal.setCount;
 
@@ -10,18 +10,15 @@ import androidx.appcompat.app.AlertDialog;
 import com.bflgroup.bflshop.comm.Global;
 import com.bflgroup.bflshop.comm.PosGlobal;
 import com.bflgroup.bflshop.db.DBConnection;
-import com.rscja.deviceapi.interfaces.IFingerprint;
+import com.bflgroup.bflshop.ui.shopreturns.AddScanItemDetails;
+import com.bflgroup.bflshop.ui.shopreturns.ShopReturnsGlobal;
 
-import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 
-public class ShopReturnsControl {
+public class ShopProxyReturnsControl {
 
     private DBConnection dbConnection = new DBConnection();
     private Global objGlobal = Global.getInstance();
@@ -36,7 +33,7 @@ public class ShopReturnsControl {
     private PosGlobal objPosGlobal = PosGlobal.getInstance();
 
 
-    public ShopReturnsControl() {
+    public ShopProxyReturnsControl() {
         objGlobal.setErrorMessage("");
         b_Result = dbConnection.connectDb();
         if (b_Result == false) {
@@ -109,7 +106,7 @@ public class ShopReturnsControl {
 
     public boolean checktmpitem(String itemcode, String Category) throws SQLException {
         try {
-            String query2 = "Select * from tmpshopreturns where itemcode = '" + itemcode + "' and devicename = '" + objGlobal.getDeviceName() + "'";
+            String query2 = "Select * from tmpshopproxyreturns where itemcode = '" + itemcode + "' and devicename = '" + objGlobal.getDeviceName() + "'";
             ResultSet rs2 = dbConnection.getResultSet(query2, objGlobal.getConnection());
             if (!rs2.next()) {
                 return false;
@@ -143,6 +140,8 @@ public class ShopReturnsControl {
         String query = "";
         arr = new ArrayList<AddScanItemDetails>();
 //        if(!checktmpitem(itemcode, Category)) {
+
+
         if (sprice.equals("")) {
             query = "select isnull(openingdate, getdate()) as openingdate2,* from itemmaster im, Salesprice sp where im.itemcode = sp.itemcode and im.itemcode =   '" + itemcode + "'";
         } else {
@@ -150,33 +149,41 @@ public class ShopReturnsControl {
         }
         Log.e("Query", query);
         try {
-            rs = dbConnection.getResultSet(query, objGlobal.getConnection());
-            if (rs.next()) {
-                Float Qty = rs.getFloat("StockInHand") + 1;
-                SimpleDateFormat DateFor = new SimpleDateFormat("dd-MM-yyyy");
-                String date = "";
-                if (rs.getDate("OpeningDate2") != null) {
-
-                    date = DateFor.format(rs.getDate("openingdate2"));
-                } else {
-                    date = objGlobal.getServerDate();
-                }
-                String query1 = "Insert into tmpshopreturns(Itemcode,itemdescription,qty,SalesPrice,devicename,category,shopname,ToPrint,description,ShortName,UnitCode,GroupCode,CatCode," +
-                        "OpeningDate,itemRemarks) values('" + itemcode + "', '" + rs.getString("Description") + "',1, '" + rs.getString("SalesRate") + "', " +
-                        "'" + objGlobal.getDeviceName() + "', '" + Category + "', '','N','" + rs.getString("description") + "', '" + rs.getString("ShortName") + "', " +
-                        "'" + rs.getString("UnitCode") + "', '" + rs.getString("GroupCode") + "', '" + rs.getString("CatCode") + "', '" + date + "', '" + itemRemarks + "')";
-                Log.e("Insert1", query1);
-                if (!dbConnection.insertUpdate(query1, objGlobal.getConnection())) {
-                    okMessage("Alert", objGlobal.getErrorMessage(), context);
-                }
-                srno++;
-                arr.add(new AddScanItemDetails(srno, itemcode, rs.getString("Description"), rs.getFloat("StockInHand"), rs.getFloat("SalesRate")));
-                Count = setCount(Count + 1);
-                ShopReturnsGlobal.setMessage("Itemcode Added");
+            if (Category.equals("DIC") && !itemcode.startsWith("DIC")) {
+                    ShopReturnsGlobal.setMessage("This item is not a DIC item. Please select a DIC item.");
+            } else if (Category.equals("PROXY") && !itemcode.startsWith("PRX")) {
+                    ShopReturnsGlobal.setMessage("This item is not a PROXY item. Please select a PROXY item.");
             } else {
-                ShopReturnsGlobal.setMessage("Item not found in the Salesprice");
-                //okMessage("Alert", "Item not found in Salesprice", context);
+                rs = dbConnection.getResultSet(query, objGlobal.getConnection());
+                if (rs.next()) {
+                    Float Qty = rs.getFloat("StockInHand") + 1;
+                    SimpleDateFormat DateFor = new SimpleDateFormat("dd-MM-yyyy");
+                    String date = "";
+                    if (rs.getDate("OpeningDate2") != null) {
+
+                        date = DateFor.format(rs.getDate("openingdate2"));
+                    } else {
+                        date = objGlobal.getServerDate();
+                    }
+                    String query1 = "Insert into tmpshopproxyreturns(Itemcode,itemdescription,qty,SalesPrice,devicename,category,shopname,ToPrint,description,ShortName,UnitCode,GroupCode,CatCode," +
+                            "OpeningDate,itemRemarks) values('" + itemcode + "', '" + rs.getString("Description") + "',1, '" + rs.getString("SalesRate") + "', " +
+                            "'" + objGlobal.getDeviceName() + "', '" + Category + "', '','N','" + rs.getString("description") + "', '" + rs.getString("ShortName") + "', " +
+                            "'" + rs.getString("UnitCode") + "', '" + rs.getString("GroupCode") + "', '" + rs.getString("CatCode") + "', '" + date + "', '" + itemRemarks + "')";
+                    Log.e("Insert1", query1);
+                    if (!dbConnection.insertUpdate(query1, objGlobal.getConnection())) {
+                        okMessage("Alert", objGlobal.getErrorMessage(), context);
+                    }
+                    srno++;
+                    arr.add(new AddScanItemDetails(srno, itemcode, rs.getString("Description"), rs.getFloat("StockInHand"), rs.getFloat("SalesRate")));
+                    Count = setCount(Count + 1);
+                    ShopReturnsGlobal.setMessage("Itemcode Added");
+                } else {
+                    ShopReturnsGlobal.setMessage("Item not found in the Salesprice");
+                    //okMessage("Alert", "Item not found in Salesprice", context);
+                }
             }
+
+
         } catch (Exception e) {
             okMessage("Alert", e.toString(), context);
         }
@@ -195,7 +202,7 @@ public class ShopReturnsControl {
         int srno = 0;
         arrayList = new ArrayList<>();
         String querynew = "";
-        querynew = "select * from tmpshopreturns where  devicename = '" + objGlobal.getDeviceName() + "'";
+        querynew = "select * from tmpshopproxyreturns where  devicename = '" + objGlobal.getDeviceName() + "'";
         Log.e("Load Insert", querynew);
         ResultSet rs1 = dbConnection.getResultSet(querynew, objGlobal.getConnection());
         while (rs1.next()) {
@@ -237,9 +244,11 @@ public class ShopReturnsControl {
 
         try {
             String query = "", query2 = "", query6 = "";
-            query = "select * from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "'";
-            query2 = "select sum(qty) as qty, salesprice as salesprice,itemcode from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice";
-            query6 = "select description, qty, ShortName, UnitCode,salesprice, itemcode, GroupCode,CatCode,OpeningDate,ToPrint from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice, qty, description, ShortName,UnitCode, GroupCode,CatCode,OpeningDate,ToPrint";
+
+            query = "select * from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "'";
+            query2 = "select sum(qty) as qty, salesprice as salesprice,itemcode from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice";
+            query6 = "select description, qty, ShortName, UnitCode,salesprice, itemcode, GroupCode,CatCode,OpeningDate,ToPrint from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice, qty, description, ShortName,UnitCode, GroupCode,CatCode,OpeningDate,ToPrint";
+
             rs = dbConnection.getResultSet(query, objGlobal.getConnection());
             ResultSet rs2 = dbConnection.getResultSet(query2, objGlobal.getConnection());
             ResultSet rs3 = dbConnection.getResultSet(query6, objGlobal.getConnection());
@@ -256,7 +265,7 @@ public class ShopReturnsControl {
             ShopReturnsGlobal.setEntryNo(autoNo);
 
 
-            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', '',itemRemarks from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
+            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', '',itemRemarks from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 objGlobal.getCloudCon().setAutoCommit(true);
@@ -301,7 +310,7 @@ public class ShopReturnsControl {
             }
 
 
-            // insert into storeDetail(EntryNo,ItemCode,Quantity,RecQty, SalesPrice) select sum(qty) as qty, salesprice as salesprice,itemcode from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice
+            // insert into storeDetail(EntryNo,ItemCode,Quantity,RecQty, SalesPrice) select sum(qty) as qty, salesprice as salesprice,itemcode from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice
 //            }
 
             while (rs3.next()) {
@@ -356,15 +365,11 @@ public class ShopReturnsControl {
         ArrayList<String> arrayList = new ArrayList<>();
         try {
             arrayList.add("--Select Category--");
-            String Query = "EXEC dbo.GetStoreCategories '" + objPosGlobal.getShopName() + "', '" + objGlobal.getCountryCode() + "', 0";
-//                String Query = "select Category_name from bfldata..StoreEntryCategory where active ='Y' and category_name <>'PROXY/DIC' union all select Category_name from " +
-//                        "bfldata.dbo.StoreEntryCategoryShopTransfer where ShopName='" + objPosGlobal.getShopName() + "' and category_name <>'PROXY/DIC' order by Category_Name";
+            String Query = "EXEC dbo.GetStoreCategories '" + objPosGlobal.getShopName() + "', '" + objGlobal.getCountryCode() + "', 1";
             ResultSet rs1 = dbConnection.getResultSet(Query, objGlobal.getCloudCon());
             while (rs1.next()) {
                 arrayList.add(rs1.getString("Category_name"));
             }
-
-
         } catch (Exception e) {
             Log.e("Alert", e.toString());
         }
@@ -418,9 +423,11 @@ public class ShopReturnsControl {
             return false;
         }
         try {
-            if (!dbConnection.insertUpdate("delete from tmpshopreturns where  devicename='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
+
+            if (!dbConnection.insertUpdate("delete from tmpshopproxyreturns where  devicename='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
                 return false;
             }
+
         } catch (Exception ex) {
             objGlobal.setErrorMessage("ShopreturnsControl:clearTable:" + ex.toString());
             return false;
@@ -442,7 +449,7 @@ public class ShopReturnsControl {
 
     public Integer getCount() throws SQLException {
         // Integer count = 0;
-        String query = "select count(*) as count from tmpshopreturns where devicename='" + objGlobal.getDeviceName() + "'";
+        String query = "select count(*) as count from tmpshopproxyreturns where devicename='" + objGlobal.getDeviceName() + "'";
         rs = dbConnection.getResultSet(query, objGlobal.getConnection());
 
         while (rs.next()) {

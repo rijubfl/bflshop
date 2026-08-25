@@ -28,10 +28,11 @@
     <string name="menu_file">File</string>
     <string name="menu_ageing">Ageing or Price Change</string>
     <string name="menu_logout">Logout</string>
-    <string name="menu_version">11.25</string>
+    <string name="menu_version">11.33</string>
     <string name="menu_sales">Sales</string>
     <string name="menu_sales_invoice">Sales Invoice</string>
     <string name="menu_store_entry">Store Entry</string>
+    <string name="menu_proxy_dic">PROXY/DIC Counting</string>
     <string name="menu_ageing_print">Print Ageing</string>
     <string name="menu_ageing_print_wify">Slashing</string>
     <string name="menu_ho_pricechange_print_wify">HO Price Change</string>

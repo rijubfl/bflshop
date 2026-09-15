@@ -12,6 +12,14 @@
         android:layout_height="match_parent"
         android:padding="5dp">
 
+        <!--
+            Top row: Skip checkbox (start, flexes) -> Clear (small, icon-style, parent end).
+            Clear sits alone in the top-right corner, away from Scan and Save.
+            GIN No. row: label -> EditText (flexes) -> Load (fixed 64dp, parent end).
+            Load's start is the EditText's end constraint and vice versa, so they
+            can never overlap regardless of text/locale width changes.
+        -->
+
         <CheckBox
             android:id="@+id/ch_gin_verification_skip"
             android:layout_width="0dp"
@@ -21,10 +29,26 @@
             android:textStyle="bold"
             android:text="Skip SKU wise GRN"
             android:textColor="@color/colorBlue"
-            app:layout_constraintEnd_toStartOf="@+id/bt_gin_verification_load"
+            app:layout_constraintEnd_toStartOf="@+id/bt_gin_verification_clear"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/bt_gin_verification_clear"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/et_custom"
+            android:src="@drawable/delete_outline"
+            android:contentDescription="Clear"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/ch_gin_verification_skip"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ch_gin_verification_skip"
+           android:backgroundTint="@color/coloRed"
+            app:tint="@color/colorWhite"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/TextView1"
@@ -43,30 +67,18 @@
 
         <Button
             android:id="@+id/bt_gin_verification_load"
-            android:layout_width="100dp"
+            android:layout_width="64dp"
             android:layout_height="0dp"
             android:background="@drawable/btn_custom1"
             android:text="Load"
             android:textAllCaps="false"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textStyle="bold"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/TextView1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="TouchTargetSizeCheck" />
-
-        <Button
-            android:id="@+id/bt_gin_verification_scan"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/btn_custom1"
-            android:text="Scan"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/tv_gin_verification_verify"
-            app:layout_constraintTop_toTopOf="@+id/et_gin_verification_trf_tote_id"
+            app:layout_constraintTop_toTopOf="@+id/TextView1"
             tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
@@ -86,6 +98,20 @@
             app:layout_constraintStart_toEndOf="@+id/TextView1"
             app:layout_constraintTop_toTopOf="@+id/TextView1"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <Button
+            android:id="@+id/bt_gin_verification_scan"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/btn_custom1"
+            android:text="Scan"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tv_gin_verification_verify"
+            app:layout_constraintTop_toTopOf="@+id/et_gin_verification_trf_tote_id"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
             android:id="@+id/et_gin_verification_trf_tote_id"
@@ -141,7 +167,6 @@
             android:background="@drawable/et_custom_total"
             android:gravity="left"
             android:hint=""
-            android:padding="8dp"
             android:textStyle="bold"
             android:text="Tote Id"
             android:textColor="@color/coloBlack"
@@ -201,52 +226,30 @@
             android:layout_height="0dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/et_custom_total"
-            app:layout_constraintBottom_toTopOf="@+id/bt_gin_verification_clear"
+            app:layout_constraintBottom_toTopOf="@+id/bt_gin_verification_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/TextView6" />
 
-        <Button
-            android:id="@+id/bt_gin_verification_clear"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/btn_custom1"
-            android:text="CLEAR"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView2"
-            app:layout_constraintStart_toStartOf="parent" />
+        <!--
+            Save is now alone on the bottom row, full width. Nothing else lives
+            in its tap zone, so there's no adjacent button to fat-finger into.
+        -->
 
         <Button
             android:id="@+id/bt_gin_verification_save"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/btn_custom1"
             android:text="SAVE"
             android:textAllCaps="false"
-            android:textSize="14sp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView2" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text="   "
-            android:textColor="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="SpeakableTextPresentCheck" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

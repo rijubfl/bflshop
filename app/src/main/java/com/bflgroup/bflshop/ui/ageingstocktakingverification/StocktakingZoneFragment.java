@@ -294,7 +294,7 @@ public class StocktakingZoneFragment extends Fragment {
             public void onClick(View view) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to clear?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -322,7 +322,7 @@ public class StocktakingZoneFragment extends Fragment {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
 
                 alert.setMessage("Are you sure to save?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

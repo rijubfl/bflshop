@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,7 +40,7 @@ public class GinVerificationFragment extends Fragment {
     private EditText et_gin_verification_trf_tote_id;
     private ListView lv_gin_verification_details;
     private TextView tv_gin_verification_verify;
-    private Button bt_gin_verification_clear;
+    private ImageButton bt_gin_verification_clear;
     private Button bt_gin_verification_save;
 
     Global objGlobal = Global.getInstance();
@@ -68,7 +69,7 @@ public class GinVerificationFragment extends Fragment {
         et_gin_verification_ginno = (EditText) view.findViewById(R.id.et_gin_verification_ginno);
         et_gin_verification_trf_tote_id = (EditText) view.findViewById(R.id.et_gin_verification_trf_tote_id);
         lv_gin_verification_details = (ListView) view.findViewById(R.id.lv_gin_verification_details);
-        bt_gin_verification_clear = (Button) view.findViewById(R.id.bt_gin_verification_clear);
+        bt_gin_verification_clear = (ImageButton) view.findViewById(R.id.bt_gin_verification_clear);
         bt_gin_verification_save = (Button) view.findViewById(R.id.bt_gin_verification_save);
         tv_gin_verification_verify = (TextView) view.findViewById(R.id.tv_gin_verification_verify);
         ch_gin_verification_skip.setEnabled(false);
@@ -116,7 +117,7 @@ public class GinVerificationFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are You sure to save?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -149,7 +150,7 @@ public class GinVerificationFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are You sure to clear all?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

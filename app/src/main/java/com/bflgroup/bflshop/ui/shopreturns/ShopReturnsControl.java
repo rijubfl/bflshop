@@ -69,42 +69,52 @@ public class ShopReturnsControl {
         return true;
     }
 
-    public boolean scanItemcode(String itemcode, String sprice, String category, String Shopname) throws SQLException {
+    public int scanItemcode(String itemcode, String sprice, String category, String Shopname) throws SQLException {
+        int status = 1;
         String query = "select * from itemmaster where itemcode = '" + itemcode + "'";
         Log.e("Query", query);
         ArrayList<String> shopfound = new ArrayList<String>();
         rs = dbConnection.getResultSet(query, objGlobal.getConnection());
         if (!rs.next()) {
-            objGlobal.setErrorMessage("Itemcode is not valid");
-            return false;
+            if (category.equalsIgnoreCase("Online Returns")){
+                status = 2;
+            }
+            else {
+                objGlobal.setErrorMessage("Itemcode is not valid");
+                status = 0;
+            }
         }
-        if (category.equals("Shop to Shop Transfer (Direct)")) {
-            if (!sprice.equals("")) {
-                rs = dbConnection.getResultSet("select ItemCode from SalesPrice where ItemCode='" + itemcode + "' and SalesRate=" + sprice + " union all " +
-                        "select ItemCode from OldSalesPrice where ItemCode='" + itemcode + "' and SalesRate=" + sprice + " union all " +
-                        "select ItemCode from PriceDetailAgeing where ItemCode='" + itemcode + "' and NewPrice=" + sprice, objGlobal.getConnection());
-                if (!rs.next()) {
-                    objGlobal.setErrorMessage("Salesprice is not valid");
-                    return false;
-                }
-                rs = dbConnection.getResultSet("", objGlobal.getConnection());
-
-                String Query = "select status from fabsmain..settings where descr = 'ALLOWEDSLASHED'";
-                ResultSet rs1 = dbConnection.getResultSet(Query, objGlobal.getConnection());
-                while (rs1.next()) {
-                    shopfound.add(rs1.getString("status"));
-                }
-
-                if (!shopfound.contains(Shopname)) {
-                    rs = dbConnection.getResultSet("select ItemCode from PriceDetailAgeing where ItemCode='" + itemcode + "' and NewPrice=" + sprice, objGlobal.getConnection());
-                    if (rs.next()) {
-                        objGlobal.setErrorMessage("This Item is Slashed - " + itemcode + " Price =  " + sprice);
-                        return false;
+        else{
+            if (category.equals("Shop to Shop Transfer (Direct)")) {
+                if (!sprice.equals("")) {
+                    rs = dbConnection.getResultSet("select ItemCode from SalesPrice where ItemCode='" + itemcode + "' and SalesRate=" + sprice + " union all " +
+                            "select ItemCode from OldSalesPrice where ItemCode='" + itemcode + "' and SalesRate=" + sprice + " union all " +
+                            "select ItemCode from PriceDetailAgeing where ItemCode='" + itemcode + "' and NewPrice=" + sprice, objGlobal.getConnection());
+                    if (!rs.next()) {
+                        objGlobal.setErrorMessage("Salesprice is not valid");
+                        status = 0;
                     }
+                    else{
+                        rs = dbConnection.getResultSet("", objGlobal.getConnection());
+
+                        String Query = "select status from fabsmain..settings where descr = 'ALLOWEDSLASHED'";
+                        ResultSet rs1 = dbConnection.getResultSet(Query, objGlobal.getConnection());
+                        while (rs1.next()) {
+                            shopfound.add(rs1.getString("status"));
+                        }
+                        if (!shopfound.contains(Shopname)) {
+                            rs = dbConnection.getResultSet("select ItemCode from PriceDetailAgeing where ItemCode='" + itemcode + "' and NewPrice=" + sprice, objGlobal.getConnection());
+                            if (rs.next()) {
+                                objGlobal.setErrorMessage("This Item is Slashed - " + itemcode + " Price =  " + sprice);
+                                status = 0;
+                            }
+                        }
+                    }
+
                 }
             }
         }
-        return true;
+       return status;
     }
 
     public boolean checktmpitem(String itemcode, String Category) throws SQLException {
@@ -138,7 +148,7 @@ public class ShopReturnsControl {
     }
 
 
-    public ArrayList<AddScanItemDetails> additemcode(String itemcode, String sprice, Context context, String Category, String itemRemarks) throws SQLException {
+    public ArrayList<AddScanItemDetails> additemcode(String itemcode, String sprice, Context context, String Category, String itemRemarks, int itemType) throws SQLException {
         ArrayList<AddScanItemDetails> arr;
         String query = "";
         arr = new ArrayList<AddScanItemDetails>();
@@ -173,7 +183,18 @@ public class ShopReturnsControl {
                 arr.add(new AddScanItemDetails(srno, itemcode, rs.getString("Description"), rs.getFloat("StockInHand"), rs.getFloat("SalesRate")));
                 Count = setCount(Count + 1);
                 ShopReturnsGlobal.setMessage("Itemcode Added");
-            } else {
+            }
+            else if (itemType == 1){
+                String query1 = "Insert into tmpshopreturns(Itemcode,itemdescription,qty,SalesPrice,devicename,category,shopname,ToPrint,description,ShortName,UnitCode,GroupCode,CatCode," +
+                        "OpeningDate,itemRemarks) values('" + itemcode + "', '',1, '0.00', " +
+                        "'" + objGlobal.getDeviceName() + "', '" + Category + "', '','N','', '', " +
+                        "'00', '', '', '', 'Consignment Item')";
+                Log.e("Insert1", query1);
+                if (!dbConnection.insertUpdate(query1, objGlobal.getConnection())) {
+                    okMessage("Alert", objGlobal.getErrorMessage(), context);
+                }
+            }
+            else {
                 ShopReturnsGlobal.setMessage("Item not found in the Salesprice");
                 //okMessage("Alert", "Item not found in Salesprice", context);
             }

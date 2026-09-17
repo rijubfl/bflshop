@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,7 +75,7 @@ public class GrnTransferNewFragment extends Fragment {
     private TextView tv_grn_transfer_total_trf_qty;
     private TextView tv_grn_transfer_total_diff_qty;
     private TextView tv_grn_transfer_last_save;
-    private Button bt_grn_transfer_clear_all;
+    private ImageButton bt_grn_transfer_clear_all;
     private Button bt_grn_transfer_save;
     //E Main
 
@@ -145,7 +146,7 @@ public class GrnTransferNewFragment extends Fragment {
         tv_grn_transfer_total_scan_qty = (TextView) view.findViewById(R.id.tv_grn_transfer_total_scan_qty);
         tv_grn_transfer_total_trf_qty = (TextView) view.findViewById(R.id.tv_grn_transfer_total_trf_qty);
         tv_grn_transfer_total_diff_qty = (TextView) view.findViewById(R.id.tv_grn_transfer_total_diff_qty);
-        bt_grn_transfer_clear_all = (Button) view.findViewById(R.id.bt_grn_transfer_clear_all);
+        bt_grn_transfer_clear_all = (ImageButton) view.findViewById(R.id.bt_grn_transfer_clear_all);
         tv_grn_transfer_last_save = (TextView) view.findViewById(R.id.tv_grn_transfer_last_save);
         bt_grn_transfer_save = (Button) view.findViewById(R.id.bt_grn_transfer_save);
 
@@ -234,7 +235,7 @@ public class GrnTransferNewFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are You sure to clear all?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -281,7 +282,7 @@ public class GrnTransferNewFragment extends Fragment {
     private void saveGrn() {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setMessage("Are You sure to save?")
-                .setTitle("Conformation")
+                .setTitle("Confirmation")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

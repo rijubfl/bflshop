@@ -53,6 +53,7 @@ public class ShopReturnsFragment extends Fragment {
     private TextView error_message;
     private TextView last_scanned_itemcode;
     private TextView tv_count;
+    private int returnFlag;
     private Button btn_close;
     //    private Spinner sp_remarks;
     private boolean b_Result;
@@ -313,7 +314,7 @@ public class ShopReturnsFragment extends Fragment {
                 public void onClick(View v) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                     alert.setMessage("Are you sure to clear all?")
-                            .setTitle("Conformation")
+                            .setTitle("Confirmation")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
@@ -518,13 +519,14 @@ public class ShopReturnsFragment extends Fragment {
     private boolean scanItemcode() throws SQLException {
         String Itemcode = et_scan_itemcode.getText().toString();
         int i;
-        String itemcode_scan = "", trfNo = "", sprice = "";
+        String itemcode_scan = "", trfNo = "", sprice;
         if (et_scan_itemcode.getText().toString().contains("/")) {
             String[] scanAr = et_scan_itemcode.getText().toString().split("/");
             itemcode_scan = scanAr[0];
             sprice = scanAr[1];
             trfNo = scanAr[2];
         } else {
+            sprice = "";
             itemcode_scan = et_scan_itemcode.getText().toString();
             trfNo = "";
         }
@@ -549,63 +551,48 @@ public class ShopReturnsFragment extends Fragment {
             return false;
         }
         ObjAddScanItemDetails = new ArrayList<>();
-        b_Result = objShopReturnsControl.scanItemcode(itemcode1.replace("\n", ""), sprice, String.valueOf(sp_category_spinner.getSelectedItem()), sp_select_shop.getText().toString());
-        if (b_Result) {
-            itemcode = itemcode1.replace("\n", "");
-            Log.e("Msg", "valid id");
+        int b_Result = objShopReturnsControl.scanItemcode(itemcode1.replace("\n", ""), sprice, String.valueOf(sp_category_spinner.getSelectedItem()), sp_select_shop.getText().toString());
+        if (b_Result != 0) {
+            if (b_Result == 2) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                String finalItemcode = itemcode1;
+                alert.setMessage("Itemcode is not valid. Is this consignment item?")
+                        .setTitle("Confirmation")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-            lastitemcode = itemcode;
-            last_scanned_itemcode.setText(lastitemcode);
-            error_message.setText("");
-            try {
-                if (shopreturnCat.equals("Non Saleable Items") || shopreturnCat.equals("Damaged In Shop") || shopreturnCat.equals("Quality issues") || shopreturnCat.equals("Repair")) {
-                    if (!et_remarks_item.getText().equals("")) {
-                        ObjAddScanItemDetails = objShopReturnsControl.additemcode(itemcode, sprice, getContext(), shopreturnCat, et_remarks_item.getText().toString());
-                        objShopReturnsAdp = new MyShopResturnsStatusAdp(ObjAddScanItemDetails);
-                        lv_shop_returns_scanitems.setAdapter(objShopReturnsAdp);
-                    } else {
-                        error_message.setText(Html.fromHtml("<font color='red'>Empty Remarks not Allowed</font>"));
-                    }
-                } else {
-                    ObjAddScanItemDetails = objShopReturnsControl.additemcode(itemcode, sprice, getContext(), shopreturnCat, et_remarks_item.getText().toString());
-                    objShopReturnsAdp = new MyShopResturnsStatusAdp(ObjAddScanItemDetails);
-                    lv_shop_returns_scanitems.setAdapter(objShopReturnsAdp);
-                }
+                                try {
+                                    processValidItem(finalItemcode, shopreturnCat, sprice, 1);
+                                    returnFlag = 1;
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
 
-                try {
-                    count = Integer.valueOf(objShopReturnsControl.getCount().toString());
-                    count = getCount();
-                    tv_count.setText(count + "");
-                    if (objShopReturnsGlobal.getMessage().equals("Itemcode Added")) {
-                        error_message.setText(Html.fromHtml("<font color='green'>" + objShopReturnsGlobal.getMessage() + "</Font>"));
-                    } else {
-                        error_message.setText(Html.fromHtml(objShopReturnsGlobal.getMessage()));
-                    }
-                } catch (SQLException e) {
-                    error_message.setText(e.getMessage());
-                    //okMessage("Alert",e.getMessage());
-                }
 
-                if (objShopReturnsAdp != null) {
-                    // selected_cat = ((selected_cat == "Shop to Shop Transfer (Direct)") ? "Shop Transfer" : selected_cat);
-                    //      objShopReturnsSharedRef.SaveCategory(String.valueOf(sp_category_spinner.getSelectedItem()));
-//                    sp_category_spinner.setEnabled(false);
-//                    sp_category_spinner.setClickable(false);
-                    et_scan_itemcode.requestFocus();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.e("Alert", "Pls enter valid id");
+                                error_message.setText("Itemcode is invalid - " + et_scan_itemcode.getText().toString());
+                                et_scan_itemcode.setText("");
+                                // error_message.setText("");
+                                et_scan_itemcode.requestFocus();
+                                returnFlag = 0;
+                            }
+                        })
+                        .show();
+                if (returnFlag == 1)
+                    return true;
+                else
+                    return false;
+            } else {
+                processValidItem(itemcode1, shopreturnCat, sprice, 0);
+                return true;
             }
-            ObjAddScanItemDetails = objShopReturnsControl.gettmpitem();
-            objShopReturnsAdp = new MyShopResturnsStatusAdp(ObjAddScanItemDetails);
-            lv_shop_returns_scanitems.setAdapter(objShopReturnsAdp);
-            et_scan_itemcode.setText("");
-            et_remarks_item.setText("");
-            // error_message.setText("");
-            et_scan_itemcode.requestFocus();
-            return true;
-
         } else {
             Log.e("Alert", "Pls enter valid id");
             error_message.setText(objGlobal.getErrorMessage() + " - " + et_scan_itemcode.getText().toString());
@@ -614,6 +601,55 @@ public class ShopReturnsFragment extends Fragment {
             et_scan_itemcode.requestFocus();
             return false;
         }
+    }
+
+    private void processValidItem(String itemcode1, String shopreturnCat, String sprice, int itemType) throws SQLException {
+        itemcode = itemcode1.replace("\n", "");
+        Log.e("Msg", "valid id");
+        lastitemcode = itemcode;
+        last_scanned_itemcode.setText(lastitemcode);
+        error_message.setText("");
+        try {
+
+            ObjAddScanItemDetails = objShopReturnsControl.additemcode(itemcode, sprice, getContext(), shopreturnCat, et_remarks_item.getText().toString(), itemType);
+            objShopReturnsAdp = new MyShopResturnsStatusAdp(ObjAddScanItemDetails);
+            lv_shop_returns_scanitems.setAdapter(objShopReturnsAdp);
+
+            try {
+                count = Integer.valueOf(objShopReturnsControl.getCount().toString());
+                count = getCount();
+                tv_count.setText(count + "");
+                if (objShopReturnsGlobal.getMessage().equals("Itemcode Added")) {
+                    error_message.setText(Html.fromHtml("<font color='green'>" + objShopReturnsGlobal.getMessage() + "</Font>"));
+                } else {
+                    if (itemType == 1)
+                        error_message.setText(Html.fromHtml("<font color='green'> Item added as consignment Item.</Font>"));
+                    else
+                        error_message.setText(Html.fromHtml(objShopReturnsGlobal.getMessage()));
+                }
+            } catch (SQLException e) {
+                error_message.setText(e.getMessage());
+                //okMessage("Alert",e.getMessage());
+            }
+
+            if (objShopReturnsAdp != null) {
+                // selected_cat = ((selected_cat == "Shop to Shop Transfer (Direct)") ? "Shop Transfer" : selected_cat);
+                //      objShopReturnsSharedRef.SaveCategory(String.valueOf(sp_category_spinner.getSelectedItem()));
+//                    sp_category_spinner.setEnabled(false);
+//                    sp_category_spinner.setClickable(false);
+                et_scan_itemcode.requestFocus();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        ObjAddScanItemDetails = objShopReturnsControl.gettmpitem();
+        objShopReturnsAdp = new MyShopResturnsStatusAdp(ObjAddScanItemDetails);
+        lv_shop_returns_scanitems.setAdapter(objShopReturnsAdp);
+        et_scan_itemcode.setText("");
+        et_remarks_item.setText("");
+        // error_message.setText("");
+        et_scan_itemcode.requestFocus();
     }
 
     private void progressVisivle(boolean vl) {

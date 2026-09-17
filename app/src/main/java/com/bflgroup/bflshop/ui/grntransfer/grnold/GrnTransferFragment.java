@@ -204,7 +204,7 @@ public class GrnTransferFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are You sure to clear all?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -245,7 +245,7 @@ public class GrnTransferFragment extends Fragment {
     void grnSave() {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setMessage("Are You sure to save?")
-                .setTitle("Conformation")
+                .setTitle("Confirmation")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

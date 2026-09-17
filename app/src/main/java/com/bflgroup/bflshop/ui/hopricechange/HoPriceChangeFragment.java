@@ -889,7 +889,7 @@ public class HoPriceChangeFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to reprint the item?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -916,7 +916,7 @@ public class HoPriceChangeFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to print excess?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

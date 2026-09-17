@@ -186,7 +186,7 @@ public class AgeingStockTakingFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to export main server?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -279,7 +279,7 @@ public class AgeingStockTakingFragment extends Fragment {
 
                         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                         alert.setMessage("Are you sure to delete the selected " + passOrgMsg + "?")
-                                .setTitle("Conformation")
+                                .setTitle("Confirmation")
                                 .setCancelable(false)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override

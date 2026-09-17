@@ -149,9 +149,9 @@ public class ShopProxyReturnsControl {
         }
         Log.e("Query", query);
         try {
-            if (Category.equals("DIC") && !itemcode.startsWith("DIC")) {
+            if (Category.equals("DIC") && !itemcode.startsWith("DIC") && !itemcode.startsWith("dic")) {
                     ShopReturnsGlobal.setMessage("This item is not a DIC item. Please select a DIC item.");
-            } else if (Category.equals("PROXY") && !itemcode.startsWith("PRX")) {
+            } else if (Category.equals("PROXY") && !itemcode.startsWith("PRX") && !itemcode.startsWith("prx")) {
                     ShopReturnsGlobal.setMessage("This item is not a PROXY item. Please select a PROXY item.");
             } else {
                 rs = dbConnection.getResultSet(query, objGlobal.getConnection());

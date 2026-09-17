@@ -12,13 +12,43 @@
         android:layout_height="match_parent"
         android:padding="5dp">
 
-        <CheckBox
-            android:id="@+id/ch_grn_transfer_view"
-            android:layout_width="100dp"
+        <!--
+            Clear All moved off the bottom row (away from Save) and up into the
+            top-right corner as a small icon-only button, same treatment as the
+            GIN verification screen:
+              - Far from Save/Scan Item, so scanning motion can't mis-tap it.
+              - Small (36dp icon) so it requires a deliberate, precise tap.
+              - Still red-tinted (kept your original alarm cue via backgroundTint)
+                but the small footprint removes the accidental-tap risk.
+            View + Transfer checkboxes shifted left to make room for it.
+            Add a confirmation dialog on click in the Fragment as a second
+            safety net before it actually clears.
+        -->
+
+        <ImageButton
+            android:id="@+id/bt_grn_transfer_clear_all"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/et_custom"
-            android:text="View"
+            android:backgroundTint="@color/coloRed"
+            android:src="@drawable/delete_outline"
+            android:contentDescription="Clear All"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/ch_grn_transfer_trffrom_oth_shop"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ch_grn_transfer_trffrom_oth_shop"
+            app:tint="@color/colorWhite"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <CheckBox
+            android:id="@+id/ch_grn_transfer_view"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/et_custom"
+            android:text="View"
+            app:layout_constraintEnd_toStartOf="@+id/bt_grn_transfer_clear_all"
             app:layout_constraintTop_toTopOf="@+id/ch_grn_transfer_trffrom_oth_shop" />
 
         <CheckBox
@@ -63,16 +93,24 @@
             app:layout_constraintStart_toEndOf="@+id/et_grn_transfer_rfid_ginno"
             app:layout_constraintTop_toTopOf="@+id/et_grn_transfer_rfid_ginno" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_load_scan_mid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
         <Button
             android:id="@+id/bt_grn_transfer_load"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/btn_custom1"
             android:text="Load Transfer"
             android:textAllCaps="false"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/bt_grn_transfer_clear_all"
+            app:layout_constraintEnd_toStartOf="@+id/guide_load_scan_mid"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_grn_transfer_rfid_ginno" />
 
@@ -85,7 +123,7 @@
             android:textAllCaps="false"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/bt_grn_transfer_save"
+            app:layout_constraintStart_toEndOf="@+id/guide_load_scan_mid"
             app:layout_constraintTop_toTopOf="@+id/bt_grn_transfer_load" />
 
         <TextView
@@ -338,18 +376,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/TextView2" />
 
-        <Button
-            android:id="@+id/bt_grn_transfer_save"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:background="@drawable/btn_custom1"
-            android:text="Save"
-            android:textAllCaps="false"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toTopOf="@+id/bt_grn_transfer_clear_all" />
-
         <TextView
             android:id="@+id/tv_grn_transfer_last_save"
             android:layout_width="0dp"
@@ -362,37 +388,29 @@
             android:textColor="@color/colorBlue"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/bt_grn_transfer_clear_all"
+            app:layout_constraintBottom_toTopOf="@+id/bt_grn_transfer_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <!--
+            Save is now alone on the bottom row, full width. Nothing else lives
+            in its tap zone, so there's no adjacent button to fat-finger into.
+            (Clear All lives up top now — see the ImageButton near the checkboxes.)
+        -->
 
         <Button
-            android:id="@+id/bt_grn_transfer_clear_all"
+            android:id="@+id/bt_grn_transfer_save"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
             android:layout_marginBottom="2dp"
             android:background="@drawable/btn_custom1"
-            android:text="Clear All"
+            android:text="Save"
             android:textAllCaps="false"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView2"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text=" "
-            android:textColor="@color/colorAccent"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="SpeakableTextPresentCheck" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

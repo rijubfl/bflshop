@@ -223,7 +223,7 @@ public class SalesInvoiceFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to clear all?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -262,7 +262,7 @@ public class SalesInvoiceFragment extends Fragment {
                 } else {
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                     alert.setMessage("Are you sure to save?")
-                            .setTitle("Conformation")
+                            .setTitle("Confirmation")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
@@ -951,7 +951,7 @@ public class SalesInvoiceFragment extends Fragment {
                 public void onClick(View v) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                     alert.setMessage("Are You sure to delete the selected row?")
-                            .setTitle("Conformation")
+                            .setTitle("Confirmation")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
@@ -1020,7 +1020,7 @@ public class SalesInvoiceFragment extends Fragment {
                 public void onClick(View v) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                     alert.setMessage("Are You sure to delete the selected row?")
-                            .setTitle("Conformation")
+                            .setTitle("Confirmation")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override

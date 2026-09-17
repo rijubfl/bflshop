@@ -426,7 +426,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
                 if (testPrint) {
                     printData = objSample_Print.getLabelWasNowHoneyWellTestPrint(objAgeingSlashingScanDetailsGlobal.getLabelType());
                 } else {
-                    if (objPosGlobal.getPrintWasNowPerc().equals("Y")) {
+                    if (objPosGlobal.getPrintWasNowPerc().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
                         if (objPosGlobal.getArabicDescription().equals("Y")) {
                             String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
                             if (arabicDesc == null || arabicDesc.equals("")) {
@@ -444,7 +444,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
                                     tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_saveperc.getText().toString(),
                                     objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString());
                         }
-                    } else if (objPosGlobal.getPrintWasNow().equals("Y")) {
+                    } else if (objPosGlobal.getPrintWasNow().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
                         if (objPosGlobal.getArabicDescription().equals("Y")) {
                             String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
                             if (arabicDesc == null || arabicDesc.equals("")) {
@@ -1190,7 +1190,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to reprint the item?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -1217,7 +1217,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to print excess?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

@@ -68,7 +68,7 @@ public class PriceCheckControl {
             if (rs.next()) {
                 itemcode = rs.getString("itemcode");
             }
-            rs = dbConnection.getResultSet("select itemcode,description,ItemType,groupcode,GrpName=isnull((select description from itemgroup where groupcode=a.groupcode),'')," +
+            rs = dbConnection.getResultSet("select itemcode,description,ItemType,groupcode,GrpName=isnull((select top 1 description from itemgroup where groupcode=a.groupcode),'')," +
                     "SalesPrice=isnull((select Top 1 Salesrate from Salesprice where Itemcode=a.Itemcode and costcode='" + objPosGlobal.getCostCode() + "'),0)," +
                     "stock=(select quantity from locstock where itemcode=a.itemcode and costcode='" + objPosGlobal.getCostCode() + "' and loccode='" + objPosGlobal.getLocCode() + "') from itemmaster a where itemcode='" + itemcode + "'", objGlobal.getConnection());
             if (rs.next()) {

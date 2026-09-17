@@ -269,7 +269,7 @@ public class AgeingSlashingFragment extends Fragment {
                         } else {
                             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                             alert.setMessage("Are you sure to import to local DB?")
-                                    .setTitle("Conformation")
+                                    .setTitle("Confirmation")
                                     .setCancelable(false)
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         @Override
@@ -296,7 +296,7 @@ public class AgeingSlashingFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to clear all?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -319,7 +319,7 @@ public class AgeingSlashingFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setMessage("Are you sure to export from local DB to main server?")
-                        .setTitle("Conformation")
+                        .setTitle("Confirmation")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

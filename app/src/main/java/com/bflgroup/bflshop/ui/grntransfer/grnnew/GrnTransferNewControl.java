@@ -115,10 +115,10 @@ public class GrnTransferNewControl {
                 if (!b_Result) {
                     return false;
                 }
-                b_Result = dbConnection.insertUpdate("insert into tmpGrnScanItems(DeviceId,Itemcode,Description,Price,TrfQty,ScanQty,ScanPrice,SysStock) " +
+                b_Result = dbConnection.insertUpdate("insert into tmpGrnScanItems(DeviceId,Itemcode,Description,Price,TrfQty,ScanQty,ScanPrice,SysStock,Rfid,SerializedCode,Scan) " +
                         "select '" + objGlobal.getDeviceName() + "',itemcode,(select description from itemmaster where ItemCode=a.itemcode),(select top 1 salesrate from SalesPrice " +
                         "where CostCode='" + objPosGlobal.getCostCode() + "' and ItemCode=a.itemcode order by trndate desc),Quantity,0,0,(select sum(quantity) from locstock where " +
-                        "CostCode='" + objPosGlobal.getCostCode() + "' and ItemCode=a.itemcode) from TransferDetail a where TrfNo='" + objGrnTransferNewGlobal.getTrfno() + "'", objGlobal.getConnection());
+                        "CostCode='" + objPosGlobal.getCostCode() + "' and ItemCode=a.itemcode),Rfid,SerializedCode,'N' from TransferDetail a where TrfNo='" + objGrnTransferNewGlobal.getTrfno() + "'", objGlobal.getConnection());
                 if (!b_Result) {
                     return false;
                 }
@@ -186,17 +186,54 @@ public class GrnTransferNewControl {
         }
     }
 
-    public boolean validateRfid(String rfid,String trfno) {
+    public boolean validateRfid(String scan,String trfno) {
+        boolean found = false;
         try {
             objGrnTransferNewGlobal.setScanBarcode("");
-            rs = dbConnection.getResultSet("select barcode from tmpGrnScanItemsRfid where RFID='" + rfid + "'", objGlobal.getConnection());
+            objGrnTransferNewGlobal.setScanRFID("");
+            objGrnTransferNewGlobal.setScanSeriali("");
+            rs = dbConnection.getResultSet("select barcode from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and scan='Y' and RFID='" + scan + "'", objGlobal.getConnection());
             if (rs.next()) {
-                objGlobal.setErrorMessage("RFID already scan, (" + rfid + ", barcode:" + rs.getString("barcode") + ")");
+                objGlobal.setErrorMessage("RFID already scan, (" + scan + ", barcode:" + rs.getString("barcode") + ")");
                 return false;
             }
-            rs = dbConnection.getResultSet("select barcode from RFPair where RFID='" + rfid + "' and TrfNo='" + trfno + "'", objGlobal.getConnection());
+            rs = dbConnection.getResultSet("select barcode from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and scan='Y' and SerializedCode='" + scan + "'", objGlobal.getConnection());
             if (rs.next()) {
-                objGrnTransferNewGlobal.setScanBarcode(rs.getString("barcode"));
+                objGlobal.setErrorMessage("Serialized Code already scan, (" + scan + ", barcode:" + rs.getString("barcode") + ")");
+                return false;
+            }
+            rs = dbConnection.getResultSet("select Itemcode,RFID,SerializedCode from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and SerializedCode='" + scan + "'", objGlobal.getConnection());
+            if (rs.next()) {
+                objGrnTransferNewGlobal.setScanBarcode(rs.getString("Itemcode"));
+                objGrnTransferNewGlobal.setScanRFID(rs.getString("RFID"));
+                objGrnTransferNewGlobal.setScanSeriali(rs.getString("SerializedCode"));
+                found = true;
+            }
+            if (!found) {
+                rs = dbConnection.getResultSet("select Itemcode,RFID,SerializedCode from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and RFID='" + scan + "'", objGlobal.getConnection());
+                if (rs.next()) {
+                    objGrnTransferNewGlobal.setScanBarcode(rs.getString("Itemcode"));
+                    objGrnTransferNewGlobal.setScanRFID(rs.getString("RFID"));
+                    objGrnTransferNewGlobal.setScanSeriali(rs.getString("SerializedCode"));
+                    found = true;
+                }
+            }
+            if (!found) {
+                rs = dbConnection.getResultSet("select barcode,RFID,SerializedCode from RFPair where SerializedCode='" + scan + "' and TrfNo='" + trfno + "'", objGlobal.getConnection());
+                if (rs.next()) {
+                    objGrnTransferNewGlobal.setScanBarcode(rs.getString("barcode"));
+                    objGrnTransferNewGlobal.setScanRFID(rs.getString("RFID"));
+                    objGrnTransferNewGlobal.setScanSeriali(rs.getString("SerializedCode"));
+                    found = true;
+                }
+            }
+            if (!found) {
+                rs = dbConnection.getResultSet("select barcode,RFID,SerializedCode from RFPair where RFID='" + scan + "' and TrfNo='" + trfno + "'", objGlobal.getConnection());
+                if (rs.next()) {
+                    objGrnTransferNewGlobal.setScanBarcode(rs.getString("barcode"));
+                    objGrnTransferNewGlobal.setScanRFID(rs.getString("RFID"));
+                    objGrnTransferNewGlobal.setScanSeriali(rs.getString("SerializedCode"));
+                }
             }
             return true;
         } catch (Exception ex) {
@@ -205,12 +242,12 @@ public class GrnTransferNewControl {
         }
     }
 
-    public boolean validateScanItem(String itemcode,int qty, String rfid, float scanprice) {
+    public boolean validateScanItem(String itemcode,int qty, String rfid,String serializedCode, float scanprice) {
         boolean itemfound = false;
         String description = "";
         float price = 0;
-        int trfQty=0,scanQty=0,diffQty=0;
-        int sysstock=0;
+        int trfQty = 0, scanQty = 0, diffQty = 0;
+        int sysstock = 0;
         objGrnTransferNewGlobal.setScanDescription("");
         objGrnTransferNewGlobal.setScanSysStock(0);
         objGrnTransferNewGlobal.setScanSysPrice(0);
@@ -219,7 +256,7 @@ public class GrnTransferNewControl {
             if (rs.next()) {
                 description = rs.getString("description");
                 price = rs.getFloat("Price");
-                sysstock= rs.getInt("SysStock");
+                sysstock = rs.getInt("SysStock");
                 itemfound = true;
             }
             if (!itemfound) {
@@ -228,36 +265,30 @@ public class GrnTransferNewControl {
                 if (rs.next()) {
                     description = rs.getString("description");
                     price = rs.getFloat("sprice");
-                    sysstock=rs.getInt("stock");
+                    sysstock = rs.getInt("stock");
                 }
-                if(objPosGlobal.getGrnItemVal().equals("Y")) {
-                    if(description.isEmpty()){
+                if (objPosGlobal.getGrnItemVal().equals("Y")) {
+                    if (description.isEmpty()) {
                         objGlobal.setErrorMessage("Can't proceed, Invalid item or description is blank");
                         return false;
                     }
                 }
-                if(objPosGlobal.getGrnSpVal().equals("Y")) {
-                    if(price==0){
+                if (objPosGlobal.getGrnSpVal().equals("Y")) {
+                    if (price == 0) {
                         objGlobal.setErrorMessage("Can't proceed, Sales Price is 0");
                         return false;
                     }
                 }
-                b_Result = dbConnection.insertUpdate("insert into tmpGrnScanItems(DeviceId,Itemcode,Description,Price,TrfQty,ScanQty,ScanPrice,SysStock) values ('" + objGlobal.getDeviceName() + "'," +
-                        "'" + itemcode + "','" + description + "'," + price + ",0,0," + scanprice + "," + sysstock + ")", objGlobal.getConnection());
+                b_Result = dbConnection.insertUpdate("insert into tmpGrnScanItems(DeviceId,Itemcode,Description,Price,TrfQty,ScanQty,ScanPrice,SysStock,rfid,serializedCode) values ('" + objGlobal.getDeviceName() + "'," +
+                        "'" + itemcode + "','" + description + "'," + price + ",0,0," + scanprice + "," + sysstock + ",'" + rfid + "','" + serializedCode + "')", objGlobal.getConnection());
                 if (!b_Result) {
                     return false;
                 }
             }
-            b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + ",ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) " +
+            b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + ",ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) " +
                     "where DeviceId='" + objGlobal.getDeviceName() + "' and Itemcode='" + itemcode + "'", objGlobal.getConnection());
             if (!b_Result) {
                 return false;
-            }
-            if(!rfid.isEmpty()) {
-                b_Result = dbConnection.insertUpdate("insert into tmpGrnScanItemsRfid values('" + objGlobal.getDeviceName() + "','" + rfid + "','" + itemcode + "')", objGlobal.getConnection());
-                if (!b_Result) {
-                    return false;
-                }
             }
             rs = dbConnection.getResultSet("select TrfQty,ScanQty,DiffQty=ScanQty-TrfQty from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and Itemcode='" + itemcode + "'", objGlobal.getConnection());
             if (rs.next()) {
@@ -321,10 +352,6 @@ public class GrnTransferNewControl {
     public boolean deleteAll() {
         try {
             b_Result = dbConnection.insertUpdate("delete from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
-            if (!b_Result) {
-                return false;
-            }
-            b_Result = dbConnection.insertUpdate("delete from tmpGrnScanItemsRfid where DeviceId='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
             if (!b_Result) {
                 return false;
             }

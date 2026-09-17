@@ -1,18 +1,15 @@
 package com.bflgroup.bflshop.ui.ageingslashing.wify;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,12 +20,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -65,11 +60,9 @@ import com.sewoo.port.android.BluetoothPort;
 import com.sewoo.request.android.RequestHandler;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 
 public class AgeingSlashingWifyFragment extends Fragment {
@@ -200,171 +193,178 @@ public class AgeingSlashingWifyFragment extends Fragment {
         ch_ageing_printer_white_active = (CheckBox) view.findViewById(R.id.ch_ageing_printer_white_active);
         sp_ageing_printer_name = (Spinner) view.findViewById(R.id.sp_ageing_printer_name);
 
-        tv_ageing_slashing_shop.setText(objPosGlobal.getShopName());
-        tv_ageing_slashing_user.setText(objGlobal.getUserName());
-        tv_ageing_slashing_date.setText(objGlobal.getServerDate());
-        objAgeingSlashingSharedRef = new AgeingSlashingSharedRef(getContext());
+        try {
 
-        searchflags = false;
-        b_Result = objAgeingSlashingWifyControl.getLatestBatchNo();
-        if (!b_Result) {
-            tv_ageing_slashing_batchno.setText("");
-            okMessage("Ageing Slashing", objGlobal.getErrorMessage());
-        } else {
-            tv_ageing_slashing_batchno.setText(objAgeingSlashingGlobal.getBatchno());
-        }
 
-        mainPriceFormatter = formatter2Decimal;
-        if (objPosGlobal.getDecimals() == 0) mainPriceFormatter = formatter0Decimal;
-        if (objPosGlobal.getDecimals() == 2) mainPriceFormatter = formatter2Decimal;
-        if (objPosGlobal.getDecimals() == 3) mainPriceFormatter = formatter3Decimal;
+            tv_ageing_slashing_shop.setText(objPosGlobal.getShopName());
+            tv_ageing_slashing_user.setText(objGlobal.getUserName());
+            tv_ageing_slashing_date.setText(objGlobal.getServerDate());
+            objAgeingSlashingSharedRef = new AgeingSlashingSharedRef(getContext());
 
-        List<String> arr;
-        arr = new ArrayList<String>();
-        arr.add("Honeywell");
-        arr.add("Zebra");
-        ArrayAdapter<String> arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, arr);
-        sp_ageing_printer_name.setAdapter(arrayAdp);
-
-        if (objAgeingSlashingSharedRef.loadPrinter() != "") {
-            sp_ageing_printer_name.setSelection(arrayAdp.getPosition(objAgeingSlashingSharedRef.loadPrinter()));
-            sp_ageing_printer_name.setEnabled(false);
-        }
-
-        b_Result = objBluetoothDevices.loadBluetoothDevicesArray();
-        if (!b_Result) {
-            okMessage("Ageing Slashing", objGlobal.getErrorMessage());
-        } else {
-            ArrayAdapter<String> arrayAdpYellow;
-            arrayAdpYellow = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesYellow());
-            sp_ageing_printer_yellow.setAdapter(arrayAdpYellow);
-            if (objAgeingSlashingSharedRef.loadPrinterYellow() != "") {
-                sp_ageing_printer_yellow.setSelection(arrayAdpYellow.getPosition(objAgeingSlashingSharedRef.loadPrinterYellow()));
-            }
-            if (objAgeingSlashingSharedRef.loadPrinterYellowActive().equals("Y")) {
-                ch_ageing_printer_yellow_active.setChecked(true);
-                sp_ageing_printer_yellow.setEnabled(true);
+            searchflags = false;
+            b_Result = objAgeingSlashingWifyControl.getLatestBatchNo();
+            if (!b_Result) {
+                tv_ageing_slashing_batchno.setText("");
+                okMessage("Ageing Slashing", objGlobal.getErrorMessage());
             } else {
-                ch_ageing_printer_yellow_active.setChecked(false);
-                sp_ageing_printer_yellow.setEnabled(false);
+                tv_ageing_slashing_batchno.setText(objAgeingSlashingGlobal.getBatchno());
             }
 
-            ArrayAdapter<String> arrayAdpRed;
-            arrayAdpRed = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesRed());
-            sp_ageing_printer_red.setAdapter(arrayAdpRed);
-            if (objAgeingSlashingSharedRef.loadPrinterRed() != "") {
-                sp_ageing_printer_red.setSelection(arrayAdpRed.getPosition(objAgeingSlashingSharedRef.loadPrinterRed()));
+            mainPriceFormatter = formatter2Decimal;
+            if (objPosGlobal.getDecimals() == 0) mainPriceFormatter = formatter0Decimal;
+            if (objPosGlobal.getDecimals() == 2) mainPriceFormatter = formatter2Decimal;
+            if (objPosGlobal.getDecimals() == 3) mainPriceFormatter = formatter3Decimal;
+
+            List<String> arr;
+            arr = new ArrayList<String>();
+            arr.add("Honeywell");
+            arr.add("Zebra");
+            ArrayAdapter<String> arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, arr);
+            sp_ageing_printer_name.setAdapter(arrayAdp);
+
+            if (objAgeingSlashingSharedRef.loadPrinter() != "") {
+                sp_ageing_printer_name.setSelection(arrayAdp.getPosition(objAgeingSlashingSharedRef.loadPrinter()));
+                sp_ageing_printer_name.setEnabled(false);
             }
-            if (objAgeingSlashingSharedRef.loadPrinterRedActive().equals("Y")) {
-                ch_ageing_printer_red_active.setChecked(true);
-                sp_ageing_printer_red.setEnabled(true);
+
+            b_Result = objBluetoothDevices.loadBluetoothDevicesArray();
+            if (!b_Result) {
+                okMessage("Ageing Slashing", objGlobal.getErrorMessage());
             } else {
-                ch_ageing_printer_red_active.setChecked(false);
-                sp_ageing_printer_red.setEnabled(false);
-            }
-
-            ArrayAdapter<String> arrayAdpWhite;
-            arrayAdpWhite = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesWhite());
-            sp_ageing_printer_white.setAdapter(arrayAdpWhite);
-            if (objAgeingSlashingSharedRef.loadPrinterWhite() != "") {
-                sp_ageing_printer_white.setSelection(arrayAdpRed.getPosition(objAgeingSlashingSharedRef.loadPrinterWhite()));
-            }
-            if (objAgeingSlashingSharedRef.loadPrinterWhiteActive().equals("Y")) {
-                ch_ageing_printer_white_active.setChecked(true);
-                sp_ageing_printer_white.setEnabled(true);
-            } else {
-                ch_ageing_printer_white_active.setChecked(false);
-                sp_ageing_printer_white.setEnabled(false);
-            }
-        }
-
-        bt_ageing_slashing_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateScanButton()) {
-                    objAgeingSlashingSharedRef.savePrinter(sp_ageing_printer_name.getSelectedItem().toString());
-                    objAgeingSlashingSharedRef.savePrinterRed(sp_ageing_printer_red.getSelectedItem().toString());
-                    objAgeingSlashingSharedRef.savePrinterYellow(sp_ageing_printer_yellow.getSelectedItem().toString());
-                    objAgeingSlashingSharedRef.savePrinterWhite(sp_ageing_printer_white.getSelectedItem().toString());
-
-                    objAgeingSlashingSharedRef.savePrinterRedActive(ch_ageing_printer_red_active.isChecked() ? "Y" : "N");
-                    objAgeingSlashingSharedRef.savePrinterYellowActive(ch_ageing_printer_yellow_active.isChecked() ? "Y" : "N");
-                    objAgeingSlashingSharedRef.savePrinterWhiteActive(ch_ageing_printer_white_active.isChecked() ? "Y" : "N");
-
-                    sp_ageing_printer_name.setEnabled(false);
-                    sp_ageing_printer_red.setEnabled(false);
-                    ch_ageing_printer_red_active.setEnabled(false);
-                    sp_ageing_printer_yellow.setEnabled(false);
-                    ch_ageing_printer_yellow_active.setEnabled(false);
-                    sp_ageing_printer_white.setEnabled(false);
-                    ch_ageing_printer_white_active.setEnabled(false);
-                    openPopupScan();
+                ArrayAdapter<String> arrayAdpYellow;
+                arrayAdpYellow = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesYellow());
+                sp_ageing_printer_yellow.setAdapter(arrayAdpYellow);
+                if (objAgeingSlashingSharedRef.loadPrinterYellow() != "") {
+                    sp_ageing_printer_yellow.setSelection(arrayAdpYellow.getPosition(objAgeingSlashingSharedRef.loadPrinterYellow()));
                 }
-            }
-        });
-
-        bt_ageing_slashing_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        bt_ageing_slashing_clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clearAll();
-            }
-        });
-
-        ch_ageing_printer_white_active.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked()) {
-                    sp_ageing_printer_white.setEnabled(true);
-                } else {
-                    ArrayAdapter<String> arrayAdp;
-                    arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesWhite());
-                    sp_ageing_printer_white.setEnabled(false);
-                    sp_ageing_printer_white.setSelection(arrayAdp.getPosition("--Select--"));
-                }
-            }
-        });
-
-        ch_ageing_printer_red_active.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked()) {
-                    sp_ageing_printer_red.setEnabled(true);
-                } else {
-                    ArrayAdapter<String> arrayAdp;
-                    arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesRed());
-                    sp_ageing_printer_red.setEnabled(false);
-                    sp_ageing_printer_red.setSelection(arrayAdp.getPosition("--Select--"));
-                }
-            }
-        });
-
-        ch_ageing_printer_yellow_active.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isChecked()) {
+                if (objAgeingSlashingSharedRef.loadPrinterYellowActive().equals("Y")) {
+                    ch_ageing_printer_yellow_active.setChecked(true);
                     sp_ageing_printer_yellow.setEnabled(true);
                 } else {
-                    ArrayAdapter<String> arrayAdp;
-                    arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesYellow());
+                    ch_ageing_printer_yellow_active.setChecked(false);
                     sp_ageing_printer_yellow.setEnabled(false);
-                    sp_ageing_printer_yellow.setSelection(arrayAdp.getPosition("--Select--"));
+                }
+
+                ArrayAdapter<String> arrayAdpRed;
+                arrayAdpRed = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesRed());
+                sp_ageing_printer_red.setAdapter(arrayAdpRed);
+                if (objAgeingSlashingSharedRef.loadPrinterRed() != "") {
+                    sp_ageing_printer_red.setSelection(arrayAdpRed.getPosition(objAgeingSlashingSharedRef.loadPrinterRed()));
+                }
+                if (objAgeingSlashingSharedRef.loadPrinterRedActive().equals("Y")) {
+                    ch_ageing_printer_red_active.setChecked(true);
+                    sp_ageing_printer_red.setEnabled(true);
+                } else {
+                    ch_ageing_printer_red_active.setChecked(false);
+                    sp_ageing_printer_red.setEnabled(false);
+                }
+
+                ArrayAdapter<String> arrayAdpWhite;
+                arrayAdpWhite = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesWhite());
+                sp_ageing_printer_white.setAdapter(arrayAdpWhite);
+                if (objAgeingSlashingSharedRef.loadPrinterWhite() != "") {
+                    sp_ageing_printer_white.setSelection(arrayAdpRed.getPosition(objAgeingSlashingSharedRef.loadPrinterWhite()));
+                }
+                if (objAgeingSlashingSharedRef.loadPrinterWhiteActive().equals("Y")) {
+                    ch_ageing_printer_white_active.setChecked(true);
+                    sp_ageing_printer_white.setEnabled(true);
+                } else {
+                    ch_ageing_printer_white_active.setChecked(false);
+                    sp_ageing_printer_white.setEnabled(false);
                 }
             }
-        });
 
-        loadLastScanedItems();
-        objSample_Print = new BarcodePrinting();
-        bluetoothPort = BluetoothPort.getInstance();
-        bluetoothPort.SetMacFilter(false);
-        Init_BluetoothSet();
+            bt_ageing_slashing_add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (validateScanButton()) {
+                        objAgeingSlashingSharedRef.savePrinter(sp_ageing_printer_name.getSelectedItem().toString());
+                        objAgeingSlashingSharedRef.savePrinterRed(sp_ageing_printer_red.getSelectedItem().toString());
+                        objAgeingSlashingSharedRef.savePrinterYellow(sp_ageing_printer_yellow.getSelectedItem().toString());
+                        objAgeingSlashingSharedRef.savePrinterWhite(sp_ageing_printer_white.getSelectedItem().toString());
+
+                        objAgeingSlashingSharedRef.savePrinterRedActive(ch_ageing_printer_red_active.isChecked() ? "Y" : "N");
+                        objAgeingSlashingSharedRef.savePrinterYellowActive(ch_ageing_printer_yellow_active.isChecked() ? "Y" : "N");
+                        objAgeingSlashingSharedRef.savePrinterWhiteActive(ch_ageing_printer_white_active.isChecked() ? "Y" : "N");
+
+                        sp_ageing_printer_name.setEnabled(false);
+                        sp_ageing_printer_red.setEnabled(false);
+                        ch_ageing_printer_red_active.setEnabled(false);
+                        sp_ageing_printer_yellow.setEnabled(false);
+                        ch_ageing_printer_yellow_active.setEnabled(false);
+                        sp_ageing_printer_white.setEnabled(false);
+                        ch_ageing_printer_white_active.setEnabled(false);
+                        openPopupScan();
+                    }
+                }
+            });
+
+            bt_ageing_slashing_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            bt_ageing_slashing_clear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clearAll();
+                }
+            });
+
+            ch_ageing_printer_white_active.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (buttonView.isChecked()) {
+                        sp_ageing_printer_white.setEnabled(true);
+                    } else {
+                        ArrayAdapter<String> arrayAdp;
+                        arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesWhite());
+                        sp_ageing_printer_white.setEnabled(false);
+                        sp_ageing_printer_white.setSelection(arrayAdp.getPosition("--Select--"));
+                    }
+                }
+            });
+
+            ch_ageing_printer_red_active.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (buttonView.isChecked()) {
+                        sp_ageing_printer_red.setEnabled(true);
+                    } else {
+                        ArrayAdapter<String> arrayAdp;
+                        arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesRed());
+                        sp_ageing_printer_red.setEnabled(false);
+                        sp_ageing_printer_red.setSelection(arrayAdp.getPosition("--Select--"));
+                    }
+                }
+            });
+
+            ch_ageing_printer_yellow_active.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (buttonView.isChecked()) {
+                        sp_ageing_printer_yellow.setEnabled(true);
+                    } else {
+                        ArrayAdapter<String> arrayAdp;
+                        arrayAdp = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, objGlobal.getBluetoothDevicesYellow());
+                        sp_ageing_printer_yellow.setEnabled(false);
+                        sp_ageing_printer_yellow.setSelection(arrayAdp.getPosition("--Select--"));
+                    }
+                }
+            });
+
+            loadLastScanedItems();
+            objSample_Print = new BarcodePrinting();
+            bluetoothPort = BluetoothPort.getInstance();
+            bluetoothPort.SetMacFilter(false);
+            Init_BluetoothSet();
+        } catch (Exception ex) {
+            okMessage("Error", ex.toString());
+        }
         return view;
+
     }
 
     private boolean validateScanButton() {
@@ -416,7 +416,6 @@ public class AgeingSlashingWifyFragment extends Fragment {
     }
 
 
-
     private boolean printBarCode() {
         String printType = sp_ageing_printer_name.getSelectedItem().toString();
         try {
@@ -437,7 +436,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
                                     tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
                                     tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
                                     tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_saveperc.getText().toString(),
-                                    objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(),arabicDesc);
+                                    objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(), arabicDesc);
                         } else {
                             printData = objSample_Print.getSlashingBarcodeWasNowPerc(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
                                     tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
@@ -455,7 +454,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
                                     tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
                                     tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
                                     tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", objPosGlobal.getPrintWasHead(),
-                                    objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(),arabicDesc);
+                                    objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(), arabicDesc);
                         } else {
                             printData = objSample_Print.getSlashingBarcodeWasNow(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
                                     tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
@@ -474,7 +473,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
 
                             printData = objSample_Print.getSlashingBarcodeArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
                                     tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), currency,price,
+                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), currency, price,
                                     tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_addinfo.getText().toString(),
                                     arabicDesc);
                         } else {
@@ -718,110 +717,115 @@ public class AgeingSlashingWifyFragment extends Fragment {
         bt_aging_slash_popup_scan_test_red = (Button) myDialog.findViewById(R.id.bt_aging_slash_popup_scan_test_red);
         bt_aging_slash_popup_scan_test_white = (Button) myDialog.findViewById(R.id.bt_aging_slash_popup_scan_test_white);
 
-        if (objPosGlobal.getShowAgeEligibelQty().equals("Y")) {
-            tv_aging_slash_popup_scan_el_qty.setVisibility(View.VISIBLE);
-            tv_aging_slash_popup_scan_el_qty_lbl.setVisibility(View.VISIBLE);
-            tv_aging_slash_popup_scan_el_qty_hide.setVisibility(View.INVISIBLE);
-        } else {
-            tv_aging_slash_popup_scan_el_qty.setVisibility(View.INVISIBLE);
-            tv_aging_slash_popup_scan_el_qty_lbl.setVisibility(View.INVISIBLE);
-            tv_aging_slash_popup_scan_el_qty_hide.setVisibility(View.VISIBLE);
+        try {
+            if (objPosGlobal.getShowAgeEligibelQty().equals("Y")) {
+                tv_aging_slash_popup_scan_el_qty.setVisibility(View.VISIBLE);
+                tv_aging_slash_popup_scan_el_qty_lbl.setVisibility(View.VISIBLE);
+                tv_aging_slash_popup_scan_el_qty_hide.setVisibility(View.INVISIBLE);
+            } else {
+                tv_aging_slash_popup_scan_el_qty.setVisibility(View.INVISIBLE);
+                tv_aging_slash_popup_scan_el_qty_lbl.setVisibility(View.INVISIBLE);
+                tv_aging_slash_popup_scan_el_qty_hide.setVisibility(View.VISIBLE);
+            }
+
+            et_aging_slash_popup_scan_barcode.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    view.onTouchEvent(motionEvent);
+                    InputMethodManager imm = (InputMethodManager) myDialog.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                    return objGlobal.getHideKeyPad();
+                }
+            });
+
+            et_aging_slash_popup_scan_barcode.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                    if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
+                        if (!et_aging_slash_popup_scan_barcode.getText().toString().equals("") &&
+                                !et_aging_slash_popup_scan_barcode.getText().toString().equals("\n")) {
+                            scanBarcode();
+                        }
+
+                    }
+                    return false;
+                }
+            });
+
+
+            bt_aging_slash_popup_scan_add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    scanBarcode();
+                }
+            });
+
+            bt_aging_slash_popup_scan_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        if (bluetoothPort.isConnected())
+                            bluetoothPort.disconnect();
+                    } catch (Exception e) {
+                        okMessage("Error 1", e.toString());
+                    }
+                    myDialog.dismiss();
+                }
+            });
+
+            bt_aging_slash_popup_scan_test_yellow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        testPrint = true;
+                        objAgeingSlashingScanDetailsGlobal.setLabelType("YELLOW");
+                        if (!printSticker(sp_ageing_printer_yellow.getSelectedItem().toString())) {
+                            tv_aging_slash_popup_scan_results.setText("PRINT ERROR");
+                            vibrate(100);
+                        }
+                    } catch (Exception e) {
+                        okMessage("", e.toString());
+                    }
+                }
+            });
+
+            bt_aging_slash_popup_scan_test_red.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        testPrint = true;
+                        objAgeingSlashingScanDetailsGlobal.setLabelType("RED");
+                        if (!printSticker(sp_ageing_printer_red.getSelectedItem().toString())) {
+                            tv_aging_slash_popup_scan_results.setText("PRINT ERROR");
+                            vibrate(100);
+                        }
+                    } catch (Exception e) {
+                        okMessage("", e.toString());
+                    }
+                }
+            });
+
+            bt_aging_slash_popup_scan_test_white.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        testPrint = true;
+                        objAgeingSlashingScanDetailsGlobal.setLabelType("WHITE");
+                        if (!printSticker(sp_ageing_printer_white.getSelectedItem().toString())) {
+                            tv_aging_slash_popup_scan_results.setText("PRINT ERROR");
+                            vibrate(100);
+                        }
+                    } catch (Exception e) {
+                        okMessage("", e.toString());
+                    }
+                }
+            });
+
+        } catch (Exception ex) {
+            okMessage("Error", ex.toString());
         }
-
-        et_aging_slash_popup_scan_barcode.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                view.onTouchEvent(motionEvent);
-                InputMethodManager imm = (InputMethodManager) myDialog.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-                return objGlobal.getHideKeyPad();
-            }
-        });
-
-        et_aging_slash_popup_scan_barcode.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) {
-                    if (!et_aging_slash_popup_scan_barcode.getText().toString().equals("") &&
-                            !et_aging_slash_popup_scan_barcode.getText().toString().equals("\n")) {
-                        scanBarcode();
-                    }
-
-                }
-                return false;
-            }
-        });
-
-
-        bt_aging_slash_popup_scan_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanBarcode();
-            }
-        });
-
-        bt_aging_slash_popup_scan_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (bluetoothPort.isConnected())
-                        bluetoothPort.disconnect();
-                } catch (Exception e) {
-                    okMessage("Error 1", e.toString());
-                }
-                myDialog.dismiss();
-            }
-        });
-
-        bt_aging_slash_popup_scan_test_yellow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    testPrint = true;
-                    objAgeingSlashingScanDetailsGlobal.setLabelType("YELLOW");
-                    if (!printSticker(sp_ageing_printer_yellow.getSelectedItem().toString())) {
-                        tv_aging_slash_popup_scan_results.setText("PRINT ERROR");
-                        vibrate(100);
-                    }
-                } catch (Exception e) {
-                    okMessage("", e.toString());
-                }
-            }
-        });
-
-        bt_aging_slash_popup_scan_test_red.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    testPrint = true;
-                    objAgeingSlashingScanDetailsGlobal.setLabelType("RED");
-                    if (!printSticker(sp_ageing_printer_red.getSelectedItem().toString())) {
-                        tv_aging_slash_popup_scan_results.setText("PRINT ERROR");
-                        vibrate(100);
-                    }
-                } catch (Exception e) {
-                    okMessage("", e.toString());
-                }
-            }
-        });
-
-        bt_aging_slash_popup_scan_test_white.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    testPrint = true;
-                    objAgeingSlashingScanDetailsGlobal.setLabelType("WHITE");
-                    if (!printSticker(sp_ageing_printer_white.getSelectedItem().toString())) {
-                        tv_aging_slash_popup_scan_results.setText("PRINT ERROR");
-                        vibrate(100);
-                    }
-                } catch (Exception e) {
-                    okMessage("", e.toString());
-                }
-            }
-        });
 
         lyt_aging_slash_popup_label_color.setVisibility(View.INVISIBLE);
         et_aging_slash_popup_scan_barcode.requestFocus();
@@ -1349,6 +1353,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
                 return false;
             }
         }
+
         printBarCode();
         return true;
     }

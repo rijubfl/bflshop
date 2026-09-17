@@ -198,32 +198,6 @@ public class GrnTransferNewFragment extends Fragment {
             }
         });
 
-//        et_grn_transfer_trfno_entryno.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                long now = System.currentTimeMillis();
-//                if (s.length() == 0) {
-//                    isScan = false;
-//                    startTime = 0L;
-//                    return;
-//                }
-//                if (s.length() == 1) {
-//                    isScan = true;
-//                } else if (now - startTime > SCAN_INPUT_INTERVAL_MS) {
-//                    isScan = false;
-//                }
-//                startTime = now;
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//            }
-//        });
-
         ch_grn_transfer_trffrom_oth_shop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -832,12 +806,12 @@ public class GrnTransferNewFragment extends Fragment {
     }
 
     private boolean grnItemScan(String scan, int qty) {
-        String barcode = "", rfid = "";
+        String barcode = "", rfid = "",serializedCode="";
         String itemcode = "";
         tv_popup_grn_transfer_last.setText(scan);
         et_popup_grn_transfer_barcode.setText("");
         tv_popup_grn_transfer_result.setText("");
-        if (TextUtils.isEmpty(scan) || scan == "") {
+        if (TextUtils.isEmpty(scan) || scan.isEmpty()) {
             tv_popup_grn_transfer_result.setText("Please Scan Barcode / RFID");
             et_popup_grn_transfer_barcode.requestFocus();
             return false;
@@ -861,14 +835,16 @@ public class GrnTransferNewFragment extends Fragment {
             }
             if (objGrnTransferNewGlobal.getScanBarcode().isEmpty()) {
                 barcode = scan;
+                rfid="";
             } else {
                 barcode = objGrnTransferNewGlobal.getScanBarcode();
-                rfid = scan;
+                rfid = objGrnTransferNewGlobal.getScanRFID();
+                serializedCode=objGrnTransferNewGlobal.getScanSeriali();
             }
             seperateBarcode(barcode);
             itemcode = scanItemcode;
             if (qty == 0) qty = 1;
-            if (objGrnTransferNewControl.validateScanItem(itemcode, qty, rfid, scanPrice) == false) {
+            if (objGrnTransferNewControl.validateScanItem(itemcode, qty, rfid,serializedCode, scanPrice) == false) {
                 vibrateSound(100);
                 tv_popup_grn_transfer_result.setText(objGlobal.getErrorMessage() + ", Itemcode: " + itemcode);
                 et_popup_grn_transfer_barcode.requestFocus();

@@ -22,6 +22,8 @@ public class GrnTransferNewGlobal {
     private int totalMissing;
 
     private String scanBarcode;
+    private String scanRFID;
+    private String scanSeriali;
 
     public static String getTrfno() {
         return trfno;
@@ -164,6 +166,22 @@ public class GrnTransferNewGlobal {
 
     public static void setScanSysPrice(float scanSysPrice) {
         GrnTransferNewGlobal.scanSysPrice = scanSysPrice;
+    }
+
+    public String getScanRFID() {
+        return scanRFID;
+    }
+
+    public void setScanRFID(String scanRFID) {
+        this.scanRFID = scanRFID;
+    }
+
+    public String getScanSeriali() {
+        return scanSeriali;
+    }
+
+    public void setScanSeriali(String scanSeriali) {
+        this.scanSeriali = scanSeriali;
     }
 
     public static synchronized GrnTransferNewGlobal getInstance() {

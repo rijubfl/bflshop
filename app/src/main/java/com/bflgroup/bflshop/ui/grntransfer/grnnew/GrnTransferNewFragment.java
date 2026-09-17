@@ -560,8 +560,6 @@ public class GrnTransferNewFragment extends Fragment {
                         et_popup_grn_transfer_barcode.setEnabled(false);
                         et_popup_grn_transfer_qty.setEnabled(true);
                         et_popup_grn_transfer_qty.requestFocus();
-                    } else {
-
                     }
                     flagEdit = true;
                 }

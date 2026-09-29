@@ -210,10 +210,11 @@ public class AgeingStockTakingControl {
                 objGlobal.setErrorMessage("RFID-Duplicate scan, itemcode: "+rs.getString("itemcode"));
                 return false;
             }
-            rs = dbConnection.getResultSet("select rfid,barcode from rfpair where rfid='" + scan + "'", objGlobal.getConnection());
+            rs = dbConnection.getResultSet("select rfid,barcode,SerializedCode from rfpair where (SerializedCode='" + scan + "' or rfid='" + scan + "')", objGlobal.getConnection());
             if (rs.next()) {
                 objAgeingStockTakingGlobal.setBarcode(rs.getString("barcode"));
                 objAgeingStockTakingGlobal.setRfid(rs.getString("rfid"));
+                objAgeingStockTakingGlobal.setSerializedCode(rs.getString("SerializedCode"));
                 return true;
             }
             rs = dbConnection.getResultSet("select itemcode from itemmaster where itemcode='" + scan + "'", objGlobal.getConnection());

@@ -18,6 +18,7 @@ public class AgeingStockTakingGlobal {
     private static double totalScanDelQty;
     private static String barcode;
     private static String rfid;
+    private static String serializedCode;
     private static String dtFrom;
     private static String dtTo;
     private static List<String> zoneList;
@@ -70,6 +71,14 @@ public class AgeingStockTakingGlobal {
     }
     public static void settotaldiffqty(double totalDiffQty) {
         AgeingStockTakingGlobal.TotalDiffQty = totalDiffQty;
+    }
+
+    public static String getSerializedCode() {
+        return serializedCode;
+    }
+
+    public static void setSerializedCode(String serializedCode) {
+        AgeingStockTakingGlobal.serializedCode = serializedCode;
     }
 
     public static double gettotalexcessqty() {

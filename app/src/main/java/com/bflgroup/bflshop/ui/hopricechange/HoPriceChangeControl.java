@@ -164,7 +164,7 @@ public class HoPriceChangeControl {
         }
         try {
             objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode("");
-            rs = dbConnection.getResultSet("select top 1 barcode from rfpair where rfid='" + scan + "' order by entrydate desc", objGlobal.getConnection());
+            rs = dbConnection.getResultSet("select top 1 barcode from rfpair where (rfid='" + scan + "' or SerializedCode='" + scan + "') order by entrydate desc", objGlobal.getConnection());
             if (rs.next()) {
                 objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode(rs.getString("barcode"));
             } else {

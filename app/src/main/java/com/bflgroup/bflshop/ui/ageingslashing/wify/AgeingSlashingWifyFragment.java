@@ -927,6 +927,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
         tv_aging_slash_popup_scan_el_qty.setText("0");
         tv_aging_slash_popup_scan_sc_qty.setText("0");
         tv_aging_slash_popup_scan_sl_qty.setText("0");
+        lyt_aging_slash_popup_label_color.setVisibility(View.INVISIBLE);
         objAgeingSlashingScanDetailsGlobal.setEligibleQty(0);
         objAgeingSlashingScanDetailsGlobal.setScanQty(0);
         objAgeingSlashingScanDetailsGlobal.setSlashQty(0);

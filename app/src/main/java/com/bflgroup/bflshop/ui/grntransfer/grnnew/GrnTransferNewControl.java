@@ -492,29 +492,29 @@ public class GrnTransferNewControl {
                 return false;
             }
             objGlobal.getConnection().setAutoCommit(false);
-            b_Result = dbConnection.insertUpdate("insert into grnheaderrf values('" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + objGlobal.getServerDate() + "','" + objGlobal.getUserName() + "'," +
+            b_Result = dbConnection.insertUpdate("insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) values('" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + objGlobal.getServerDate() + "','" + objGlobal.getUserName() + "'," +
                     "'" + trfNo + "')", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();
                 objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
-            b_Result = dbConnection.insertUpdate("insert into grndetailrf select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + ginno + "','" + trfNo + "',itemcode,rfid,'',TrfQty,ScanQty,(ScanQty-TrfQty),SerializedCode from tmpGrnScanItems where " +
-                    "deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
+            b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "'," +
+                    "'" + ginno + "','" + trfNo + "',itemcode,rfid,'',TrfQty,ScanQty,(ScanQty-TrfQty),SerializedCode from tmpGrnScanItems where deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();
                 objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             if (firstGrn) {
-                b_Result = dbConnection.insertUpdate("insert into grnheader values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "',''," + objGlobal.getUserId() + ")", objGlobal.getConnection());
+                b_Result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "',''," + objGlobal.getUserId() + ")", objGlobal.getConnection());
                 if (!b_Result) {
                     objGlobal.getConnection().rollback();
                     objGlobal.getConnection().setAutoCommit(true);
                     return false;
                 }
             }
-            b_Result = dbConnection.insertUpdate("insert into grndetail select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + trfNo + "','" + trfDate + "',sum(TrfQty),'',sum(ScanQty),sum(ScanQty-TrfQty) from tmpGrnScanItems where " +
+            b_Result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + trfNo + "','" + trfDate + "',sum(TrfQty),'',sum(ScanQty),sum(ScanQty-TrfQty) from tmpGrnScanItems where " +
                     "deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();

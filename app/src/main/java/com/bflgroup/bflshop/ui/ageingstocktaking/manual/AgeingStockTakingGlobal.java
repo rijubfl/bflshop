@@ -11,6 +11,7 @@ public class AgeingStockTakingGlobal {
     private static double totalScanDelQty;
     private static String barcode;
     private static String rfid;
+    private static String serializedCode;
     private static String dtFrom;
     private static String dtTo;
     private static List<String> zoneList;
@@ -61,6 +62,14 @@ public class AgeingStockTakingGlobal {
 
     public static void setRfid(String rfid) {
         AgeingStockTakingGlobal.rfid = rfid;
+    }
+
+    public static String getSerializedCode() {
+        return serializedCode;
+    }
+
+    public static void setSerializedCode(String serializedCode) {
+        AgeingStockTakingGlobal.serializedCode = serializedCode;
     }
 
     public static String getDtFrom() {

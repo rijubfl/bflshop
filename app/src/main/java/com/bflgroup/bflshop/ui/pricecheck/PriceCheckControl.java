@@ -64,7 +64,7 @@ public class PriceCheckControl {
             } else {
                 itemcode = scan;
             }
-            rs = dbConnection.getResultSet("select itemcode from rfpair where rfid='" + itemcode + "'", objGlobal.getConnection());
+            rs = dbConnection.getResultSet("select itemcode from rfpair where (SerializedCode='" + itemcode + "' or rfid='" + itemcode + "')", objGlobal.getConnection());
             if (rs.next()) {
                 itemcode = rs.getString("itemcode");
             }

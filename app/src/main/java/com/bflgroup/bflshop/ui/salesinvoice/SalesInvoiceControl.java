@@ -83,7 +83,7 @@ public class SalesInvoiceControl {
             return false;
         }
         try {
-            rs = dbConnection.getResultSet("select barcode from rfpair where rfid='" + scan + "'", objGlobal.getConnection());
+            rs = dbConnection.getResultSet("select barcode from rfpair where (SerializedCode='" + scan + "' or rfid='" + scan + "')", objGlobal.getConnection());
             if (rs.next()) {
                 barcode = rs.getString("barcode");
                 rfid = scan;

@@ -534,7 +534,7 @@ public class AgeingStockTakingFragment extends Fragment {
         String scan = objControls.replaceString(et_ageing_stock_taking_popup_barcode.getText().toString()).toUpperCase();
         String zoneId = tv_ageing_stock_taking_zone.getText().toString();
         String result = "";
-        String rfid = "";
+        String rfid = "",serializedCode="";
         tv_ageing_stock_taking_popup_result.setText("");
         if (zoneId.isEmpty()) {
             //okMessage("Stock Taking", "Please Select Zone");
@@ -581,8 +581,8 @@ public class AgeingStockTakingFragment extends Fragment {
             }
             scan = objAgeingStockTakingGlobal.getBarcode();
             rfid = objAgeingStockTakingGlobal.getRfid();
+            serializedCode = objAgeingStockTakingGlobal.getSerializedCode();
         }
-
         tv_ageing_stock_taking_popup_last_barcode.setText(objAgeingStockTakingDbManager.seperateBarcode(scan));
         tv_ageing_stock_taking_popup_last_rfid.setText(rfid);
         b_Result = objAgeingStockTakingDbManager.saveScanToLocaldb(scan, qty, zoneId, result, rfid);

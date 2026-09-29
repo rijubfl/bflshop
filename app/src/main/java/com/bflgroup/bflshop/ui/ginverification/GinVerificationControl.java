@@ -114,7 +114,7 @@ public class GinVerificationControl {
                 return false;
             }
             if (firstGrn) {
-                b_Result = dbConnection.insertUpdate("insert into GRNHeader values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "'," +
+                b_Result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "'," +
                         "'GIN No: " + ginno + "'," + objGlobal.getUserId() + ")", objGlobal.getConnection());
                 if (!b_Result) {
                     objGlobal.getConnection().rollback();
@@ -128,22 +128,22 @@ public class GinVerificationControl {
                 if (!b_Result) {
                     return false;
                 }
-                b_Result = dbConnection.insertUpdate("insert into GRNdetail select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "',trfno,'" + objGlobal.getServerDate() + "'," +
-                        "sum(Quantity),'',sum(Quantity),0 from TransferDetail where TrfNo='" + rs.getString("trfno") + "' group by trfno", objGlobal.getConnection());
+                b_Result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "',trfno," +
+                        "'" + objGlobal.getServerDate() + "',sum(Quantity),'',sum(Quantity),0 from TransferDetail where TrfNo='" + rs.getString("trfno") + "' group by trfno", objGlobal.getConnection());
                 if (!b_Result) {
                     objGlobal.getConnection().rollback();
                     objGlobal.getConnection().setAutoCommit(true);
                     return false;
                 }
-                b_Result = dbConnection.insertUpdate("insert into GRNHeaderRF select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + objGlobal.getServerDate() + "'," +
+                b_Result = dbConnection.insertUpdate("insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + objGlobal.getServerDate() + "'," +
                         "" + objGlobal.getUserId() + ",'" + rs.getString("trfno") + "'", objGlobal.getConnection());
                 if (!b_Result) {
                     objGlobal.getConnection().rollback();
                     objGlobal.getConnection().setAutoCommit(true);
                     return false;
                 }
-                b_Result = dbConnection.insertUpdate("insert into GRNdetailRF select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + ginno + "',TrfNo,Itemcode,'','',quantity,quantity,0 " +
-                        "from TransferDetail where TrfNo='" + rs.getString("trfno") + "'", objGlobal.getConnection());
+                b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "'," +
+                        "'" + ginno + "',TrfNo,Itemcode,EPC,'',quantity,quantity,0,SerializedCode from TransferDetail where TrfNo='" + rs.getString("trfno") + "'", objGlobal.getConnection());
                 if (!b_Result) {
                     objGlobal.getConnection().rollback();
                     objGlobal.getConnection().setAutoCommit(true);

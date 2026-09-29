@@ -451,24 +451,24 @@ public class GrnTransferControl {
         }
         try {
             objGlobal.getConnection().setAutoCommit(false);
-            result = dbConnection.insertUpdate("insert into grnheaderrf values('" + grnRfEn + "','" + objGlobal.getServerDate() + "','" + objGlobal.getUserName() + "','" + trfNo + "')", objGlobal.getConnection());
+            result = dbConnection.insertUpdate("insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) values('" + grnRfEn + "','" + objGlobal.getServerDate() + "','" + objGlobal.getUserName() + "','" + trfNo + "')", objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
                 return false;
             }
-            result = dbConnection.insertUpdate("insert into grndetailrf select '" + grnRfEn + "',0,'" + trfNo + "',itemcode,itemcode,'',trf,scan,diff from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
+            result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff) select '" + grnRfEn + "',0,'" + trfNo + "',itemcode,itemcode,'',trf,scan,diff from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
                 return false;
             }
             if (firstGrn == true) {
-                result = dbConnection.insertUpdate("insert into grnheader values('" + grnEn + "','" + objGlobal.getServerDate() + "',''," + objGlobal.getUserId() + ")", objGlobal.getConnection());
+                result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + grnEn + "','" + objGlobal.getServerDate() + "',''," + objGlobal.getUserId() + ")", objGlobal.getConnection());
                 if (result == false) {
                     objGlobal.getConnection().rollback();
                     return false;
                 }
             }
-            result = dbConnection.insertUpdate("insert into grndetail select '" + grnEn + "','" + trfNo + "','" + trfDate + "',sum(trf),'',sum(scan),sum(diff) from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
+            result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + grnEn + "','" + trfNo + "','" + trfDate + "',sum(trf),'',sum(scan),sum(diff) from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
                 return false;

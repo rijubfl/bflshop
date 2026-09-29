@@ -499,7 +499,7 @@ public class GrnTransferNewControl {
                 objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
-            b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "'," +
+            b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "'," +
                     "'" + ginno + "','" + trfNo + "',itemcode,rfid,'',TrfQty,ScanQty,(ScanQty-TrfQty),SerializedCode from tmpGrnScanItems where deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();

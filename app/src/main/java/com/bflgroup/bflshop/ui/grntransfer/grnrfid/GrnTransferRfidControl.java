@@ -365,9 +365,9 @@ public class GrnTransferRfidControl {
                             objGlobal.getConnection().setAutoCommit(true);
                             return false;
                         }
-                        b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff) select '" + objGrnTransferRfidGlobal.getLatestGrnNoRf() + "','" + ginno + "',TrfNo,Itemcode,RfId,'',sum(TotTrfQty)," +
-                                "sum(ScanQtyRfid+ScanQtyNonRfid),(sum(ScanQtyRfid+ScanQtyNonRfid)-sum(TotTrfQty)) from tmpRfidTransferGrnDetail where TrfNo='" + trfNo + "' and " +
-                                "devicename='" + objGlobal.getDeviceName() + "' group by TrfNo,Itemcode,RfId", objGlobal.getConnection());
+                        b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + objGrnTransferRfidGlobal.getLatestGrnNoRf() + "','" + ginno + "',TrfNo,Itemcode,RfId,'',sum(TotTrfQty)," +
+                                "sum(ScanQtyRfid+ScanQtyNonRfid),(sum(ScanQtyRfid+ScanQtyNonRfid)-sum(TotTrfQty)),SerializedCode from tmpRfidTransferGrnDetail where TrfNo='" + trfNo + "' and " +
+                                "devicename='" + objGlobal.getDeviceName() + "' group by TrfNo,Itemcode,RfId,SerializedCode", objGlobal.getConnection());
                         if (!b_Result) {
                             objGlobal.getConnection().rollback();
                             objGlobal.getConnection().setAutoCommit(true);

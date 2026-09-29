@@ -456,7 +456,7 @@ public class GrnTransferControl {
                 objGlobal.getConnection().rollback();
                 return false;
             }
-            result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff) select '" + grnRfEn + "',0,'" + trfNo + "',itemcode,itemcode,'',trf,scan,diff from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
+            result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + grnRfEn + "',0,'" + trfNo + "',itemcode,itemcode,'',trf,scan,diff,SerializedCode from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
                 return false;

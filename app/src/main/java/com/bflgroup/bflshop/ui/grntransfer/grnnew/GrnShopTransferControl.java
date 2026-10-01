@@ -169,7 +169,7 @@ public class GrnShopTransferControl {
                     return false;
                 }
             }
-            b_Result = dbConnection.insertUpdate("insert into StoreDetail select '" + entryno + "',itemcode,0,0,0 from bfldata.dbo.tmpDiffDetailsNew where " +
+            b_Result = dbConnection.insertUpdate("insert into StoreDetail(EntryNo,ItemCode,Quantity,RecQty,SalesPrice) select '" + entryno + "',itemcode,0,0,0 from bfldata.dbo.tmpDiffDetailsNew where " +
                     "EntryNo='" + entryno + "' and itemcode not in(select itemcode from StoreDetail where entryno='" + entryno + "') group by itemcode", objGlobal.getCloudCon());
             if (!b_Result) {
                 objGlobal.getCloudCon().rollback();

@@ -520,8 +520,9 @@ public class ShopReturnsFragment extends Fragment {
         String Itemcode = et_scan_itemcode.getText().toString();
         int i;
         String itemcode_scan = "", trfNo = "", sprice;
-        if (et_scan_itemcode.getText().toString().contains("/")) {
-            String[] scanAr = et_scan_itemcode.getText().toString().split("/");
+        itemcode_scan = objShopReturnsControl.scanCheckSerialCode(et_scan_itemcode.getText().toString());
+        if (itemcode_scan.contains("/")) {
+            String[] scanAr = itemcode_scan.split("/");
             itemcode_scan = scanAr[0];
             sprice = scanAr[1];
             trfNo = scanAr[2];
@@ -610,8 +611,7 @@ public class ShopReturnsFragment extends Fragment {
         last_scanned_itemcode.setText(lastitemcode);
         error_message.setText("");
         try {
-
-            ObjAddScanItemDetails = objShopReturnsControl.additemcode(itemcode, sprice, getContext(), shopreturnCat, et_remarks_item.getText().toString(), itemType);
+            ObjAddScanItemDetails = objShopReturnsControl.additemcode(itemcode, sprice, getContext(), shopreturnCat, et_remarks_item.getText().toString(), itemType,ShopReturnsGlobal.getSerializedCode(),ShopReturnsGlobal.getRfid());
             objShopReturnsAdp = new MyShopResturnsStatusAdp(ObjAddScanItemDetails);
             lv_shop_returns_scanitems.setAdapter(objShopReturnsAdp);
 

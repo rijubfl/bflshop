@@ -69,6 +69,18 @@ public class ShopReturnsControl {
         return true;
     }
 
+    public String scanCheckSerialCode(String scan) throws SQLException {
+        ShopReturnsGlobal.setSerializedCode("");
+        ShopReturnsGlobal.setRfid("");
+        rs = dbConnection.getResultSet("select barcode,rfid,SerializedCode from rfpair where (SerializedCode='" + scan + "' or rfid='" + scan + "')", objGlobal.getConnection());
+        if (rs.next()) {
+            ShopReturnsGlobal.setRfid(rs.getString("rfid"));
+            ShopReturnsGlobal.setSerializedCode(rs.getString("SerializedCode"));
+            return rs.getString("barcode");
+        }
+        return scan;
+    }
+
     public int scanItemcode(String itemcode, String sprice, String category, String Shopname) throws SQLException {
         int status = 1;
         String query = "select * from itemmaster where itemcode = '" + itemcode + "'";
@@ -148,7 +160,7 @@ public class ShopReturnsControl {
     }
 
 
-    public ArrayList<AddScanItemDetails> additemcode(String itemcode, String sprice, Context context, String Category, String itemRemarks, int itemType) throws SQLException {
+    public ArrayList<AddScanItemDetails> additemcode(String itemcode, String sprice, Context context, String Category, String itemRemarks, int itemType,String serializedCode,String rfid) throws SQLException {
         ArrayList<AddScanItemDetails> arr;
         String query = "";
         arr = new ArrayList<AddScanItemDetails>();
@@ -172,9 +184,10 @@ public class ShopReturnsControl {
                     date = objGlobal.getServerDate();
                 }
                 String query1 = "Insert into tmpshopreturns(Itemcode,itemdescription,qty,SalesPrice,devicename,category,shopname,ToPrint,description,ShortName,UnitCode,GroupCode,CatCode," +
-                        "OpeningDate,itemRemarks) values('" + itemcode + "', '" + rs.getString("Description") + "',1, '" + rs.getString("SalesRate") + "', " +
+                        "OpeningDate,itemRemarks,Rfid,SerializedCode) values('" + itemcode + "', '" + rs.getString("Description") + "',1, '" + rs.getString("SalesRate") + "', " +
                         "'" + objGlobal.getDeviceName() + "', '" + Category + "', '','N','" + rs.getString("description") + "', '" + rs.getString("ShortName") + "', " +
-                        "'" + rs.getString("UnitCode") + "', '" + rs.getString("GroupCode") + "', '" + rs.getString("CatCode") + "', '" + date + "', '" + itemRemarks + "')";
+                        "'" + rs.getString("UnitCode") + "', '" + rs.getString("GroupCode") + "', '" + rs.getString("CatCode") + "', '" + date + "'," +
+                        "'" + itemRemarks + "','" + rfid + "','" + serializedCode + "')";
                 Log.e("Insert1", query1);
                 if (!dbConnection.insertUpdate(query1, objGlobal.getConnection())) {
                     okMessage("Alert", objGlobal.getErrorMessage(), context);
@@ -216,7 +229,7 @@ public class ShopReturnsControl {
         int srno = 0;
         arrayList = new ArrayList<>();
         String querynew = "";
-        querynew = "select * from tmpshopreturns where  devicename = '" + objGlobal.getDeviceName() + "'";
+        querynew = "select itemcode,itemdescription,qty=sum(qty),Salesprice from tmpshopreturns where  devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,itemdescription,Salesprice";
         Log.e("Load Insert", querynew);
         ResultSet rs1 = dbConnection.getResultSet(querynew, objGlobal.getConnection());
         while (rs1.next()) {
@@ -277,7 +290,7 @@ public class ShopReturnsControl {
             ShopReturnsGlobal.setEntryNo(autoNo);
 
 
-            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', '',itemRemarks from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
+            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks,SerializedCode) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', rfid,itemRemarks,SerializedCode from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 objGlobal.getCloudCon().setAutoCommit(true);
@@ -424,7 +437,7 @@ public class ShopReturnsControl {
 
     public ArrayList<String> ShopNames() throws SQLException {
         if (arr1.size() == 0) {
-            String Query = "select Distinct ShopName from bfldata.dbo.datasettings where countrycode='" + objGlobal.getCountryCode() + "' and Country <> '' and shopname not like '%Online%'";
+            String Query = "select Distinct ShopName from bfldata.dbo.datasettings where countrycode='" + objGlobal.getCountryCode() + "' and Country <> '' and shopname not like '%Online%' and Shoptoshop='Y'";
             ResultSet rs1 = dbConnection.getResultSet(Query, objGlobal.getCloudCon());
             while (rs1.next()) {
                 arr1.add(rs1.getString("ShopName"));

@@ -26,9 +26,6 @@ public class StockTakingControl {
         }
     }
 
-
-
-
     public boolean saveScan(String scan, String itemcode) {
         try {
             result = dbConnection.insertUpdate("insert into stocktaking(Trndate,Time1,username,itemcode,Quantity,ZoneID,UserId,Device,ScanBarcode,SrId) " +

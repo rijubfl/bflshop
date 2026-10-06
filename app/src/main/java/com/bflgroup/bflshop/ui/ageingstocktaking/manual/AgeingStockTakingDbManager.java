@@ -33,7 +33,7 @@ public class AgeingStockTakingDbManager {
     private SQLiteDatabase sqlDB;
     static final String dBName = "AGEING";
     static final int DBVersion = 2;
-    static final String createTableStockTaking = "create table StockTaking (trndate text,trntime text, scan text,itemcode text,quantity int,zoneid text,result text,srid text,export text,username text,rfid text)";
+    static final String createTableStockTaking = "create table StockTaking (trndate text,trntime text, scan text,itemcode text,quantity int,zoneid text,result text,srid text,export text,username text,rfid text,serializedCode text)";
 
     public boolean checkConnection() {
         objGlobal.setErrorMessage("");
@@ -109,7 +109,7 @@ public class AgeingStockTakingDbManager {
         return true;
     }
 
-    public boolean saveScanToLocaldb(String scan, int qty, String zoneid, String result, String rfid) {
+    public boolean saveScanToLocaldb(String scan, int qty, String zoneid, String result, String rfid, String serializedCode) {
         Date date = new Date();
         SimpleDateFormat cDateF = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat cTimeF = new SimpleDateFormat("HH:mm:ss");
@@ -130,6 +130,7 @@ public class AgeingStockTakingDbManager {
             values.put("Export", "N");
             values.put("UserName", objGlobal.getUserName());
             values.put("rfid", rfid);
+            values.put("serializedCode", serializedCode);
             long id = sqlDB.insert("StockTaking", "", values);
             if (id > 0) {
                 /*data = "| " + cDate + " | " + cTime + " | " + scan + " | " + seperateBarcode(scan) + " | " + qty + " | " + zoneid + " | " + result + " | " + srid + " |";
@@ -225,17 +226,17 @@ public class AgeingStockTakingDbManager {
         }
         try {
             String path = context.getDatabasePath(dBName).getPath();
-            String sqlQry = "select trndate,trntime,scan,itemcode,quantity,zoneid,result,srid,export,rfid from stocktaking where export='N'";
+            String sqlQry = "select trndate,trntime,scan,itemcode,quantity,zoneid,result,srid,export,rfid,serializedCode from stocktaking where export='N'";
             if (sqlDB == null) {
                 sqlDB = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
             }
             Cursor cursor = sqlDB.rawQuery(sqlQry, null);
             if (cursor.moveToFirst()) {
                 do {
-                    b_Result = dbConnection.insertUpdate("insert into stocktaking(Trndate,Time1,username,itemcode,Quantity,ZoneID,UserId,Device,ScanBarcode,SrId,Result,rfid) " +
+                    b_Result = dbConnection.insertUpdate("insert into stocktaking(Trndate,Time1,username,itemcode,Quantity,ZoneID,UserId,Device,ScanBarcode,SrId,Result,rfid,serializedCode) " +
                             "values ('" + cursor.getString(0) + "','" + cursor.getString(1) + "','" + objGlobal.getUserName() + "','" + cursor.getString(3) + "'," +
                             "" + cursor.getInt(4) + ",'" + cursor.getString(5) + "'," + objGlobal.getUserId() + ",'" + objGlobal.getDeviceName() + "','" + cursor.getString(2) + "'," +
-                            "'" + cursor.getString(7) + "','" + cursor.getString(6) + "','" + cursor.getString(9) + "')", objGlobal.getConnection());
+                            "'" + cursor.getString(7) + "','" + cursor.getString(6) + "','" + cursor.getString(9) + "','" + cursor.getString(10) + "')", objGlobal.getConnection());
                     if (b_Result) {
                         sqlDB.execSQL("update stocktaking set export='Y' where SrId='" + cursor.getString(7) + "'");
                     } else {

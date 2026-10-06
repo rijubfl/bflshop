@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="370dp"
-    android:padding="8dp"
+    android:padding="5dp"
     android:background="@color/colorBackPopup"
     android:layout_gravity="center"
     android:layout_height="420dp">
@@ -39,11 +39,11 @@
     <TextView
         android:id="@+id/tv_ageing_stock_taking_popup_last_barcode"
         android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="0dp"
         android:background="@drawable/et_custom"
         android:hint="Last Scan Barcode"
-        android:padding="10dp"
+        android:padding="5dp"
         android:textAlignment="center"
         android:textColor="@color/coloRed"
         android:textSize="18dp"
@@ -53,13 +53,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_ageing_stock_taking_popup_last" />
 
     <TextView
-        android:id="@+id/tv_ageing_stock_taking_popup_last_rfid"
+        android:id="@+id/tv_ageing_stock_taking_popup_last_serializedcode"
         android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="0dp"
         android:background="@drawable/et_custom"
-        android:hint="Last Scan RFID"
-        android:padding="10dp"
+        android:hint="Last Scan Serialized Code"
+        android:padding="5dp"
         android:textAlignment="center"
         android:textColor="@color/coloRed"
         android:textSize="18dp"
@@ -69,13 +69,29 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_ageing_stock_taking_popup_last_barcode" />
 
     <TextView
+        android:id="@+id/tv_ageing_stock_taking_popup_last_rfid"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/et_custom"
+        android:hint="Last Scan RFID"
+        android:padding="5dp"
+        android:textAlignment="center"
+        android:textColor="@color/coloRed"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_ageing_stock_taking_popup_last_serializedcode" />
+
+    <TextView
         android:id="@+id/tv_ageing_stock_taking_popup_last"
         android:layout_width="0dp"
-        android:layout_height="45dp"
+        android:layout_height="36dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/et_custom"
         android:hint="Last Scan"
-        android:padding="10dp"
+        android:padding="5dp"
         android:textAlignment="center"
         android:textColor="@color/coloRed"
         android:textSize="18dp"
@@ -88,7 +104,6 @@
         android:id="@+id/tv_ageing_stock_taking_popup_result"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="10dp"
         android:background="@drawable/et_custom"
         android:hint="Result"
         android:padding="10dp"
@@ -98,7 +113,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ageing_stock_taking_popup_last_rfid" />
+        tools:layout_editor_absoluteY="277dp" />
 
     <Button
         android:id="@+id/bt_ageing_stock_taking_popup_close"

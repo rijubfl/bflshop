@@ -69,6 +69,7 @@ public class AgeingStockTakingFragment extends Fragment {
     private TextView tv_ageing_stock_taking_popup_last;
     private TextView tv_ageing_stock_taking_popup_last_barcode;
     private TextView tv_ageing_stock_taking_popup_last_rfid;
+    private TextView tv_ageing_stock_taking_popup_last_serializedcode;
     private TextView tv_ageing_stock_taking_popup_result;
     private Button bt_ageing_stock_taking_popup_close;
     private Button bt_ageing_stock_taking_popup_add;
@@ -481,6 +482,7 @@ public class AgeingStockTakingFragment extends Fragment {
         tv_ageing_stock_taking_popup_last = (TextView) myDialog.findViewById(R.id.tv_ageing_stock_taking_popup_last);
         tv_ageing_stock_taking_popup_last_barcode = (TextView) myDialog.findViewById(R.id.tv_ageing_stock_taking_popup_last_barcode);
         tv_ageing_stock_taking_popup_last_rfid = (TextView) myDialog.findViewById(R.id.tv_ageing_stock_taking_popup_last_rfid);
+        tv_ageing_stock_taking_popup_last_serializedcode= (TextView) myDialog.findViewById(R.id.tv_ageing_stock_taking_popup_last_serializedcode);
         tv_ageing_stock_taking_popup_result = (TextView) myDialog.findViewById(R.id.tv_ageing_stock_taking_popup_result);
         bt_ageing_stock_taking_popup_close = (Button) myDialog.findViewById(R.id.bt_ageing_stock_taking_popup_close);
         bt_ageing_stock_taking_popup_add = (Button) myDialog.findViewById(R.id.bt_ageing_stock_taking_popup_add);
@@ -534,7 +536,7 @@ public class AgeingStockTakingFragment extends Fragment {
         String scan = objControls.replaceString(et_ageing_stock_taking_popup_barcode.getText().toString()).toUpperCase();
         String zoneId = tv_ageing_stock_taking_zone.getText().toString();
         String result = "";
-        String rfid = "",serializedCode="";
+        String rfid = "", serializedCode = "";
         tv_ageing_stock_taking_popup_result.setText("");
         if (zoneId.isEmpty()) {
             //okMessage("Stock Taking", "Please Select Zone");
@@ -567,6 +569,7 @@ public class AgeingStockTakingFragment extends Fragment {
 
         tv_ageing_stock_taking_popup_last_barcode.setText("");
         tv_ageing_stock_taking_popup_last_rfid.setText("");
+        tv_ageing_stock_taking_popup_last_serializedcode.setText("");
         tv_ageing_stock_taking_popup_last.setText(scan);
         et_ageing_stock_taking_popup_barcode.setText("");
         et_ageing_stock_taking_popup_barcode.requestFocus();
@@ -585,7 +588,8 @@ public class AgeingStockTakingFragment extends Fragment {
         }
         tv_ageing_stock_taking_popup_last_barcode.setText(objAgeingStockTakingDbManager.seperateBarcode(scan));
         tv_ageing_stock_taking_popup_last_rfid.setText(rfid);
-        b_Result = objAgeingStockTakingDbManager.saveScanToLocaldb(scan, qty, zoneId, result, rfid);
+        tv_ageing_stock_taking_popup_last_serializedcode.setText(serializedCode);
+        b_Result = objAgeingStockTakingDbManager.saveScanToLocaldb(scan, qty, zoneId, result, rfid, serializedCode);
         if (!b_Result) {
             //okMessage("Stock Taking", objGlobal.getErrorMessage());
             tv_ageing_stock_taking_popup_result.setText(objGlobal.getErrorMessage());

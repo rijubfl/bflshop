@@ -289,7 +289,7 @@ public class GrnTransferControl {
 
     public boolean saveShopTransfer(String trfNo, ArrayList<GrnTransferScanItemsAll> listGrnTransferScanItemsAll) {
         result = validateShopTransfer(trfNo,false);
-        if (result == false) {
+        if (!result) {
             return false;
         }
         String itemCode = "";
@@ -302,7 +302,7 @@ public class GrnTransferControl {
             return false;
         }
         result = dbConnection.insertUpdate("delete from tmpDiffDetails where TrfNo='" + trfNo + "'", objGlobal.getCloudCon());
-        if (result == false) {
+        if (!result) {
             return false;
         }
         for (int i = 0; i < listGrnTransferScanItemsAll.size(); i++) {
@@ -312,7 +312,7 @@ public class GrnTransferControl {
             diff = listGrnTransferScanItemsAll.get(i).diffQty;
             result = dbConnection.insertUpdate("insert into tmpDiffDetails values('" + itemCode + "'," + scan + "," + trf + "," + diff + "," +
                     "" + objGlobal.getUserId() + ",'" + trfNo + "')", objGlobal.getCloudCon());
-            if (result == false) {
+            if (!result) {
                 return false;
             }
         }
@@ -323,7 +323,7 @@ public class GrnTransferControl {
             rs = dbConnection.getResultSet("select a.*,b.SalesPrice from itemmaster a,StoreDetail b where a.ItemCode=b.ItemCode and b.EntryNo='" + trfNo + "'", objGlobal.getCloudCon());
             while (rs.next()) {
                 result = dbConnection.insertUpdate("delete from ItemMaster where ItemCode='" + rs.getString("ItemCode") + "'", objGlobal.getConnection());
-                if (result == false) {
+                if (!result) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();
                     return false;
@@ -331,62 +331,70 @@ public class GrnTransferControl {
                 result = dbConnection.insertUpdate("insert into ItemMaster(ItemCode,Description,ShortName,UnitCode,GroupCode,CatCode,OpeningDate,ToPrint,batch) " +
                         "values ('" + rs.getString("ItemCode") + "','" + rs.getString("Description") + "','" + rs.getString("ShortName") + "','" + rs.getString("UnitCode") + "'," +
                         "'" + rs.getString("GroupCode") + "','" + rs.getString("CatCode") + "','" + objGlobal.getServerDate() + "','" + rs.getString("ToPrint") + "',0)", objGlobal.getConnection());
-                if (result == false) {
+                if (!result) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();
                     return false;
                 }
                 result = dbConnection.insertUpdate("insert into oldsalesprice select costcode,itemcode,salesrate,retailrate from salesprice where " +
                         "itemcode='" + rs.getString("itemcode") + "' and costcode='" + objPosGlobal.getCostCode() + "'", objGlobal.getConnection());
-                if (result == false) {
+                if (!result) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();
                     return false;
                 }
                 result = dbConnection.insertUpdate("delete from salesprice where itemcode='" + rs.getString("itemcode") + "' and " +
                         "costcode='" + objPosGlobal.getCostCode() + "'", objGlobal.getConnection());
-                if (result == false) {
+                if (!result) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();
                     return false;
                 }
                 result = dbConnection.insertUpdate("insert into salesprice values('" + objPosGlobal.getCostCode() + "','" + rs.getString("itemcode") + "'," +
                         "" + rs.getFloat("SalesPrice") + "," + rs.getFloat("SalesPrice") + ",'N','" + objGlobal.getServerDate() + "')", objGlobal.getConnection());
-                if (result == false) {
+                if (!result) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();
                     return false;
                 }
             }
-            result = dbConnection.insertUpdate("insert into StoreDetail select '" + trfNo + "',itemcode,0,0,0 from tmpDiffDetails where " +
-                    "TrfNo='" + trfNo + "' and itemcode not in(select itemcode from StoreDetail where entryno='" + trfNo + "') group by itemcode", objGlobal.getCloudCon());
-            if (result == false) {
+            result = dbConnection.insertUpdate("update StoreDetail set RecQty=a.scan from bfldata.dbo.tmpDiffDetails a,StoreDetail b where a.DeviceId='" + objGlobal.getDeviceName() + "' and a.EntryNo=b.EntryNo " +
+                    "and b.EntryNo='" + trfNo + "' and isnull(b.SerializedCode,'')<>'' and a.SerializedCode=b.SerializedCode", objGlobal.getCloudCon());
+            if (!result) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 return false;
             }
-            result = dbConnection.insertUpdate("update StoreDetail set RecQty=a.scan from tmpDiffDetails a,StoreDetail b where a.TrfNo='" + trfNo + "' and b.EntryNo='" + trfNo + "' and a.itemcode=b.itemcode", objGlobal.getCloudCon());
-            if (result == false) {
+            result = dbConnection.insertUpdate("update StoreDetail set RecQty=a.scan from bfldata.dbo.tmpDiffDetails a,StoreDetail b where a.DeviceId='" + objGlobal.getDeviceName() + "' and a.EntryNo=b.EntryNo " +
+                    "and b.EntryNo='" + trfNo + "' and isnull(b.SerializedCode,'')='' and isnull(b.rfid,'')<>'' and a.rfid=b.rfid", objGlobal.getCloudCon());
+            if (!result) {
+                objGlobal.getCloudCon().rollback();
+                objGlobal.getConnection().rollback();
+                return false;
+            }
+            result = dbConnection.insertUpdate("update StoreDetail set RecQty=a.scan from bfldata.dbo.tmpDiffDetails a,StoreDetail b where a.DeviceId='" + objGlobal.getDeviceName()  + "' and a.EntryNo=b.EntryNo " +
+                    "and b.EntryNo='" + trfNo + "' and isnull(b.SerializedCode,'')='' and isnull(b.rfid,'')='' and a.itemcode=b.itemcode", objGlobal.getCloudCon());
+            if (!result) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 return false;
             }
             result = dbConnection.insertUpdate("update StoreHeader set RecUserId=" + objGlobal.getUserId() + ",RecDateTime=getdate() where " +
                     "EntryNo='" + trfNo + "'", objGlobal.getCloudCon());
-            if (result == false) {
+            if (!result) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 return false;
             }
             result = dbConnection.insertUpdate("insert into bfldata.dbo.ShopToShopTransfer(ShopName,EntryNo,Trndate,TrnTime,TargetShop,TrfIssueNo,TrfRecNo,Category) select ShopFrom,EntryNo," +
                     "convert(varchar,getdate(),103),convert(varchar,getdate(),8),ShopName,'','',TrfNo1 from StoreHeader where EntryNo='" + trfNo + "'", objGlobal.getCloudCon());
-            if (result == false) {
+            if (!result) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 return false;
             }
             result = saveMissingBarcodeEntry(trfNo);
-            if (result == false) {
+            if (!result) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 return false;

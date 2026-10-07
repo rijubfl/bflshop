@@ -272,7 +272,7 @@ public class ShopReturnsControl {
         try {
             String query = "", query2 = "", query6 = "";
             query = "select * from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "'";
-            query2 = "select sum(qty) as qty, salesprice as salesprice,itemcode from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice";
+            query2 = "select sum(qty) as qty, salesprice as salesprice,itemcode,rfid,SerializedCode from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice";
             query6 = "select description, qty, ShortName, UnitCode,salesprice, itemcode, GroupCode,CatCode,OpeningDate,ToPrint from tmpshopreturns where devicename = '" + objGlobal.getDeviceName() + "' group by itemcode,salesprice, qty, description, ShortName,UnitCode, GroupCode,CatCode,OpeningDate,ToPrint";
             rs = dbConnection.getResultSet(query, objGlobal.getConnection());
             ResultSet rs2 = dbConnection.getResultSet(query2, objGlobal.getConnection());
@@ -323,7 +323,8 @@ public class ShopReturnsControl {
 
 
             while (rs2.next()) {
-                String query3 = "Insert into storedetail (EntryNo,ItemCode,Quantity,RecQty, SalesPrice) values('" + autoNo + "','" + rs2.getString("itemcode") + "'," + rs2.getString("qty") + ",0," + rs2.getString("SalesPrice") + ") ";
+                String query3 = "Insert into storedetail (EntryNo,ItemCode,Quantity,RecQty, SalesPrice,Rfid,SerializedCode) values('" + autoNo + "','" + rs2.getString("itemcode") + "'," +
+                        "" + rs2.getString("qty") + ",0," + rs2.getString("SalesPrice") + ",'" + rs2.getString("Rfid") + "','" + rs2.getString("SerializedCode") + "')";
                 if (!dbConnection.insertUpdate(query3, objGlobal.getCloudCon())) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();

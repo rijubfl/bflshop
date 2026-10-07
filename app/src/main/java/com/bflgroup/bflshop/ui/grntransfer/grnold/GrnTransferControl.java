@@ -379,8 +379,7 @@ public class GrnTransferControl {
                 objGlobal.getConnection().rollback();
                 return false;
             }
-            result = dbConnection.insertUpdate("update StoreHeader set RecUserId=" + objGlobal.getUserId() + ",RecDateTime=getdate() where " +
-                    "EntryNo='" + trfNo + "'", objGlobal.getCloudCon());
+            result = dbConnection.insertUpdate("update StoreHeader set RecUserId=" + objGlobal.getUserId() + ",RecDateTime=getdate() where EntryNo='" + trfNo + "'", objGlobal.getCloudCon());
             if (!result) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();

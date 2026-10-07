@@ -106,27 +106,34 @@ public class GinVerificationControl {
             if (!dbConnection.insertUpdate("insert into GinVerify(GinNo,Trndate,TrfNo,ToteId,PalletNo,VerifyTime,UserId,skipsku) select GinNo,'" + objGlobal.getServerDate() + "',TrfNo,ToteId,PalletNo," +
                     "VerifyTime," + objGlobal.getUserId() + ",skipsku from tmpGinVerify where deviceid='" + objGlobal.getDeviceName() + "' and Verified='Y' and OldVerify='N'", objGlobal.getConnection())) {
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
 
             b_Result = getLatestGrn(objGlobal.getServerDate());
             if (!b_Result) {
+                objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
-            }
-            if (firstGrn) {
-                b_Result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "'," +
-                        "'GIN No: " + ginno + "'," + objGlobal.getUserId() + ")", objGlobal.getConnection());
-                if (!b_Result) {
-                    objGlobal.getConnection().rollback();
-                    objGlobal.getConnection().setAutoCommit(true);
-                    return false;
-                }
             }
             rs = dbConnection.getResultSet("select trfno from tmpGinVerify where deviceid='" + objGlobal.getDeviceName() + "' and skipsku='Y' and Verified='Y' and OldVerify='N'", objGlobal.getConnection());
             while (rs.next()) {
                 b_Result = getLatestGrnRf(objGlobal.getServerDate());
                 if (!b_Result) {
+                    objGlobal.getConnection().rollback();
+                    objGlobal.getConnection().setAutoCommit(true);
                     return false;
+                }
+                // Insert GRNHeader only together with its first GRNDetail row so a header is never saved without details
+                if (firstGrn) {
+                    b_Result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "'," +
+                            "'GIN No: " + ginno + "'," + objGlobal.getUserId() + ")", objGlobal.getConnection());
+                    if (!b_Result) {
+                        objGlobal.getConnection().rollback();
+                        objGlobal.getConnection().setAutoCommit(true);
+                        return false;
+                    }
+                    firstGrn = false;
                 }
                 b_Result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "',trfno," +
                         "'" + objGlobal.getServerDate() + "',sum(Quantity),'',sum(Quantity),0 from TransferDetail where TrfNo='" + rs.getString("trfno") + "' group by trfno", objGlobal.getConnection());
@@ -157,6 +164,7 @@ public class GinVerificationControl {
             try {
                 objGlobal.setErrorMessage("BinBatchInControl:saveBatchIn:ex:" + ex);
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
             } catch (SQLException e) {
                 objGlobal.setErrorMessage("BinBatchInControl:saveBatchIn:e:" + e);
                 return false;

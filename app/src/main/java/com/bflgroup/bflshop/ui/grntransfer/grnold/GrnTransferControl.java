@@ -363,12 +363,14 @@ public class GrnTransferControl {
             if (result == false) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             result = dbConnection.insertUpdate("update StoreDetail set RecQty=a.scan from tmpDiffDetails a,StoreDetail b where a.TrfNo='" + trfNo + "' and b.EntryNo='" + trfNo + "' and a.itemcode=b.itemcode", objGlobal.getCloudCon());
             if (result == false) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             result = dbConnection.insertUpdate("update StoreHeader set RecUserId=" + objGlobal.getUserId() + ",RecDateTime=getdate() where " +
@@ -376,6 +378,7 @@ public class GrnTransferControl {
             if (result == false) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             result = dbConnection.insertUpdate("insert into bfldata.dbo.ShopToShopTransfer(ShopName,EntryNo,Trndate,TrnTime,TargetShop,TrfIssueNo,TrfRecNo,Category) select ShopFrom,EntryNo," +
@@ -383,12 +386,14 @@ public class GrnTransferControl {
             if (result == false) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             result = saveMissingBarcodeEntry(trfNo);
             if (result == false) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             objGlobal.getCloudCon().commit();
@@ -454,12 +459,14 @@ public class GrnTransferControl {
             result = dbConnection.insertUpdate("insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) values('" + grnRfEn + "','" + objGlobal.getServerDate() + "','" + objGlobal.getUserName() + "','" + trfNo + "')", objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + grnRfEn + "',0,'" + trfNo + "',itemcode," +
                     "itemcode,'',trf,scan,diff,SerializedCode from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             if (firstGrn == true) {
@@ -472,6 +479,7 @@ public class GrnTransferControl {
             result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + grnEn + "','" + trfNo + "','" + trfDate + "',sum(trf),'',sum(scan),sum(diff) from tmpDiffDetails where trfno='" + trfNo + "' and userid=" + objGlobal.getUserId(), objGlobal.getConnection());
             if (result == false) {
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
                 return false;
             }
             objGlobal.getConnection().commit();
@@ -482,6 +490,7 @@ public class GrnTransferControl {
         } catch (Exception e) {
             try {
                 objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
             } catch (SQLException sqlException) {
                 return false;
             }

@@ -24,18 +24,18 @@ public class GrnShopTransferControl {
         objGlobal.setErrorMessage("");
         b_Result = dbConnection.connectDb();
         if (!b_Result) {
-            objGlobal.setErrorMessage("GrnShopTransferControl : Local Connection error");
+            objGlobal.setErrorMessage("Local Connection error");
             return false;
         }
         b_Result = dbConnection.getServerDateTime(objGlobal.getConnection());
         if (!b_Result) {
-            objGlobal.setErrorMessage("GrnShopTransferControl : Fetch Time error");
+            objGlobal.setErrorMessage("Fetch Time error");
             return false;
         }
         objGlobal.setCloudDbName("BFLDATA");
         b_Result = dbConnection.connectCloudDb();
         if (!b_Result) {
-            objGlobal.setErrorMessage("GrnShopTransferControl : Cloud Connection error");
+            objGlobal.setErrorMessage("Cloud Connection error");
             return false;
         }
         return true;
@@ -56,34 +56,37 @@ public class GrnShopTransferControl {
             if (rs.next()) {
                 objGlobal.setCloudDbName(rs.getString("DataName").toString());
             } else {
-                objGlobal.setErrorMessage("GrnShopTransferControl.validateShopTransfer1 : Shop not found in datasettings, " + shopLetter);
+                objGlobal.setErrorMessage("Shop not found in datasettings, " + shopLetter);
                 return false;
             }
             b_Result = dbConnection.connectCloudDb();
             if (!b_Result) {
-                objGlobal.setErrorMessage("GrnShopTransferControl.validateShopTransfer2 : Connection error");
+                objGlobal.setErrorMessage("Connection error");
                 return false;
             }
-            rs = dbConnection.getResultSet("select entryno,TrfDate=convert(varchar,EntryDate,103),RecUserId=isnull(RecUserId,0),ShopFrom from storeheader where entryno='" + entryno + "' and " +
-                    "shopname='" + objPosGlobal.getShopName() + "'", objGlobal.getCloudCon());
+            rs = dbConnection.getResultSet("select entryno,TrfDate=convert(varchar,EntryDate,103),RecUserId=isnull(RecUserId,0),ShopFrom,ShopName from storeheader where entryno='" + entryno + "'", objGlobal.getCloudCon());
             if (rs.next()) {
+                if (!rs.getString("ShopName").trim().equalsIgnoreCase(objPosGlobal.getShopName().trim())) {
+                    objGlobal.setErrorMessage("Invalid Entry number, " + entryno.toUpperCase() + ",\nThis entry is for the shop: " + rs.getString("ShopName").toUpperCase() + " From: " + rs.getString("ShopFrom").toUpperCase());
+                    return false;
+                }
                 objGrnTransferNewGlobal.setTrfno(rs.getString("entryno"));
                 objGrnTransferNewGlobal.setTrfdate(rs.getString("trfdate"));
                 objGrnTransferNewGlobal.setToteid("");
                 objGrnTransferNewGlobal.setFromshop(rs.getString("ShopFrom"));
                 if (String.valueOf(rs.getInt("RecUserId")).equals("0")) {
                     if (view) {
-                        objGlobal.setErrorMessage("GrnShopTransferControl.validateShopTransfer3 : Entry number not yet save, " + entryno);
+                        objGlobal.setErrorMessage("Entry number not yet save: " + entryno);
                         return false;
                     }
                 } else {
                     if (!view) {
-                        objGlobal.setErrorMessage("GrnShopTransferControl.validateShopTransfer3 : Entry number already save, " + entryno);
+                        objGlobal.setErrorMessage("Entry number already save: " + entryno);
                         return false;
                     }
                 }
             } else {
-                objGlobal.setErrorMessage("GrnShopTransferControl.validateShopTransfer3 : Invalid Entry number, " + entryno);
+                objGlobal.setErrorMessage("Invalid Entry number: " + entryno);
                 return false;
             }
             if (!save) {
@@ -104,7 +107,7 @@ public class GrnShopTransferControl {
             }
             return true;
         } catch (Exception ex) {
-            objGlobal.setErrorMessage("GrnShopTransferControl:validateShopTransfer4 :" + ex.getMessage());
+            objGlobal.setErrorMessage("GrnShopTransferControl:validateShopTransfer4 : " + ex.getMessage());
             return false;
         }
     }

@@ -265,7 +265,7 @@ public class ShopProxyReturnsControl {
             ShopReturnsGlobal.setEntryNo(autoNo);
 
 
-            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', '',itemRemarks from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
+            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks,Rfid,SerializedCode) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', '',itemRemarks,Rfid,SerializedCode from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 objGlobal.getCloudCon().setAutoCommit(true);
@@ -298,7 +298,7 @@ public class ShopProxyReturnsControl {
 
 
             while (rs2.next()) {
-                String query3 = "Insert into storedetail (EntryNo,ItemCode,Quantity,RecQty, SalesPrice) values('" + autoNo + "','" + rs2.getString("itemcode") + "'," + rs2.getString("qty") + ",0," + rs2.getString("SalesPrice") + ") ";
+                String query3 = "Insert into storedetail (EntryNo,ItemCode,Quantity,RecQty, SalesPrice,Rfid,SerializedCode) values('" + autoNo + "','" + rs2.getString("itemcode") + "'," + rs2.getString("qty") + ",0," + rs2.getString("SalesPrice") + ",'" +  rs2.getString("SalesPrice") + "','" + rs2.getString("SerializedCode") + "') ";
                 if (!dbConnection.insertUpdate(query3, objGlobal.getCloudCon())) {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();

@@ -24,7 +24,6 @@ public class AgeingSlashingScanDetailsGlobal {
     private static int scanQty;
     private static int slashQty;
     private static String addInfo;
-
     private static String rfidScanBarcode;
 
     public static String getItemName() {

@@ -103,8 +103,10 @@ public class GinVerificationControl {
                 return false;
             }
             objGlobal.getConnection().setAutoCommit(false);
+            // Skip transfers already verified (another device / repeated save); updlock+holdlock serializes concurrent saves
             if (!dbConnection.insertUpdate("insert into GinVerify(GinNo,Trndate,TrfNo,ToteId,PalletNo,VerifyTime,UserId,skipsku) select GinNo,'" + objGlobal.getServerDate() + "',TrfNo,ToteId,PalletNo," +
-                    "VerifyTime," + objGlobal.getUserId() + ",skipsku from tmpGinVerify where deviceid='" + objGlobal.getDeviceName() + "' and Verified='Y' and OldVerify='N'", objGlobal.getConnection())) {
+                    "VerifyTime," + objGlobal.getUserId() + ",skipsku from tmpGinVerify a where deviceid='" + objGlobal.getDeviceName() + "' and Verified='Y' and OldVerify='N' " +
+                    "and not exists(select 1 from GinVerify b with (updlock,holdlock) where b.TrfNo=a.TrfNo)", objGlobal.getConnection())) {
                 objGlobal.getConnection().rollback();
                 objGlobal.getConnection().setAutoCommit(true);
                 return false;
@@ -118,6 +120,12 @@ public class GinVerificationControl {
             }
             rs = dbConnection.getResultSet("select trfno from tmpGinVerify where deviceid='" + objGlobal.getDeviceName() + "' and skipsku='Y' and Verified='Y' and OldVerify='N'", objGlobal.getConnection());
             while (rs.next()) {
+                // Re-check at save time: the transfer may have been GRN'd by another device/screen after it was scanned here
+                ResultSet rsChk = dbConnection.getResultSet("select top 1 trfno from GRNDetail with (updlock,holdlock) where TrfNo='" + rs.getString("trfno") + "' " +
+                        "union all select top 1 trfno from GRNHeaderRF with (updlock,holdlock) where TrfNo='" + rs.getString("trfno") + "'", objGlobal.getConnection());
+                if (rsChk.next()) {
+                    continue;
+                }
                 b_Result = getLatestGrnRf(objGlobal.getServerDate());
                 if (!b_Result) {
                     objGlobal.getConnection().rollback();
@@ -156,6 +164,12 @@ public class GinVerificationControl {
                     objGlobal.getConnection().setAutoCommit(true);
                     return false;
                 }
+            }
+            // Mark rows as saved so a repeated Save (e.g. clearAll failed) cannot create the GRN again
+            if (!dbConnection.insertUpdate("update tmpGinVerify set OldVerify='Y' where deviceid='" + objGlobal.getDeviceName() + "' and Verified='Y' and OldVerify='N'", objGlobal.getConnection())) {
+                objGlobal.getConnection().rollback();
+                objGlobal.getConnection().setAutoCommit(true);
+                return false;
             }
             objGlobal.getConnection().commit();
             objGlobal.getConnection().setAutoCommit(true);

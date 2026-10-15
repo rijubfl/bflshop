@@ -265,7 +265,7 @@ public class ShopProxyReturnsControl {
             ShopReturnsGlobal.setEntryNo(autoNo);
 
 
-            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks,Rfid,SerializedCode) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', '',itemRemarks,Rfid,SerializedCode from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
+            if (!dbConnection.insertUpdate("Insert into storedetail (EntryNo,ItemCode,Quantity,SalesPrice,TrfNo,RFID,ItemRemarks,SerializedCode) select '" + autoNo + "', ItemCode, qty, SalesPrice, '', rfid,itemRemarks,SerializedCode from tmpshopproxyreturns where devicename = '" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
                 objGlobal.getCloudCon().rollback();
                 objGlobal.getConnection().rollback();
                 objGlobal.getCloudCon().setAutoCommit(true);

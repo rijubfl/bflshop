@@ -94,8 +94,8 @@ public class GrnShopTransferControl {
                 if (!b_Result) {
                     return false;
                 }
-                rs = dbConnection.getResultSet("select itemcode,Description=(select description from itemmaster where ItemCode=a.itemcode),Price=SalesPrice,TrfQty=Quantity,ScanQty=0,Rfid," +
-                        "SerializedCode from storedetail a where entryno='" + entryno + "'", objGlobal.getCloudCon());
+                rs = dbConnection.getResultSet("select itemcode,Description=(select description from itemmaster where ItemCode=a.itemcode),Price=SalesPrice,TrfQty=sum(Quantity),ScanQty=0,Rfid," +
+                        "SerializedCode from storedetail a where entryno='" + entryno + "' group by itemcode,SalesPrice,Rfid,SerializedCode", objGlobal.getCloudCon());
                 while (rs.next()) {
                     b_Result = dbConnection.insertUpdate("insert into tmpGrnScanItems(DeviceId,Itemcode,Description,Price,TrfQty,ScanQty,Rfid,SerializedCode) values ('" + objGlobal.getDeviceName() + "'," +
                             "'" + rs.getString("Itemcode") + "','" + rs.getString("Description") + "'," + rs.getString("Price") + "," + rs.getString("TrfQty") + "," +

@@ -724,10 +724,8 @@ public class GrnTransferNewFragment extends Fragment {
         et_popup_grn_transfer_qty.setText("1");
         et_popup_grn_transfer_qty.setEnabled(objGlobal.getEnterQty());
 
-
         isPopupScan = false;
         startTime = 0L;
-
 
         et_popup_grn_transfer_barcode.setOnTouchListener(new View.OnTouchListener() {
             @Override

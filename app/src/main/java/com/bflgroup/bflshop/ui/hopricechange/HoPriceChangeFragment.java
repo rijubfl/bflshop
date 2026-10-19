@@ -688,7 +688,7 @@ public class HoPriceChangeFragment extends Fragment {
             return false;
         }
         tv_aging_slash_popup_scan_barcode.setText(scan);
-        b_Result = objAgeingSlashingWifyControl.getAgeingPairBarcodeFromRfid(scan);
+        b_Result = objAgeingSlashingWifyControl.getAgeingPairBarcodeFromRfidSerial(scan);
         if (!b_Result) {
             tv_aging_slash_popup_scan_results.setText(objGlobal.getErrorMessage());
             tv_aging_slash_popup_scan_results.setTextColor(getActivity().getResources().getColor(R.color.coloRed));
@@ -697,26 +697,24 @@ public class HoPriceChangeFragment extends Fragment {
             et_aging_slash_popup_scan_barcode.requestFocus();
             return false;
         }
-        scan = objAgeingSlashingScanDetailsGlobal.getRfidScanBarcode();
-        if (scan.length() > 30) {
-            tv_aging_slash_popup_scan_results.setText("Please Double check the barcode that scan");
-            tv_aging_slash_popup_scan_results.setTextColor(getActivity().getResources().getColor(R.color.coloRed));
-            vibrate(100);
-            et_aging_slash_popup_scan_barcode.setText("");
-            et_aging_slash_popup_scan_barcode.requestFocus();
-            return false;
-        }
+        scan = objAgeingSlashingScanDetailsGlobal.getBarcodeFromScan();
+        scan = scan.replaceAll("\n", "");
+        scan = scan.replaceAll("\r", "");
         String itemcode = "", trfNo = "";
         float ePrice = 0;
         if (scan.contains("/")) {
             String[] scanAr = scan.split("/");
             itemcode = scanAr[0];
+            scanAr[1] = scanAr[1].replace(",", "");
             ePrice = Float.parseFloat(scanAr[1]);
             trfNo = scanAr[2];
         } else {
             itemcode = scan;
             ePrice = 0;
             trfNo = "";
+        }
+        if (scan.isEmpty()) {
+            scan = "";
         }
         b_Result = objAgeingSlashingWifyControl.getAgeingItems(batchNo, itemcode);
         if (!b_Result) {

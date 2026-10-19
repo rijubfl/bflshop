@@ -158,24 +158,41 @@ public class HoPriceChangeControl {
         }
     }
 
-    public boolean getAgeingPairBarcodeFromRfid(String scan) {
+    public boolean getAgeingPairBarcodeFromRfidSerial(String scan) {
+        boolean found = false;
         if (!checkConnection()) {
             return false;
         }
         try {
-            objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode("");
-            rs = dbConnection.getResultSet("select top 1 barcode from rfpair where (rfid='" + scan + "' or SerializedCode='" + scan + "') order by entrydate desc", objGlobal.getConnection());
+            objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan("");
+            objAgeingSlashingScanDetailsGlobal.setRfidFromScan("");
+            objAgeingSlashingScanDetailsGlobal.setSerialCodeFromScam("");
+            rs = dbConnection.getResultSet("select top 1 barcode,SerializedCode=isnull(SerializedCode,''),rfid=isnull(rfid,'') from rfpair where SerializedCode='" + scan + "' order by entrydate desc", objGlobal.getConnection());
             if (rs.next()) {
-                objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode(rs.getString("barcode"));
-            } else {
-                objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode(scan);
+                found = true;
+                objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan(rs.getString("barcode"));
+                objAgeingSlashingScanDetailsGlobal.setRfidFromScan(rs.getString("rfid"));
+                objAgeingSlashingScanDetailsGlobal.setSerialCodeFromScam(rs.getString("SerializedCode"));
+            }
+            if (!found) {
+                rs = dbConnection.getResultSet("select top 1 barcode,SerializedCode=isnull(SerializedCode,''),rfid=isnull(rfid,'') from rfpair where Rfid='" + scan + "' order by entrydate desc", objGlobal.getConnection());
+                if (rs.next()) {
+                    found = true;
+                    objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan(rs.getString("barcode"));
+                    objAgeingSlashingScanDetailsGlobal.setRfidFromScan(rs.getString("rfid"));
+                    objAgeingSlashingScanDetailsGlobal.setSerialCodeFromScam(rs.getString("SerializedCode"));
+                }
+            }
+            if(!found) {
+                objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan(scan);
             }
         } catch (Exception e) {
-            objGlobal.setErrorMessage(e.toString());
+            objGlobal.setErrorMessage("getAgeingPairBarcodeFromRfid:" + e);
             return false;
         }
         return true;
     }
+
     public boolean getLatestBatchNo() {
         if (!checkConnection()) {
             return false;

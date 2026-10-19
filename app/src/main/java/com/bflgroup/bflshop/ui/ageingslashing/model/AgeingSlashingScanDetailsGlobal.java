@@ -24,7 +24,9 @@ public class AgeingSlashingScanDetailsGlobal {
     private static int scanQty;
     private static int slashQty;
     private static String addInfo;
-    private static String rfidScanBarcode;
+    private static String barcodeFromScan;
+    private static String rfidFromScan;
+    private static String serialCodeFromScam;
 
     public static String getItemName() {
         return itemName;
@@ -186,12 +188,28 @@ public class AgeingSlashingScanDetailsGlobal {
         AgeingSlashingScanDetailsGlobal.savePercentage = savePercentage;
     }
 
-    public static String getRfidScanBarcode() {
-        return rfidScanBarcode;
+    public static String getBarcodeFromScan() {
+        return barcodeFromScan;
     }
 
-    public static void setRfidScanBarcode(String rfidScanBarcode) {
-        AgeingSlashingScanDetailsGlobal.rfidScanBarcode = rfidScanBarcode;
+    public static void setBarcodeFromScan(String barcodeFromScan) {
+        AgeingSlashingScanDetailsGlobal.barcodeFromScan = barcodeFromScan;
+    }
+
+    public static String getRfidFromScan() {
+        return rfidFromScan;
+    }
+
+    public static void setRfidFromScan(String rfidFromScan) {
+        AgeingSlashingScanDetailsGlobal.rfidFromScan = rfidFromScan;
+    }
+
+    public static String getSerialCodeFromScam() {
+        return serialCodeFromScam;
+    }
+
+    public static void setSerialCodeFromScam(String serialCodeFromScam) {
+        AgeingSlashingScanDetailsGlobal.serialCodeFromScam = serialCodeFromScam;
     }
 
     public static String getAddInfo() {

@@ -132,24 +132,41 @@ public class AgeingSlashingWifyControl {
         return true;
     }
 
-    public boolean getAgeingPairBarcodeFromRfid(String scan) {
+    public boolean getAgeingPairBarcodeFromRfidSerial(String scan) {
+        boolean found = false;
         if (!checkConnection()) {
             return false;
         }
         try {
-            objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode("");
-            rs = dbConnection.getResultSet("select top 1 barcode from rfpair where (SerializedCode='" + scan + "' or rfid='" + scan + "') order by entrydate desc", objGlobal.getConnection());
+            objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan("");
+            objAgeingSlashingScanDetailsGlobal.setRfidFromScan("");
+            objAgeingSlashingScanDetailsGlobal.setSerialCodeFromScam("");
+            rs = dbConnection.getResultSet("select top 1 barcode,SerializedCode=isnull(SerializedCode,''),rfid=isnull(rfid,'') from rfpair where SerializedCode='" + scan + "' order by entrydate desc", objGlobal.getConnection());
             if (rs.next()) {
-                objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode(rs.getString("barcode"));
-            } else {
-                objAgeingSlashingScanDetailsGlobal.setRfidScanBarcode(scan);
+                found = true;
+                objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan(rs.getString("barcode"));
+                objAgeingSlashingScanDetailsGlobal.setRfidFromScan(rs.getString("rfid"));
+                objAgeingSlashingScanDetailsGlobal.setSerialCodeFromScam(rs.getString("SerializedCode"));
+            }
+            if (!found) {
+                rs = dbConnection.getResultSet("select top 1 barcode,SerializedCode=isnull(SerializedCode,''),rfid=isnull(rfid,'') from rfpair where Rfid='" + scan + "' order by entrydate desc", objGlobal.getConnection());
+                if (rs.next()) {
+                    found = true;
+                    objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan(rs.getString("barcode"));
+                    objAgeingSlashingScanDetailsGlobal.setRfidFromScan(rs.getString("rfid"));
+                    objAgeingSlashingScanDetailsGlobal.setSerialCodeFromScam(rs.getString("SerializedCode"));
+                }
+            }
+            if(!found) {
+                objAgeingSlashingScanDetailsGlobal.setBarcodeFromScan(scan);
             }
         } catch (Exception e) {
-            objGlobal.setErrorMessage("getAgeingPairBarcodeFromRfid:"+e.toString());
+            objGlobal.setErrorMessage("getAgeingPairBarcodeFromRfid:" + e);
             return false;
         }
         return true;
     }
+
     public boolean getLatestBatchNo() {
         if (!checkConnection()) {
             return false;
@@ -177,9 +194,10 @@ public class AgeingSlashingWifyControl {
             return false;
         }
         try {
-            b_Result = dbConnection.insertUpdate("insert into scanAgeingLog(SrId,BatchNo,ScanBarCode,ScanDate,ScanTime,Remarks,username,DeviceId,Itemcode) " +
+            b_Result = dbConnection.insertUpdate("insert into scanAgeingLog(SrId,BatchNo,ScanBarCode,ScanDate,ScanTime,Remarks,username,DeviceId,Itemcode,Rfid,SerializedCode) " +
                     "values (replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''),'" + batchNo + "','" + scanCode + "',convert(varchar,getdate(),103),convert(varchar,getdate(),8),'" +
-                    remarks + "','" + objGlobal.getUserName() + "','" + objGlobal.getDeviceName() + "','" + itemcode + "')", objGlobal.getConnection());
+                    remarks + "','" + objGlobal.getUserName() + "','" + objGlobal.getDeviceName() + "','" + itemcode + "','" + objAgeingSlashingScanDetailsGlobal.getRfidFromScan() + "'," +
+                    "'" + objAgeingSlashingScanDetailsGlobal.getSerialCodeFromScam() + "')", objGlobal.getConnection());
             if (b_Result == false) {
                 return false;
             }
@@ -318,29 +336,30 @@ public class AgeingSlashingWifyControl {
                 }
             }
             b_Result = dbConnection.insertUpdate("insert into AgeingItemsLogNew(BatchNO,Srid,Itemcode,ItemName,Department,Division,GroupCode,GroupName,CurrPrice,NewPrice,LabelType,SlashingType,WasPrice,TrfNo,ScanDate," +
-                    "ScanTime,NewBarcode,NewTrfNo,Export,DeviceId,UserId) values ('" + BatchNO + "',replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''),'" + itemcode + "'," +
+                    "ScanTime,NewBarcode,NewTrfNo,Export,DeviceId,UserId,Rfid,SerializedCode) values ('" + BatchNO + "',replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''),'" + itemcode + "'," +
                     "'" + objAgeingSlashingScanDetailsGlobal.getItemName() + "','" + objAgeingSlashingScanDetailsGlobal.getDepartment() + "','" + objAgeingSlashingScanDetailsGlobal.getDivision() + "'," +
                     "'" + objAgeingSlashingScanDetailsGlobal.getGroupCode() + "','" + objAgeingSlashingScanDetailsGlobal.getGroupName() + "'," + objAgeingSlashingScanDetailsGlobal.getCurrPrice() + "," +
                     "" + objAgeingSlashingScanDetailsGlobal.getNewPrice() + ",'" + objAgeingSlashingScanDetailsGlobal.getLabelType() + "','" + objAgeingSlashingScanDetailsGlobal.getSlashingType() + "'," +
                     "" + objAgeingSlashingScanDetailsGlobal.getWasPrice() + ",'" + objAgeingSlashingScanDetailsGlobal.getTrfNo() + "',convert(varchar,getdate(),103),convert(varchar,getdate(),8)," +
                     "'" + objAgeingSlashingScanDetailsGlobal.getNewBarcode() + "','" + objAgeingSlashingScanDetailsGlobal.getNewTrfNo() + "','Y','" + objGlobal.getDeviceName() + "'," +
-                    "" + objGlobal.getUserId() + ")", objGlobal.getConnection());
+                    "" + objGlobal.getUserId() + ",'" + objAgeingSlashingScanDetailsGlobal.getRfidFromScan() + "','" + objAgeingSlashingScanDetailsGlobal.getSerialCodeFromScam() + "')", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();
                 return false;
             }
-            b_Result = dbConnection.insertUpdate("insert into PriceDetailAgeing(EntryNo,ItemCode,Quantity,SalesPrice,NewPrice,TrfNo,TrfDate,IDNo,Status,RFId) values ('" + entryNo + "'," +
+            b_Result = dbConnection.insertUpdate("insert into PriceDetailAgeing(EntryNo,ItemCode,Quantity,SalesPrice,NewPrice,TrfNo,TrfDate,IDNo,Status,RFId,Epc,SerializedCode) values ('" + entryNo + "'," +
                     "'" + itemcode + "',1," + objAgeingSlashingScanDetailsGlobal.getCurrPrice() + "," + objAgeingSlashingScanDetailsGlobal.getNewPrice() + ",'" + objAgeingSlashingScanDetailsGlobal.getTrfNo() + "'," +
                     "" + objAgeingSlashingScanDetailsGlobal.getTrfDate() + ",'" + objAgeingSlashingScanDetailsGlobal.getNewTrfNo().replace("T", "") + "',''," +
-                    "'" + objAgeingSlashingScanDetailsGlobal.getLabelType() + "')", objGlobal.getConnection());
+                    "'" + objAgeingSlashingScanDetailsGlobal.getLabelType() + "','" + objAgeingSlashingScanDetailsGlobal.getRfidFromScan() + "','" + objAgeingSlashingScanDetailsGlobal.getSerialCodeFromScam() + "')", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();
                 return false;
             }
-            b_Result = dbConnection.insertUpdate("Insert into TrfSalesPriceAgeing(CostCode,Itemcode,TrfNo,OldPrice,SuggPrice,NewPrice,Remarks,PriceDate,DispDate,SN,PriceType,Invoiceno,InvoiceDate,RFID) " +
+            b_Result = dbConnection.insertUpdate("Insert into TrfSalesPriceAgeing(CostCode,Itemcode,TrfNo,OldPrice,SuggPrice,NewPrice,Remarks,PriceDate,DispDate,SN,PriceType,Invoiceno,InvoiceDate,RFID,SerializedCode) " +
                     "values('" + objPosGlobal.getCostCode() + "','" + itemcode + "','" + objAgeingSlashingScanDetailsGlobal.getTrfNo() + "'," + objAgeingSlashingScanDetailsGlobal.getCurrPrice() + "," +
-                    "" + objAgeingSlashingScanDetailsGlobal.getNewPrice() + "," + objAgeingSlashingScanDetailsGlobal.getNewPrice() + ",'" + entryNo + "','" + objGlobal.getServerDate() + "'," +
-                    "null,'" + objAgeingSlashingScanDetailsGlobal.getNewTrfNo().replace("T", "") + "','N','',null,'')", objGlobal.getConnection());
+                    "" + objAgeingSlashingScanDetailsGlobal.getNewPrice() + "," + objAgeingSlashingScanDetailsGlobal.getNewPrice() + ",'" + entryNo + "','" + objGlobal.getServerDate() + "',null," +
+                    "'" + objAgeingSlashingScanDetailsGlobal.getNewTrfNo().replace("T", "") + "','N','',null,'" + objAgeingSlashingScanDetailsGlobal.getRfidFromScan() + "'," +
+                    "'" + objAgeingSlashingScanDetailsGlobal.getSerialCodeFromScam() + "')", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();
                 return false;
@@ -401,13 +420,13 @@ public class AgeingSlashingWifyControl {
         try {
             objGlobal.getConnection().setAutoCommit(false);
             b_Result = dbConnection.insertUpdate("insert into AgeingItemsLogNew(BatchNO,Srid,Itemcode,ItemName,Department,Division,GroupCode,GroupName,CurrPrice,NewPrice,LabelType,SlashingType,WasPrice,TrfNo,ScanDate," +
-                    "ScanTime,NewBarcode,NewTrfNo,Export,DeviceId,UserId) values ('" + BatchNO + "',replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''),'" + itemcode + "'," +
+                    "ScanTime,NewBarcode,NewTrfNo,Export,DeviceId,UserId,RFID,SerializedCode) values ('" + BatchNO + "',replace(replace(replace(replace(convert(varchar,getdate(),121),'-',''),' ',''),':',''),'.',''),'" + itemcode + "'," +
                     "'" + objAgeingSlashingScanDetailsGlobal.getItemName() + "','" + objAgeingSlashingScanDetailsGlobal.getDepartment() + "','" + objAgeingSlashingScanDetailsGlobal.getDivision() + "'," +
                     "'" + objAgeingSlashingScanDetailsGlobal.getGroupCode() + "','" + objAgeingSlashingScanDetailsGlobal.getGroupName() + "'," + objAgeingSlashingScanDetailsGlobal.getCurrPrice() + "," +
                     "" + objAgeingSlashingScanDetailsGlobal.getNewPrice() + ",'" + objAgeingSlashingScanDetailsGlobal.getLabelType() + "','" + objAgeingSlashingScanDetailsGlobal.getSlashingType() + "'," +
                     "" + objAgeingSlashingScanDetailsGlobal.getWasPrice() + ",'" + objAgeingSlashingScanDetailsGlobal.getTrfNo() + "',convert(varchar,getdate(),103),convert(varchar,getdate(),8)," +
                     "'" + objAgeingSlashingScanDetailsGlobal.getNewBarcode() + "','" + objAgeingSlashingScanDetailsGlobal.getNewTrfNo() + "','Y','" + objGlobal.getDeviceName() + "'," +
-                    "" + objGlobal.getUserId() + ")", objGlobal.getConnection());
+                    "" + objGlobal.getUserId() + ",'" + objAgeingSlashingScanDetailsGlobal.getRfidFromScan() + "','" + objAgeingSlashingScanDetailsGlobal.getSerialCodeFromScam() + "')", objGlobal.getConnection());
             if (!b_Result) {
                 objGlobal.getConnection().rollback();
                 return false;

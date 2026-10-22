@@ -1,12 +1,16 @@
 package com.bflgroup.bflshop.comm;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.sewoo.jpos.printer.CPCLPrinter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 
 public class BarcodePrinting {
@@ -153,6 +157,50 @@ public class BarcodePrinting {
         printData = addToDataVault(printData, "E\r\n".getBytes());
         return printData;
     }
+    public byte[] getSlashingQrCode(
+           String mainHead,String addinfo,String barcode,String itemCode, String shopcode, String subclass, String price ) {
+
+        String mainHead1 = "1911A1000780019" + mainHead + "\r\n";
+        String itemName1 = "1911A0800650007" + addinfo + "\r\n";
+        String itemCode1 = "1911A0600550052" + itemCode + "\r\n";
+        String shopcode1 = "1911A0600550115" + shopcode + "\r\n";
+        String subclass1 = "1911A0600550140" + subclass + "\r\n";
+        // QR Code - replaced the original 1D barcode
+        String barcode2 = "1W1d4400000220006" + barcode + "\r\r";
+
+        byte[] printData = new byte[]{0};
+
+        printData = addToDataVault(printData, "\u0002n\r\n".getBytes());
+        printData = addToDataVault(printData, "\u0002M0500\r\n".getBytes());
+        printData = addToDataVault(printData, "\u0002KcLW0200;\r\n".getBytes());
+        printData = addToDataVault(printData, "\u0002V0\r\n".getBytes());
+        printData = addToDataVault(printData, "\u0002SG\r\n".getBytes());
+        printData = addToDataVault(printData, "\u0002d\r\n".getBytes());
+        printData = addToDataVault(printData, "\u0002L\r\n".getBytes());
+
+        printData = addToDataVault(printData, "D11\r\n".getBytes());
+        printData = addToDataVault(printData, "PG\r\n".getBytes());
+        printData = addToDataVault(printData, "pG\r\n".getBytes());
+        printData = addToDataVault(printData, "SG\r\n".getBytes());
+        printData = addToDataVault(printData, "ySPM\r\n".getBytes());
+        printData = addToDataVault(printData, "A2\r\n".getBytes());
+
+        printData = addToDataVault(printData, mainHead1.getBytes());
+        printData = addToDataVault(printData, itemName1.getBytes());
+
+        // Print QR code
+        printData = addToDataVault(printData, barcode2.getBytes());
+
+        printData = addToDataVault(printData, "FB+\r\n".getBytes());
+        printData = addToDataVault(printData, itemCode1.getBytes());
+        printData = addToDataVault(printData, "FB-\r\n".getBytes());
+        printData = addToDataVault(printData, shopcode1.getBytes());
+        printData = addToDataVault(printData, "FB-\r\n".getBytes());
+        printData = addToDataVault(printData, subclass1.getBytes());
+        printData = addToDataVault(printData, "E\r\n".getBytes());
+        return printData;
+    }
+
     public byte[] getSlashingBarcodeWasNowArabic(String mainHead, String subHead, String itemCode, String itemName, String barcode, String trfno, String was, String now, String mark,
                                            String usid, String pQty, String wasHead, String nowHead, String addinfo,String arabicDesc) {
         String mainHead1 = "1911A1000780019" + mainHead + "\r\n";
@@ -573,5 +621,95 @@ public class BarcodePrinting {
             Log.e("PRINT", "Bidi reorder failed, using logical order", e);
             return shapedLogical;
         }
+    }
+
+    public String ZebraQRPrint(String compName, String iName,
+                               String qrCode, String plNo1,
+                               String plNo2, String mFCCode,
+                               double isPrice) {
+
+        StringBuilder zpl = new StringBuilder();
+
+        zpl.append("^XA\n");
+        zpl.append("^MMT\n");
+        zpl.append("^PW430\n");
+        zpl.append("^LL0270\n");
+        zpl.append("^LS0\n");
+
+        // Company Name
+        zpl.append("^FT79,30^A0N,28,28^FH\\^FD")
+                .append(compName)
+                .append("^FS\n");
+
+        // Item Name
+        zpl.append("^FT35,58^A0N,18,18^FH\\^FD")
+                .append(iName.trim())
+                .append("^FS\n");
+
+        // QR Code
+        zpl.append("^FT35,168^BQN,2,4\n");
+        zpl.append("^FH\\^FDLA,")
+                .append(qrCode)
+                .append("^FS\n");
+
+        // PL Number 1
+        zpl.append("^FT130,86^A0N,18,18^FH\\^FD")
+                .append(plNo1)
+                .append("^FS\n");
+
+        // PL Number 2
+        zpl.append("^FT130,106^A0N,18,18^FH\\^FD")
+                .append(plNo2)
+                .append("^FS\n");
+
+        // Currency Code and Price
+        zpl.append("^FT130,155^A0N,35,40^FH\\^FD")
+                .append(mFCCode)
+                .append(" ")
+                .append((int) isPrice)
+                .append("^FS\n");
+
+        // Print Quantity
+        zpl.append("^PQ1,0,1,Y^XZ\n");
+
+        return zpl.toString();
+    }
+    public byte[] HoneywellQRPrint(
+            String compName,
+            String itemName,
+            String qrCode,
+            String plNo1,
+            String plNo2,
+            String currency,
+            double price) {
+
+        StringBuilder dpl = new StringBuilder();
+
+        // Initialize printer
+        dpl.append("\u0002n\r\n");
+        dpl.append("\u0002L\r\n");
+
+        dpl.append("D11\r\n");
+        dpl.append("A2\r\n");
+
+        // Company name
+        dpl.append("1911A0601700020")
+                .append(compName)
+                .append("\r\n");
+
+        // Product name
+        dpl.append("1911A0601450020")
+                .append(itemName.trim())
+                .append("\r\n");
+
+        // QR code
+        dpl.append("1W1d2200000250020")
+                .append(qrCode)
+                .append("\r\r");
+
+        dpl.append("Q0001\r\n");
+        dpl.append("E\r\n");
+
+        return dpl.toString().getBytes(StandardCharsets.US_ASCII);
     }
 }

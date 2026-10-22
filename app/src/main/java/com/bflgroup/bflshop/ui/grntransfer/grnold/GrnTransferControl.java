@@ -148,12 +148,12 @@ public class GrnTransferControl {
             rs = stmt.executeQuery(query);
             if (rs.next()) {
                 if(!view) {
-                    objGlobal.setErrorMessage("Tranfer already found in GRN, " + trfNo);
+                    objGlobal.setErrorMessage("Transfer already found in GRN, " + trfNo);
                     return false;
                 }
             } else {
                 if(view) {
-                    objGlobal.setErrorMessage("Tranfer not found in GRN, "+ trfNo);
+                    objGlobal.setErrorMessage("Transfer not found in GRN, "+ trfNo);
                     return false;
                 }
             }

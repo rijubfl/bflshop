@@ -60,6 +60,7 @@ import com.sewoo.port.android.BluetoothPort;
 import com.sewoo.request.android.RequestHandler;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -426,6 +427,25 @@ public class AgeingSlashingWifyFragment extends Fragment {
                 if (testPrint) {
                     printData = objSample_Print.getLabelWasNowHoneyWellTestPrint(objAgeingSlashingScanDetailsGlobal.getLabelType());
                 } else {
+//                    printData = objSample_Print.HoneywellQRPrint(
+//                            tv_aging_slash_popup_sticker_comp_name.getText().toString(),
+//                            tv_aging_slash_popup_sticker_prod_name.getText().toString(),
+//                            tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+//                            "test",
+//                            "test",
+//                            "test",
+//                            100.00
+//                    );
+
+//                    printData = objSample_Print.getSlashingQrCode(tv_aging_slash_popup_sticker_comp_name.getText().toString(),
+//                            tv_aging_slash_popup_scan_addinfo.getText().toString(),
+//                            tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+//                            "190035463717",
+//                            "U65",
+//                            "CHILDREN BOTTOMS",
+//                            "100.00");
+
+
                     if (objPosGlobal.getPrintWasNowPerc().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
                         if (objPosGlobal.getArabicDescription().equals("Y")) {
                             String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
@@ -482,7 +502,6 @@ public class AgeingSlashingWifyFragment extends Fragment {
                                     tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
                                     tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_addinfo.getText().toString());
                         }
-
                     }
                 }
                 return objSample_Print.PrintBarcodeByte(printData);

@@ -55,6 +55,7 @@ public class GrnTransferNewFragment extends Fragment {
     private GrnShopTransferControl objGrnShopTransferControl = new GrnShopTransferControl();
 
     private boolean b_Result;
+    private boolean isSaving = false;
 
     private String scanItemcode = "";
     private float scanPrice = 0;
@@ -280,12 +281,16 @@ public class GrnTransferNewFragment extends Fragment {
     }
 
     private void saveGrn() {
+        if (isSaving) return;
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setMessage("Are You sure to save?")
                 .setTitle("Confirmation")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if (isSaving) return;
+                        isSaving = true;
+                        bt_grn_transfer_save.setEnabled(false);
                         new SaveGrnShopTransfer().execute();
                     }
                 })
@@ -426,6 +431,8 @@ public class GrnTransferNewFragment extends Fragment {
                     et_grn_transfer_trfno_entryno.requestFocus();
                 }
             }
+            isSaving = false;
+            bt_grn_transfer_save.setEnabled(true);
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }

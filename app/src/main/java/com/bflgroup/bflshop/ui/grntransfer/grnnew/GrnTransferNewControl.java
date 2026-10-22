@@ -101,12 +101,12 @@ public class GrnTransferNewControl {
             rs = dbConnection.getResultSet("select * from grnheaderrf where trfno='" + objGrnTransferNewGlobal.getTrfno() + "'", objGlobal.getConnection());
             if (rs.next()) {
                 if (!view) {
-                    objGlobal.setErrorMessage("Tranfer already found in GRN, " + objGrnTransferNewGlobal.getTrfno());
+                    objGlobal.setErrorMessage("Transfer already found in GRN, " + objGrnTransferNewGlobal.getTrfno());
                     return false;
                 }
             } else {
                 if (view) {
-                    objGlobal.setErrorMessage("Tranfer not found in GRN, " + objGrnTransferNewGlobal.getTrfno());
+                    objGlobal.setErrorMessage("Transfer not found in GRN, " + objGrnTransferNewGlobal.getTrfno());
                     return false;
                 }
             }
@@ -450,90 +450,117 @@ public class GrnTransferNewControl {
         }
     }
 
-    public boolean grnSave(String trfNo, String trfDate,String ginno) {
-        if(!validateTransferNumber(false,true,trfNo,ginno)) {
+    // Uses a row-level lock on TransferHeader rather than a global application lock.
+    // Different transfers can be saved independently; the same transfer is serialized
+    // by this method. Other save paths must follow the same rule or use unique indexes.
+    public boolean grnSave(String trfNo, String trfDate, String ginno) {
+        if (!validateTransferNumber(false, true, trfNo, ginno)) return false;
+        final String actualTrfNo = objGrnTransferNewGlobal.getTrfno();
+        if (TextUtils.isEmpty(actualTrfNo)) {
+            objGlobal.setErrorMessage("Unable to resolve actual transfer number");
             return false;
         }
-        if (!dbConnection.getServerDateTime(objGlobal.getConnection())) {
-            return false;
-        }
-        try{
-            rs = dbConnection.getResultSet("select top 1 TrfNo,TrfDate=convert(varchar,TrfDate,103),StoreIssue from transferheader where (trfno='" + trfNo + "' or StoreIssue='" + trfNo + "') order by trfdate desc", objGlobal.getConnection());
-            if (!rs.next()) {
-                objGlobal.setErrorMessage("Invalid Transfer Number/Toteid, " + trfNo);
-                return false;
-            }
-            rs = dbConnection.getResultSet("select * from grnheaderrf where trfno='" + trfNo + "'", objGlobal.getConnection());
-            if (rs.next()) {
-                objGlobal.setErrorMessage("Tranfer already found in GRN (1), " + trfNo);
-                return false;
-            }
-            rs = dbConnection.getResultSet("select * from GRNDetail where trfno='" + trfNo + "'", objGlobal.getConnection());
-            if (rs.next()) {
-                objGlobal.setErrorMessage("Tranfer already found in GRN (2), " + trfNo);
-                return false;
-            }
-            rs = dbConnection.getResultSet("select * from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and ScanQty>0", objGlobal.getConnection());
-            if (!rs.next()) {
-                objGlobal.setErrorMessage("No item is scanned for save");
-                return false;
-            }
-        } catch (Exception e){
-            objGlobal.setErrorMessage("GrnTransferNewControl:grnSave:try(1):" + e.getMessage());
-            return false;
-        }
+        if (!dbConnection.getServerDateTime(objGlobal.getConnection())) return false;
+
+        java.sql.Connection connection = objGlobal.getConnection();
+        boolean transactionStarted = false;
         try {
-            b_Result = getLatestGrnRf();
-            if(!b_Result){
-                return false;
-            }
-            b_Result = getLatestGrn(objGlobal.getServerDate());
-            if(!b_Result){
-                return false;
-            }
-            objGlobal.getConnection().setAutoCommit(false);
-            b_Result = dbConnection.insertUpdate("insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) values('" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + objGlobal.getServerDate() + "','" + objGlobal.getUserName() + "'," +
-                    "'" + trfNo + "')", objGlobal.getConnection());
-            if (!b_Result) {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-                return false;
-            }
-            b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "'," +
-                    "'" + ginno + "','" + trfNo + "',itemcode,rfid,'',TrfQty,ScanQty,(ScanQty-TrfQty),SerializedCode from tmpGrnScanItems where deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
-            if (!b_Result) {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-                return false;
-            }
-            if (firstGrn) {
-                b_Result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "',''," + objGlobal.getUserId() + ")", objGlobal.getConnection());
-                if (!b_Result) {
-                    objGlobal.getConnection().rollback();
-                    objGlobal.getConnection().setAutoCommit(true);
-                    return false;
+            connection.setAutoCommit(false);
+            transactionStarted = true;
+
+            // Lock the canonical transfer row until commit/rollback. This is not
+            // sp_getapplock and does not serialize unrelated transfers.
+            try (java.sql.PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT TrfNo FROM TransferHeader WITH (UPDLOCK, HOLDLOCK) WHERE TrfNo=?")) {
+                stmt.setString(1, actualTrfNo);
+                try (ResultSet result = stmt.executeQuery()) {
+                    if (!result.next()) {
+                        objGlobal.setErrorMessage("Transfer not found: " + actualTrfNo);
+                        return rollbackGrn(connection);
+                    }
                 }
             }
-            b_Result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + trfNo + "','" + trfDate + "',sum(TrfQty),'',sum(ScanQty),sum(ScanQty-TrfQty) from tmpGrnScanItems where " +
-                    "deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection());
-            if (!b_Result) {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-                return false;
+
+            // Final checks must happen after acquiring the transfer lock.
+            String existingSql = "SELECT 1 FROM GRNHeaderRF WHERE TrfNo=? " +
+                    "UNION ALL SELECT 1 FROM GRNDetail WHERE TrfNo=?";
+            try (java.sql.PreparedStatement stmt = connection.prepareStatement(existingSql)) {
+                stmt.setString(1, actualTrfNo);
+                stmt.setString(2, actualTrfNo);
+                try (ResultSet result = stmt.executeQuery()) {
+                    if (result.next()) {
+                        objGlobal.setErrorMessage("Transfer already found in GRN: " + actualTrfNo);
+                        return rollbackGrn(connection);
+                    }
+                }
             }
-            objGlobal.getConnection().commit();
-            objGlobal.getConnection().setAutoCommit(true);
+
+            try (java.sql.PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT TOP 1 1 FROM tmpGrnScanItems WHERE DeviceId=? AND ScanQty>0")) {
+                stmt.setString(1, objGlobal.getDeviceName());
+                try (ResultSet result = stmt.executeQuery()) {
+                    if (!result.next()) {
+                        objGlobal.setErrorMessage("No item is scanned for save");
+                        return rollbackGrn(connection);
+                    }
+                }
+            }
+
+            // These methods use the same connection; neither may reconnect here.
+            if (!getLatestGrnRf() || !getLatestGrn(objGlobal.getServerDate())) {
+                return rollbackGrn(connection);
+            }
+
+            String rfNo = objGrnTransferNewGlobal.getLatestGrnNoRf();
+            String grnNo = objGrnTransferNewGlobal.getLatestGrnNo();
+            String date = objGlobal.getServerDate();
+            String device = objGlobal.getDeviceName();
+
+            if (!dbConnection.insertUpdate(
+                    "insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) values('" +
+                            rfNo + "','" + date + "','" + objGlobal.getUserName() + "','" + actualTrfNo + "')", connection)) {
+                return rollbackGrn(connection);
+            }
+            if (!dbConnection.insertUpdate(
+                    "insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) " +
+                            "select '" + rfNo + "','" + ginno + "','" + actualTrfNo +
+                            "',itemcode,rfid,'',TrfQty,ScanQty,(ScanQty-TrfQty),SerializedCode " +
+                            "from tmpGrnScanItems where deviceid='" + device + "'", connection)) {
+                return rollbackGrn(connection);
+            }
+            if (firstGrn && !dbConnection.insertUpdate(
+                    "insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" +
+                            grnNo + "','" + date + "',''," + objGlobal.getUserId() + ")", connection)) {
+                return rollbackGrn(connection);
+            }
+            if (!dbConnection.insertUpdate(
+                    "insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) " +
+                            "select '" + grnNo + "','" + actualTrfNo + "','" + trfDate +
+                            "',sum(TrfQty),'',sum(ScanQty),sum(ScanQty-TrfQty) " +
+                            "from tmpGrnScanItems where deviceid='" + device + "'", connection)) {
+                return rollbackGrn(connection);
+            }
+            connection.commit();
             return true;
         } catch (Exception e) {
-            try {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-            } catch (SQLException sqlException) {
-                objGlobal.setErrorMessage("GrnTransferNewControl:grnSave:try(2):" + e.getMessage());
-                return false;
+            objGlobal.setErrorMessage("GrnTransferNewControl:grnSave: " + e.toString());
+            if (transactionStarted) {
+                try { connection.rollback(); } catch (SQLException rollbackError) {
+                    objGlobal.setErrorMessage(objGlobal.getErrorMessage() + "; rollback: " + rollbackError);
+                }
             }
-            objGlobal.setErrorMessage("GrnTransferNewControl:grnSave:try(3):" + e.getMessage());
             return false;
+        } finally {
+            if (transactionStarted) {
+                try { connection.setAutoCommit(true); } catch (SQLException e) {
+                    objGlobal.setErrorMessage("GRN save connection reset failed: " + e);
+                }
+            }
         }
+    }
+
+    private boolean rollbackGrn(java.sql.Connection connection) throws SQLException {
+        connection.rollback();
+        return false;
     }
 }

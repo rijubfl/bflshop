@@ -96,94 +96,153 @@ public class GinVerificationControl {
         }
     }
 
-    public boolean saveGinVerification(String skipSkuGrn, String ginno) {
+    // Save is not globally serialized across PDAs.
+    public synchronized boolean saveGinVerification(String skipSkuGrn, String ginno) {
+        boolean transactionStarted = false;
         try {
-            if (!dbConnection.getServerDateTime(objGlobal.getConnection())) {
-                objGlobal.setErrorMessage("saveGinVerification:001:");
+            if (!checkConnection() || !dbConnection.getServerDateTime(objGlobal.getConnection())) {
+                objGlobal.setErrorMessage("GIN save: database connection/date unavailable");
                 return false;
             }
             objGlobal.getConnection().setAutoCommit(false);
-            // Skip transfers already verified (another device / repeated save); updlock+holdlock serializes concurrent saves
-            if (!dbConnection.insertUpdate("insert into GinVerify(GinNo,Trndate,TrfNo,ToteId,PalletNo,VerifyTime,UserId,skipsku) select GinNo,'" + objGlobal.getServerDate() + "',TrfNo,ToteId,PalletNo," +
-                    "VerifyTime," + objGlobal.getUserId() + ",skipsku from tmpGinVerify a where deviceid='" + objGlobal.getDeviceName() + "' and Verified='Y' and OldVerify='N' " +
-                    "and not exists(select 1 from GinVerify b with (updlock,holdlock) where b.TrfNo=a.TrfNo)", objGlobal.getConnection())) {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-                return false;
+            transactionStarted = true;
+
+            // Read pending transfers once. DISTINCT avoids processing repeated temp rows.
+            ArrayList<String> pending = new ArrayList<>();
+            try (java.sql.PreparedStatement query = objGlobal.getConnection().prepareStatement(
+                    "SELECT DISTINCT TrfNo FROM tmpGinVerify " +
+                            "WHERE DeviceId=? AND GinNo=? AND Verified='Y' AND OldVerify='N' AND TrfNo IS NOT NULL")) {
+                query.setString(1, objGlobal.getDeviceName());
+                query.setString(2, ginno);
+                try (ResultSet rows = query.executeQuery()) {
+                    while (rows.next()) pending.add(rows.getString(1));
+                }
             }
 
-            b_Result = getLatestGrn(objGlobal.getServerDate());
-            if (!b_Result) {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-                return false;
+            // No pending work: idempotent success.
+            if (pending.isEmpty()) {
+                objGlobal.getConnection().commit();
+                return true;
             }
-            rs = dbConnection.getResultSet("select trfno from tmpGinVerify where deviceid='" + objGlobal.getDeviceName() + "' and skipsku='Y' and Verified='Y' and OldVerify='N'", objGlobal.getConnection());
-            while (rs.next()) {
-                // Re-check at save time: the transfer may have been GRN'd by another device/screen after it was scanned here
-                ResultSet rsChk = dbConnection.getResultSet("select top 1 trfno from GRNDetail with (updlock,holdlock) where TrfNo='" + rs.getString("trfno") + "' " +
-                        "union all select top 1 trfno from GRNHeaderRF with (updlock,holdlock) where TrfNo='" + rs.getString("trfno") + "'", objGlobal.getConnection());
-                if (rsChk.next()) {
-                    continue;
-                }
-                b_Result = getLatestGrnRf(objGlobal.getServerDate());
-                if (!b_Result) {
-                    objGlobal.getConnection().rollback();
-                    objGlobal.getConnection().setAutoCommit(true);
-                    return false;
-                }
-                // Insert GRNHeader only together with its first GRNDetail row so a header is never saved without details
-                if (firstGrn) {
-                    b_Result = dbConnection.insertUpdate("insert into GRNHeader(EntryNo,EntryDate,Remarks,UserId) values('" + objGrnTransferNewGlobal.getLatestGrnNo() + "','" + objGlobal.getServerDate() + "'," +
-                            "'GIN No: " + ginno + "'," + objGlobal.getUserId() + ")", objGlobal.getConnection());
-                    if (!b_Result) {
-                        objGlobal.getConnection().rollback();
-                        objGlobal.getConnection().setAutoCommit(true);
-                        return false;
+
+            // Do not allocate a GRN number unless at least one new SKU-skip GRN is needed.
+            boolean grnNumberReady = false;
+            for (String trfno : pending) {
+                boolean alreadyVerified;
+                boolean alreadyGrn;
+                boolean skipSku;
+                try (java.sql.PreparedStatement q = objGlobal.getConnection().prepareStatement(
+                        "SELECT CASE WHEN EXISTS(SELECT 1 FROM GinVerify WHERE TrfNo=?) THEN 1 ELSE 0 END, " +
+                                "CASE WHEN EXISTS(SELECT 1 FROM GRNDetail WHERE TrfNo=?) OR " +
+                                "EXISTS(SELECT 1 FROM GRNHeaderRF WHERE TrfNo=?) THEN 1 ELSE 0 END, " +
+                                "CASE WHEN EXISTS(SELECT 1 FROM tmpGinVerify WHERE DeviceId=? AND GinNo=? " +
+                                "AND TrfNo=? AND Verified='Y' AND OldVerify='N' AND skipsku='Y') THEN 1 ELSE 0 END")) {
+                    q.setString(1, trfno);
+                    q.setString(2, trfno);
+                    q.setString(3, trfno);
+                    q.setString(4, objGlobal.getDeviceName());
+                    q.setString(5, ginno);
+                    q.setString(6, trfno);
+                    try (ResultSet row = q.executeQuery()) {
+                        if (!row.next()) throw new SQLException("Transfer status not returned: " + trfno);
+                        alreadyVerified = row.getInt(1) == 1;
+                        alreadyGrn = row.getInt(2) == 1;
+                        skipSku = row.getInt(3) == 1;
                     }
-                    firstGrn = false;
                 }
-                b_Result = dbConnection.insertUpdate("insert into GRNdetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) select '" + objGrnTransferNewGlobal.getLatestGrnNo() + "',trfno," +
-                        "'" + objGlobal.getServerDate() + "',sum(Quantity),'',sum(Quantity),0 from TransferDetail where TrfNo='" + rs.getString("trfno") + "' group by trfno", objGlobal.getConnection());
-                if (!b_Result) {
-                    objGlobal.getConnection().rollback();
-                    objGlobal.getConnection().setAutoCommit(true);
-                    return false;
+
+                // An already-received transfer must never be received a second time.
+                // If verification is missing, fail instead of silently creating inconsistent data.
+                if (alreadyGrn && !alreadyVerified) {
+                    throw new SQLException("Transfer already exists in GRN but not GinVerify: " + trfno);
                 }
-                b_Result = dbConnection.insertUpdate("insert into GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "','" + objGlobal.getServerDate() + "'," +
-                        "" + objGlobal.getUserId() + ",'" + rs.getString("trfno") + "'", objGlobal.getConnection());
-                if (!b_Result) {
-                    objGlobal.getConnection().rollback();
-                    objGlobal.getConnection().setAutoCommit(true);
-                    return false;
+                if (!alreadyVerified) {
+                    try (java.sql.PreparedStatement insert = objGlobal.getConnection().prepareStatement(
+                            "INSERT INTO GinVerify(GinNo,Trndate,TrfNo,ToteId,PalletNo,VerifyTime,UserId,skipsku) " +
+                                    "SELECT TOP 1 GinNo,?,TrfNo,ToteId,PalletNo,VerifyTime,?,skipsku " +
+                                    "FROM tmpGinVerify WHERE DeviceId=? AND GinNo=? AND TrfNo=? " +
+                                    "AND Verified='Y' AND OldVerify='N' ORDER BY VerifyTime DESC")) {
+                        insert.setString(1, objGlobal.getServerDate());
+                        insert.setInt(2, Integer.parseInt(String.valueOf(objGlobal.getUserId())));
+                        insert.setString(3, objGlobal.getDeviceName());
+                        insert.setString(4, ginno);
+                        insert.setString(5, trfno);
+                        if (insert.executeUpdate() != 1) throw new SQLException("Verification insert failed: " + trfno);
+                    }
                 }
-                b_Result = dbConnection.insertUpdate("insert into GRNdetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) select '" + objGrnTransferNewGlobal.getLatestGrnNoRf() + "'," +
-                        "'" + ginno + "',TrfNo,Itemcode,EPC,'',quantity,quantity,0,SerializedCode from TransferDetail where TrfNo='" + rs.getString("trfno") + "'", objGlobal.getConnection());
-                if (!b_Result) {
-                    objGlobal.getConnection().rollback();
-                    objGlobal.getConnection().setAutoCommit(true);
-                    return false;
+
+                if (skipSku && !alreadyGrn) {
+                    if (!grnNumberReady) {
+                        if (!getLatestGrn(objGlobal.getServerDate()))
+                            throw new SQLException(objGlobal.getErrorMessage());
+                        grnNumberReady = true;
+                    }
+                    if (!getLatestGrnRf(objGlobal.getServerDate()))
+                        throw new SQLException(objGlobal.getErrorMessage());
+
+                    if (firstGrn) {
+                        try (java.sql.PreparedStatement header = objGlobal.getConnection().prepareStatement(
+                                "INSERT INTO GRNHeader(EntryNo,EntryDate,Remarks,UserId) VALUES(?,?,?,?)")) {
+                            header.setString(1, objGrnTransferNewGlobal.getLatestGrnNo());
+                            header.setString(2, objGlobal.getServerDate());
+                            header.setString(3, "GIN No: " + ginno);
+                            header.setInt(4, Integer.parseInt(String.valueOf(objGlobal.getUserId())));
+                            if (header.executeUpdate() != 1) throw new SQLException("GRN header insert failed");
+                        }
+                        firstGrn = false;
+                    }
+                    try (java.sql.PreparedStatement detail = objGlobal.getConnection().prepareStatement(
+                            "INSERT INTO GRNDetail(EntryNo,TrfNo,TrfDate,Qty,Remarks,ScanQty,Diff) " +
+                                    "SELECT ?,TrfNo,?,SUM(Quantity),'',SUM(Quantity),0 " +
+                                    "FROM TransferDetail WHERE TrfNo=? GROUP BY TrfNo")) {
+                        detail.setString(1, objGrnTransferNewGlobal.getLatestGrnNo());
+                        detail.setString(2, objGlobal.getServerDate());
+                        detail.setString(3, trfno);
+                        if (detail.executeUpdate() != 1)
+                            throw new SQLException("TransferDetail missing for " + trfno);
+                    }
+                    try (java.sql.PreparedStatement rfHeader = objGlobal.getConnection().prepareStatement(
+                            "INSERT INTO GRNHeaderRF(EntryNo,EntryDate,UserId,TrfNo) VALUES(?,?,?,?)")) {
+                        rfHeader.setString(1, objGrnTransferNewGlobal.getLatestGrnNoRf());
+                        rfHeader.setString(2, objGlobal.getServerDate());
+                        rfHeader.setInt(3, Integer.parseInt(String.valueOf(objGlobal.getUserId())));
+                        rfHeader.setString(4, trfno);
+                        if (rfHeader.executeUpdate() != 1) throw new SQLException("RF header insert failed");
+                    }
+                    try (java.sql.PreparedStatement rfDetail = objGlobal.getConnection().prepareStatement(
+                            "INSERT INTO GRNDetailRF(EntryNo,GINNo,TrfNo,Itemcode,RfId,ScanMode,TrfQty,ScanQty,Diff,SerializedCode) " +
+                                    "SELECT ?,?,TrfNo,Itemcode,EPC,'',Quantity,Quantity,0,SerializedCode " +
+                                    "FROM TransferDetail WHERE TrfNo=?")) {
+                        rfDetail.setString(1, objGrnTransferNewGlobal.getLatestGrnNoRf());
+                        rfDetail.setString(2, ginno);
+                        rfDetail.setString(3, trfno);
+                        if (rfDetail.executeUpdate() < 1) throw new SQLException("RF detail missing: " + trfno);
+                    }
                 }
             }
-            // Mark rows as saved so a repeated Save (e.g. clearAll failed) cannot create the GRN again
-            if (!dbConnection.insertUpdate("update tmpGinVerify set OldVerify='Y' where deviceid='" + objGlobal.getDeviceName() + "' and Verified='Y' and OldVerify='N'", objGlobal.getConnection())) {
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-                return false;
+            try (java.sql.PreparedStatement mark = objGlobal.getConnection().prepareStatement(
+                    "UPDATE tmpGinVerify SET OldVerify='Y' WHERE DeviceId=? AND GinNo=? " +
+                            "AND Verified='Y' AND OldVerify='N'")) {
+                mark.setString(1, objGlobal.getDeviceName());
+                mark.setString(2, ginno);
+                mark.executeUpdate();
             }
             objGlobal.getConnection().commit();
-            objGlobal.getConnection().setAutoCommit(true);
             return true;
         } catch (Exception ex) {
-            try {
-                objGlobal.setErrorMessage("BinBatchInControl:saveBatchIn:ex:" + ex);
-                objGlobal.getConnection().rollback();
-                objGlobal.getConnection().setAutoCommit(true);
-            } catch (SQLException e) {
-                objGlobal.setErrorMessage("BinBatchInControl:saveBatchIn:e:" + e);
-                return false;
+            objGlobal.setErrorMessage("GinVerificationControl:saveGinVerification: " + ex);
+            if (transactionStarted) {
+                try { objGlobal.getConnection().rollback(); }
+                catch (SQLException rollbackEx) {
+                    objGlobal.setErrorMessage(objGlobal.getErrorMessage() + "; rollback: " + rollbackEx);
+                }
             }
             return false;
+        } finally {
+            if (transactionStarted) {
+                try { objGlobal.getConnection().setAutoCommit(true); }
+                catch (SQLException ex) { objGlobal.setErrorMessage("Restore autoCommit: " + ex); }
+            }
         }
     }
 
@@ -295,12 +354,12 @@ public class GinVerificationControl {
             }
             rs = dbConnection.getResultSet("select * from grnheaderrf where trfno='" + trfno + "'", objGlobal.getConnection());
             if (rs.next()) {
-                objGlobal.setErrorMessage("Tranfer already found in GRN (1), " + trfno);
+                objGlobal.setErrorMessage("Transfer already found in GRN (1), " + trfno);
                 return false;
             }
             rs = dbConnection.getResultSet("select * from GRNDetail where trfno='" + trfno + "'", objGlobal.getConnection());
             if (rs.next()) {
-                objGlobal.setErrorMessage("Tranfer already found in GRN (2), " + trfno);
+                objGlobal.setErrorMessage("Transfer already found in GRN (2), " + trfno);
                 return false;
             }
             String skipsku = objPosGlobal.getSkipScanSkuGrn();

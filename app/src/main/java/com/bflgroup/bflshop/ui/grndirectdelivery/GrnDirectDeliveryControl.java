@@ -78,12 +78,12 @@ public class GrnDirectDeliveryControl {
             rs = dbConnection.getResultSet("select * from DirectDeliveryHeader where PONo='" + trfNo + "' and shop='" + objPosGlobal.getShopName() + "'", objGlobal.getCloudCon());
             if (rs.next()) {
                 if (!view) {
-                    objGlobal.setErrorMessage("Tranfer already found in GRN");
+                    objGlobal.setErrorMessage("Transfer already found in GRN");
                     return false;
                 }
             } else {
                 if (view) {
-                    objGlobal.setErrorMessage("Tranfer not found in GRN");
+                    objGlobal.setErrorMessage("Transfer not found in GRN");
                     return false;
                 }
             }

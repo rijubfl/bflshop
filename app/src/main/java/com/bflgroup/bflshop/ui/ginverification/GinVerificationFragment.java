@@ -52,6 +52,7 @@ public class GinVerificationFragment extends Fragment {
     MyGinVerificationAdp objMyGinVerificationAdp;
 
     private boolean b_Result;
+    private boolean isSaving = false;
     private String s_Result;
 
     public GinVerificationFragment() {
@@ -80,7 +81,7 @@ public class GinVerificationFragment extends Fragment {
         objGinVerificationShared = new GinVerificationShared(getContext());
         et_gin_verification_ginno.requestFocus();
 
-        if (objGinVerificationShared.loadVerifyGinNo() != "") {
+        if (!objGinVerificationShared.loadVerifyGinNo().isEmpty()) {
             et_gin_verification_ginno.setText(objGinVerificationShared.loadVerifyGinNo());
             loadGinScanDetails();
             et_gin_verification_ginno.setEnabled(false);
@@ -122,16 +123,27 @@ public class GinVerificationFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String ginno = et_gin_verification_ginno.getText().toString();
-                                b_Result = objGinVerificationControl.saveGinVerification(objPosGlobal.getSkipScanSkuGrn(), ginno);
-                                if (!b_Result) {
-                                    okMessage("bt_bin_batch_in_save", objGlobal.getErrorMessage());
-                                } else {
-                                    b_Result = clearAll();
-                                    if (!b_Result) {
-                                        okMessage("bt_bin_batch_in_save", objGlobal.getErrorMessage());
+                                if (isSaving) return;
+                                isSaving = true;
+                                bt_gin_verification_save.setEnabled(false);
+                                try {
+                                    String ginno = et_gin_verification_ginno.getText().toString().trim();
+                                    if (ginno.isEmpty()) {
+                                        okMessage("GIN Verification", "GIN number is empty");
+                                        return;
                                     }
-                                    et_gin_verification_ginno.requestFocus();
+                                    b_Result = objGinVerificationControl.saveGinVerification(
+                                            objPosGlobal.getSkipScanSkuGrn(), ginno);
+                                    if (!b_Result) {
+                                        okMessage("GIN Verification", objGlobal.getErrorMessage());
+                                    } else if (!clearAll()) {
+                                        okMessage("GIN Verification", objGlobal.getErrorMessage());
+                                    } else {
+                                        et_gin_verification_ginno.requestFocus();
+                                    }
+                                } finally {
+                                    isSaving = false;
+                                    bt_gin_verification_save.setEnabled(true);
                                 }
                             }
                         })

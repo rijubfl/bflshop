@@ -287,21 +287,21 @@ public class GrnTransferNewControl {
             }
             if(!serializedCode.isEmpty()) {
                 b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + ",ScanDt=convert(varchar,getdate(),103)," +
-                        "ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and serializedCode='" + serializedCode + "'", objGlobal.getConnection());
+                        "ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and serializedCode='" + serializedCode + "' and scanqty<trfqty", objGlobal.getConnection());
                 if (!b_Result) {
                     return false;
                 }
             } else {
                 if (!rfid.isEmpty()) {
                     b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + ",ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) " +
-                            "where DeviceId='" + objGlobal.getDeviceName() + "' and rfid='" + rfid + "'", objGlobal.getConnection());
+                            "where DeviceId='" + objGlobal.getDeviceName() + "' and rfid='" + rfid + "' and scanqty <trfqty", objGlobal.getConnection());
                     if (!b_Result) {
                         return false;
                     }
                 } else {
                     if(!itemcode.isEmpty()) {
                         b_Result = dbConnection.insertUpdate("update top (1) tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + "," +
-                                        "ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and itemcode='" + itemcode + "'",
+                                        "ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and itemcode='" + itemcode + "' and scanqty < trfqty",
                                 objGlobal.getConnection());
 
                         if (!b_Result) {

@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.xml.transform.Result;
+
 public class GrnTransferNewControl {
 
     private DBConnection dbConnection = new DBConnection();
@@ -287,23 +289,30 @@ public class GrnTransferNewControl {
             }
             if(!serializedCode.isEmpty()) {
                 b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + ",ScanDt=convert(varchar,getdate(),103)," +
-                        "ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and serializedCode='" + serializedCode + "' and scanqty<trfqty", objGlobal.getConnection());
+                        "ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and serializedCode='" + serializedCode + "'", objGlobal.getConnection());
                 if (!b_Result) {
                     return false;
                 }
             } else {
                 if (!rfid.isEmpty()) {
                     b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + ",ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) " +
-                            "where DeviceId='" + objGlobal.getDeviceName() + "' and rfid='" + rfid + "' and scanqty <trfqty", objGlobal.getConnection());
+                            "where DeviceId='" + objGlobal.getDeviceName() + "' and rfid='" + rfid + "'", objGlobal.getConnection());
                     if (!b_Result) {
                         return false;
                     }
                 } else {
                     if(!itemcode.isEmpty()) {
-                        b_Result = dbConnection.insertUpdate("update top (1) tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + "," +
-                                        "ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and itemcode='" + itemcode + "' and scanqty < trfqty",
-                                objGlobal.getConnection());
-
+                        ResultSet rsCheck = dbConnection.getResultSet("select * from tmpgrnscanitems where DeviceId='" + objGlobal.getDeviceName() + "' and itemcode='" + itemcode + "' and scanqty < trfqty",objGlobal.getConnection());
+                        if (rsCheck.next()) {
+                            b_Result = dbConnection.insertUpdate("update top (1) tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + "," +
+                                            "ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and itemcode='" + itemcode + "' and scanqty < trfqty",
+                                    objGlobal.getConnection());
+                        }
+                        else{
+                            b_Result = dbConnection.insertUpdate("update top (1) tmpGrnScanItems set Scan='Y',ScanPrice=" + scanprice + ",ScanQty=ScanQty+" + qty + "," +
+                                            "ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) where DeviceId='" + objGlobal.getDeviceName() + "' and itemcode='" + itemcode + "'",
+                                    objGlobal.getConnection());
+                        }
                         if (!b_Result) {
                             return false;
                         }
@@ -332,12 +341,139 @@ public class GrnTransferNewControl {
 
     public boolean editItem(String itemcode,int qty) {
         try {
-            b_Result = dbConnection.insertUpdate("update tmpGrnScanItems set ScanQty=" + qty + ",ScanDt=convert(varchar,getdate(),103),ScanTm=convert(varchar,getdate(),8) " +
-                    "where DeviceId='" + objGlobal.getDeviceName() + "' and Itemcode='" + itemcode + "'", objGlobal.getConnection());
-            if (!b_Result) {
-                return false;
+            int totalScanQty = 0;
+
+            ResultSet rsCheck = dbConnection.getResultSet(
+                    "SELECT ISNULL(SUM(ScanQty), 0) AS totalscanqty " +
+                            "FROM tmpGrnScanItems " +
+                            "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                            "AND Itemcode='" + itemcode + "'",
+                    objGlobal.getConnection()
+            );
+
+            if (rsCheck.next()) {
+                totalScanQty = rsCheck.getInt("totalscanqty");
             }
-            return true;
+            rsCheck.close();
+
+            if (qty > totalScanQty) {
+
+                int addQty = qty - totalScanQty;
+
+                // Step 1: Fill rows where ScanQty < TrfQty
+                while (addQty > 0) {
+
+                    ResultSet rsItem = dbConnection.getResultSet(
+                            "SELECT TOP (1) " +
+                                    "ISNULL(ScanQty,0) AS ScanQty, " +
+                                    "ISNULL(TrfQty,0) AS TrfQty " +
+                                    "FROM tmpGrnScanItems " +
+                                    "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                                    "AND Itemcode='" + itemcode + "' " +
+                                    "AND ISNULL(ScanQty,0) < ISNULL(TrfQty,0) " +
+                                    "ORDER BY ScanQty ASC",
+                            objGlobal.getConnection()
+                    );
+
+                    if (!rsItem.next()) {
+                        rsItem.close();
+                        break;
+                    }
+
+                    int currentScanQty = rsItem.getInt("ScanQty");
+                    int trfQty = rsItem.getInt("TrfQty");
+
+                    rsItem.close();
+
+                    int availableQty = trfQty - currentScanQty;
+                    int updateQty = Math.min(availableQty, addQty);
+
+                    b_Result = dbConnection.insertUpdate(
+                            "UPDATE TOP (1) tmpGrnScanItems " +
+                                    "SET ScanQty=ISNULL(ScanQty,0)+" + updateQty + ", " +
+                                    "ScanDt=CONVERT(VARCHAR,GETDATE(),103), " +
+                                    "ScanTm=CONVERT(VARCHAR,GETDATE(),8) " +
+                                    "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                                    "AND Itemcode='" + itemcode + "' " +
+                                    "AND ISNULL(ScanQty,0)=" + currentScanQty + " " +
+                                    "AND ISNULL(TrfQty,0)=" + trfQty + " " +
+                                    "AND ISNULL(ScanQty,0)<ISNULL(TrfQty,0)",
+                            objGlobal.getConnection()
+                    );
+
+                    if (!b_Result) {
+                        break;
+                    }
+
+                    addQty -= updateQty;
+                }
+
+                // Step 2: Add extra quantity only after all rows are filled
+                if (b_Result && addQty > 0) {
+
+                    b_Result = dbConnection.insertUpdate(
+                            "UPDATE TOP (1) tmpGrnScanItems " +
+                                    "SET ScanQty=ISNULL(ScanQty,0)+" + addQty + ", " +
+                                    "ScanDt=CONVERT(VARCHAR,GETDATE(),103), " +
+                                    "ScanTm=CONVERT(VARCHAR,GETDATE(),8) " +
+                                    "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                                    "AND Itemcode='" + itemcode + "'",
+                            objGlobal.getConnection()
+                    );
+                }
+            } else if (qty < totalScanQty) {
+
+                // Reduce scanned quantity
+                int removeQty = totalScanQty - qty;
+
+                while (removeQty > 0) {
+
+                    // Get one row with positive ScanQty
+                    ResultSet rsItem = dbConnection.getResultSet(
+                            "SELECT TOP (1) ScanQty " +
+                                    "FROM tmpGrnScanItems " +
+                                    "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                                    "AND Itemcode='" + itemcode + "' " +
+                                    "AND ScanQty > 0 " +
+                                    "ORDER BY ScanQty DESC",
+                            objGlobal.getConnection()
+                    );
+
+                    if (!rsItem.next()) {
+                        rsItem.close();
+                        b_Result = false;
+                        break;
+                    }
+
+                    int currentQty = rsItem.getInt("ScanQty");
+                    rsItem.close();
+
+                    int deductQty = Math.min(currentQty, removeQty);
+
+                    b_Result = dbConnection.insertUpdate(
+                            "UPDATE TOP (1) tmpGrnScanItems " +
+                                    "SET ScanQty=ScanQty-" + deductQty + ", " +
+                                    "ScanDt=CONVERT(VARCHAR,GETDATE(),103), " +
+                                    "ScanTm=CONVERT(VARCHAR,GETDATE(),8) " +
+                                    "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                                    "AND Itemcode='" + itemcode + "' " +
+                                    "AND ScanQty=" + currentQty,
+                            objGlobal.getConnection()
+                    );
+
+                    if (!b_Result) {
+                        break;
+                    }
+
+                    removeQty -= deductQty;
+                }
+
+            } else {
+
+                // Already matching
+                b_Result = true;
+            }
+            return b_Result;
         } catch (Exception ex) {
             objGlobal.setErrorMessage("GrnTransferNewControl:editItem:" + ex.getMessage());
             return false;
@@ -351,7 +487,17 @@ public class GrnTransferNewControl {
         objGrnTransferNewGlobal.setScanDescription("");
         //objGrnTransferNewGlobal.setScanPrice(0);
         try {
-            rs = dbConnection.getResultSet("select Itemcode,description,Price,TrfQty,ScanQty,DiffQty=ScanQty-TrfQty from tmpGrnScanItems where DeviceId='" + objGlobal.getDeviceName() + "' and Itemcode='" + itemcode + "'", objGlobal.getConnection());
+            String query = "SELECT Itemcode, description, Price, " +
+                    "MAX(TrfQty) AS TrfQty, " +
+                    "SUM(ISNULL(ScanQty, 0)) AS ScanQty, " +
+                    "SUM(ISNULL(ScanQty, 0)) - MAX(TrfQty) AS DiffQty " +
+                    "FROM tmpGrnScanItems " +
+                    "WHERE DeviceId='" + objGlobal.getDeviceName() + "' " +
+                    "AND Itemcode='" + itemcode + "' " +
+                    "GROUP BY Itemcode, description, Price";
+
+            rs = dbConnection.getResultSet(query, objGlobal.getConnection());
+
             if (rs.next()) {
                 description = rs.getString("description");
                 price = rs.getFloat("Price");

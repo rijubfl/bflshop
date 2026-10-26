@@ -968,7 +968,7 @@ public class AgeingSlashingWifyFragment extends Fragment {
             return false;
         }
         tv_aging_slash_popup_scan_barcode.setText(scan);
-        b_Result = objAgeingSlashingWifyControl.getAgeingPairBarcodeFromRfidSerial(scan);
+        b_Result = objAgeingSlashingWifyControl.getAgeingPairBarcodeFromRfidSerial(scan.trim());
         if (!b_Result) {
             tv_aging_slash_popup_scan_results.setText(objGlobal.getErrorMessage());
             tv_aging_slash_popup_scan_results.setTextColor(getActivity().getResources().getColor(R.color.coloRed));

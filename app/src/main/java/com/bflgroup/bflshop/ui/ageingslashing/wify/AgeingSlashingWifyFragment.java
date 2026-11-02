@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -437,73 +438,117 @@ public class AgeingSlashingWifyFragment extends Fragment {
 //                            100.00
 //                    );
 
-//                    printData = objSample_Print.getSlashingQrCode(tv_aging_slash_popup_sticker_comp_name.getText().toString(),
-//                            tv_aging_slash_popup_scan_addinfo.getText().toString(),
-//                            tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-//                            "190035463717",
-//                            "U65",
-//                            "CHILDREN BOTTOMS",
-//                            "100.00");
-
-
-                    if (objPosGlobal.getPrintWasNowPerc().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
-                        if (objPosGlobal.getArabicDescription().equals("Y")) {
-                            String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
-                            if (arabicDesc == null || arabicDesc.equals("")) {
-                                arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
-                            }
-                            printData = objSample_Print.getSlashingBarcodeWasNowPercArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
-                                    tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
-                                    tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_saveperc.getText().toString(),
-                                    objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(), arabicDesc);
-                        } else {
-                            printData = objSample_Print.getSlashingBarcodeWasNowPerc(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
-                                    tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
-                                    tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_saveperc.getText().toString(),
-                                    objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString());
+                    if (!TextUtils.isEmpty(objAgeingSlashingScanDetailsGlobal.getSerialCodeFromScam())) {
+                        String company = tv_aging_slash_popup_sticker_comp_name.getText().toString();
+                        String addinfo = tv_aging_slash_popup_scan_addinfo.getText().toString();
+                        String qrCode = tv_aging_slash_popup_scan_new_barcode.getText().toString();
+                        String itemcode = tv_aging_slash_popup_sticker_itemcode.getText().toString();
+                        String shopcode = tv_aging_slash_popup_sticker_mark.getText().toString();
+                        String subclass = objAgeingSlashingGlobal.getSubClass();
+                        String was = tv_aging_slash_popup_sticker_was_price.getText().toString();
+                        String now = tv_aging_slash_popup_sticker_now_price.getText().toString();
+                        String wasHead = objPosGlobal.getPrintWasHead();
+                        String nowHead = objPosGlobal.getPrintNowHead();
+                        String savePerc = tv_aging_slash_popup_scan_saveperc.getText().toString();
+                        boolean arabic = "Y".equals(objPosGlobal.getArabicDescription());
+                        boolean whiteLabel = "WHITE".equals(objAgeingSlashingScanDetailsGlobal.getLabelType());
+                        String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
+                        if (TextUtils.isEmpty(arabicDesc)) {
+                            arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
                         }
-                    } else if (objPosGlobal.getPrintWasNow().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
-                        if (objPosGlobal.getArabicDescription().equals("Y")) {
-                            String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
-                            if (arabicDesc == null || arabicDesc.equals("")) {
-                                arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
+/*
+                        if ("Y".equals(objPosGlobal.getPrintWasNowPerc()) && !whiteLabel) {
+                            if (arabic) {
+                                printData = objSample_Print.getSlashingQrCodeWasNowPercArabic(
+                                        company, addinfo, qrCode, itemcode, shopcode, subclass,
+                                        was, now, savePerc, wasHead, nowHead, arabicDesc);
+                            } else {
+                                printData = objSample_Print.getSlashingQrCodeWasNowPerc(
+                                        company, addinfo, qrCode, itemcode, shopcode, subclass,
+                                        was, now, savePerc, wasHead, nowHead);
                             }
-                            printData = objSample_Print.getSlashingBarcodeWasNowArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
-                                    tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
-                                    tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", objPosGlobal.getPrintWasHead(),
-                                    objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(), arabicDesc);
+                        } else if ("Y".equals(objPosGlobal.getPrintWasNow()) && !whiteLabel ) {
+                            if (arabic) {
+                                printData = objSample_Print.getSlashingQrCodeWasNowArabic(
+                                        company, addinfo, qrCode, itemcode, shopcode, subclass,
+                                        was, now, wasHead, nowHead, arabicDesc);
+                            } else {
+                                printData = objSample_Print.getSlashingQrCodeWasNow(
+                                        company, addinfo, qrCode, itemcode, shopcode, subclass,
+                                        was, now, wasHead, nowHead);
+                            }
+                        } else if (arabic) {
+                            printData = objSample_Print.getSlashingQrCodeArabic(
+                                    company, addinfo, qrCode, itemcode, shopcode, subclass, now, arabicDesc);
                         } else {
-                            printData = objSample_Print.getSlashingBarcodeWasNow(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
-                                    tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
-                                    tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", objPosGlobal.getPrintWasHead(),
-                                    objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString());
-                        }
-                    } else {
-                        if (objPosGlobal.getArabicDescription().equals("Y")) {
-                            String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
-                            if (arabicDesc == null || arabicDesc.equals("")) {
-                                arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
-                            }
-                            String currency = tv_aging_slash_popup_sticker_now_price.getText().toString().split(" ")[0];
-                            String price = tv_aging_slash_popup_sticker_now_price.getText().toString().split(" ")[1];
 
-                            printData = objSample_Print.getSlashingBarcodeArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
-                                    tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), currency, price,
-                                    tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_addinfo.getText().toString(),
-                                    arabicDesc);
+ */
+                            printData = objSample_Print.getSlashingQrCode(
+                                    company, addinfo, qrCode, itemcode, shopcode, subclass, now);
+                    //    }
+                    }
+                    else {
+                        if (objPosGlobal.getPrintWasNowPerc().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
+                            if (objPosGlobal.getArabicDescription().equals("Y")) {
+                                String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
+                                if (arabicDesc == null || arabicDesc.equals("")) {
+                                    arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
+                                }
+                                printData = objSample_Print.getSlashingBarcodeWasNowPercArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
+                                        tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+                                        tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
+                                        tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_saveperc.getText().toString(),
+                                        objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(), arabicDesc);
+                            } else {
+                                printData = objSample_Print.getSlashingBarcodeWasNowPerc(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
+                                        tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+                                        tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
+                                        tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_saveperc.getText().toString(),
+                                        objPosGlobal.getPrintWasHead(), objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString());
+                            }
+                        } else if (objPosGlobal.getPrintWasNow().equals("Y") && !objAgeingSlashingScanDetailsGlobal.getLabelType().equals("WHITE")) {
+                            if (objPosGlobal.getArabicDescription().equals("Y")) {
+                                String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
+                                if (arabicDesc == null || arabicDesc.equals("")) {
+                                    arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
+                                }
+                                printData = objSample_Print.getSlashingBarcodeWasNowArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
+                                        tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+                                        tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
+                                        tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", objPosGlobal.getPrintWasHead(),
+                                        objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString(), arabicDesc);
+                            } else {
+                                printData = objSample_Print.getSlashingBarcodeWasNow(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
+                                        tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+                                        tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
+                                        tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", objPosGlobal.getPrintWasHead(),
+                                        objPosGlobal.getPrintNowHead(), tv_aging_slash_popup_scan_addinfo.getText().toString());
+                            }
                         } else {
-                            printData = objSample_Print.getSlashingBarcode(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
-                                    tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
-                                    tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
-                                    tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_addinfo.getText().toString());
+                            if (objPosGlobal.getArabicDescription().equals("Y")) {
+                                String arabicDesc = objAgeingSlashingGlobal.getArabicDesc();
+                                if (arabicDesc == null || arabicDesc.equals("")) {
+                                    arabicDesc = objAgeingSlashingGlobal.getArabicBrand();
+                                }
+                                String currency = tv_aging_slash_popup_sticker_now_price.getText().toString().split(" ")[0];
+                                String price = tv_aging_slash_popup_sticker_now_price.getText().toString().split(" ")[1];
+
+                                printData = objSample_Print.getSlashingBarcodeArabic(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
+                                        tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+                                        tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), currency, price,
+                                        tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_addinfo.getText().toString(),
+                                        arabicDesc);
+                            } else {
+                                printData = objSample_Print.getSlashingBarcode(tv_aging_slash_popup_sticker_comp_name.getText().toString(), tv_aging_slash_popup_sticker_trfno.getText().toString(),
+                                        tv_aging_slash_popup_sticker_itemcode.getText().toString(), tv_aging_slash_popup_sticker_prod_name.getText().toString(), tv_aging_slash_popup_scan_new_barcode.getText().toString(),
+                                        tv_aging_slash_popup_sticker_trfno.getText().toString(), tv_aging_slash_popup_sticker_was_price.getText().toString(), tv_aging_slash_popup_sticker_now_price.getText().toString(),
+                                        tv_aging_slash_popup_sticker_mark.getText().toString(), tv_aging_slash_popup_sticker_uid.getText().toString(), "1", tv_aging_slash_popup_scan_addinfo.getText().toString());
+                            }
                         }
                     }
                 }
+
+
                 return objSample_Print.PrintBarcodeByte(printData);
             }
             if (printType.equals("Zebra")) {

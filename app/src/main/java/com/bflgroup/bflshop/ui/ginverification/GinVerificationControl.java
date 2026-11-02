@@ -85,7 +85,7 @@ public class GinVerificationControl {
                     "deviceid='" + objGlobal.getDeviceName() + "'", objGlobal.getConnection())) {
                 return false;
             }
-            if (!dbConnection.insertUpdate("update tmpGinVerify set OldVerify='Y',Verified='Y' from tmpGinVerify a,GinVerify b where " +
+            if (!dbConnection.insertUpdate("update tmpGinVerify set OldVerify='Y',Verified='Y',VerifyTime = b.VerifyTime from tmpGinVerify a,GinVerify b where " +
                     "deviceid='" + objGlobal.getDeviceName() + "' and a.trfno=b.trfno", objGlobal.getConnection())) {
                 return false;
             }
@@ -151,10 +151,9 @@ public class GinVerificationControl {
                     }
                 }
 
-                // An already-received transfer must never be received a second time.
-                // If verification is missing, fail instead of silently creating inconsistent data.
-                if (alreadyGrn && !alreadyVerified) {
-                    throw new SQLException("Transfer already exists in GRN but not GinVerify: " + trfno);
+                // Skip received transfers and continue processing the remaining transfers.
+                if (alreadyGrn) {
+                    continue;
                 }
                 if (!alreadyVerified) {
                     try (java.sql.PreparedStatement insert = objGlobal.getConnection().prepareStatement(
@@ -171,7 +170,7 @@ public class GinVerificationControl {
                     }
                 }
 
-                if (skipSku && !alreadyGrn) {
+                if (skipSku) {
                     if (!grnNumberReady) {
                         if (!getLatestGrn(objGlobal.getServerDate()))
                             throw new SQLException(objGlobal.getErrorMessage());
@@ -354,12 +353,12 @@ public class GinVerificationControl {
             }
             rs = dbConnection.getResultSet("select * from grnheaderrf where trfno='" + trfno + "'", objGlobal.getConnection());
             if (rs.next()) {
-                objGlobal.setErrorMessage("Transfer already found in GRN (1), " + trfno);
+                objGlobal.setErrorMessage("GRN already done for this Transfer : "+ trfno+"\n\nFound in Grnheaderrf ");
                 return false;
             }
             rs = dbConnection.getResultSet("select * from GRNDetail where trfno='" + trfno + "'", objGlobal.getConnection());
             if (rs.next()) {
-                objGlobal.setErrorMessage("Transfer already found in GRN (2), " + trfno);
+                objGlobal.setErrorMessage("GRN already done for this Transfer : "+ trfno+"\n\nFound in Grndetail " );
                 return false;
             }
             String skipsku = objPosGlobal.getSkipScanSkuGrn();

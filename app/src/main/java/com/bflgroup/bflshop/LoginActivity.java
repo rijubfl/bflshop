@@ -132,6 +132,20 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    private static int compareVersions(String installedVersion, String requiredVersion) {
+        String[] installedParts = installedVersion.trim().split("\\.", -1);
+        String[] requiredParts = requiredVersion.trim().split("\\.", -1);
+        int length = Math.max(installedParts.length, requiredParts.length);
+        for (int i = 0; i < length; i++) {
+            int installedPart = i < installedParts.length ? Integer.parseInt(installedParts[i]) : 0;
+            int requiredPart = i < requiredParts.length ? Integer.parseInt(requiredParts[i]) : 0;
+            if (installedPart != requiredPart) {
+                return installedPart < requiredPart ? -1 : 1;
+            }
+        }
+        return 0;
+    }
+
     public boolean validateUser() {
         String pdaVerActive = "", pdaVer = "";
         if (TextUtils.isEmpty(signInUserId.getText())) {
@@ -162,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                 pdaVer = rs.getString("version");
             }
             if (pdaVerActive.equals("Y")) {
-                if (!pdaVer.equals(objGlobal.getPdaversion())) {
+                if (compareVersions(objGlobal.getPdaversion(), pdaVer) < 0) {
                     objGlobal.setErrorMessage("Pls check the version. The latest version is - " + pdaVer);
                     return false;
                 }

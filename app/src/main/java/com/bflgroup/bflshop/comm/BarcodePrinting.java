@@ -158,47 +158,230 @@ public class BarcodePrinting {
         return printData;
     }
     public byte[] getSlashingQrCode(
-           String mainHead,String addinfo,String barcode,String itemCode, String shopcode, String subclass, String price ) {
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String price) {
+        return buildSlashingQrCode(mainHead, addinfo, barcode, itemCode, shopcode, subclass,
+                price, "", "", "", "", QrPriceStyle.SINGLE, false, "");
+    }
 
-        String mainHead1 = "1911A1000780019" + mainHead + "\r\n";
-        String itemName1 = "1911A0800650007" + addinfo + "\r\n";
-        String itemCode1 = "1911A0600550052" + itemCode + "\r\n";
-        String shopcode1 = "1911A0600550115" + shopcode + "\r\n";
-        String subclass1 = "1911A0600550140" + subclass + "\r\n";
-        // QR Code - replaced the original 1D barcode
-        String barcode2 = "1W1d4400000220006" + barcode + "\r\r";
+    public byte[] getSlashingQrCodeArabic(
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String price, String arabicDesc) {
+        return buildSlashingQrCode(mainHead, addinfo, barcode, itemCode, shopcode, subclass,
+                price, "", "", "", "", QrPriceStyle.SINGLE, true, arabicDesc);
+    }
 
-        byte[] printData = new byte[]{0};
+    public byte[] getSlashingQrCodeWasNow(
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String was, String now,
+            String wasHead, String nowHead) {
+        return buildSlashingQrCode(mainHead, addinfo, barcode, itemCode, shopcode, subclass,
+                now, was, wasHead, nowHead, "", QrPriceStyle.WAS_NOW, false, "");
+    }
 
-        printData = addToDataVault(printData, "\u0002n\r\n".getBytes());
-        printData = addToDataVault(printData, "\u0002M0500\r\n".getBytes());
-        printData = addToDataVault(printData, "\u0002KcLW0200;\r\n".getBytes());
-        printData = addToDataVault(printData, "\u0002V0\r\n".getBytes());
-        printData = addToDataVault(printData, "\u0002SG\r\n".getBytes());
-        printData = addToDataVault(printData, "\u0002d\r\n".getBytes());
-        printData = addToDataVault(printData, "\u0002L\r\n".getBytes());
+    public byte[] getSlashingQrCodeWasNowArabic(
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String was, String now,
+            String wasHead, String nowHead, String arabicDesc) {
+        return buildSlashingQrCode(mainHead, addinfo, barcode, itemCode, shopcode, subclass,
+                now, was, wasHead, nowHead, "", QrPriceStyle.WAS_NOW, true, arabicDesc);
+    }
 
-        printData = addToDataVault(printData, "D11\r\n".getBytes());
-        printData = addToDataVault(printData, "PG\r\n".getBytes());
-        printData = addToDataVault(printData, "pG\r\n".getBytes());
-        printData = addToDataVault(printData, "SG\r\n".getBytes());
-        printData = addToDataVault(printData, "ySPM\r\n".getBytes());
-        printData = addToDataVault(printData, "A2\r\n".getBytes());
+    public byte[] getSlashingQrCodeWasNowPerc(
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String was, String now,
+            String savePerc, String wasHead, String nowHead) {
+        return buildSlashingQrCode(mainHead, addinfo, barcode, itemCode, shopcode, subclass,
+                now, was, wasHead, nowHead, savePerc, QrPriceStyle.WAS_NOW_PERCENT, false, "");
+    }
 
-        printData = addToDataVault(printData, mainHead1.getBytes());
-        printData = addToDataVault(printData, itemName1.getBytes());
+    public byte[] getSlashingQrCodeWasNowPercArabic(
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String was, String now,
+            String savePerc, String wasHead, String nowHead, String arabicDesc) {
+        return buildSlashingQrCode(mainHead, addinfo, barcode, itemCode, shopcode, subclass,
+                now, was, wasHead, nowHead, savePerc, QrPriceStyle.WAS_NOW_PERCENT, true, arabicDesc);
+    }
 
-        // Print QR code
-        printData = addToDataVault(printData, barcode2.getBytes());
+    private enum QrPriceStyle { SINGLE, WAS_NOW, WAS_NOW_PERCENT }
 
-        printData = addToDataVault(printData, "FB+\r\n".getBytes());
-        printData = addToDataVault(printData, itemCode1.getBytes());
-        printData = addToDataVault(printData, "FB-\r\n".getBytes());
-        printData = addToDataVault(printData, shopcode1.getBytes());
-        printData = addToDataVault(printData, "FB-\r\n".getBytes());
-        printData = addToDataVault(printData, subclass1.getBytes());
-        printData = addToDataVault(printData, "E\r\n".getBytes());
-        return printData;
+    private byte[] buildSlashingQrCode(
+            String mainHead, String addinfo, String barcode, String itemCode,
+            String shopcode, String subclass, String price, String was,
+            String wasHead, String nowHead, String savePerc, QrPriceStyle style,
+            boolean arabic, String arabicDesc) {
+        // DPL coordinates are hundredths of an inch, measured from the bottom left.
+        final int textX = 52;
+        final int textWidth = 141;
+        final int qrBottom = 16;
+        String heading = qrLabelText(mainHead);
+        String information = qrLabelText(addinfo);
+        String itemAndShop = qrLabelText(itemCode) + "  " + qrLabelText(shopcode);
+        String subclassText = qrLabelText(subclass);
+
+        // Keep both font dimensions fixed. Wrap by available width, not character count.
+        final int detailPoints = 9;
+        final int detailWidthPoints = 6;
+        final int detailRow = qrBottom + 44 - (int) Math.ceil(detailPoints * 100.0 / 72.0);
+        final int lineSpacing = (int) Math.ceil(detailPoints * 100.0 / 72.0);
+        java.util.List<String> detailLines = wrapQrLabelDetails(
+                itemAndShop + "  " + subclassText , textWidth, detailWidthPoints);
+
+        String priceText = formatQrPrice(price);
+
+        StringBuilder label = new StringBuilder();
+        label.append('\0');
+        label.append("\u0002n\r\n\u0002M0500\r\n\u0002KcLW0200;\r\n");
+        label.append("\u0002V0\r\n\u0002SG\r\n\u0002d\r\n\u0002L\r\n");
+        label.append("D11\r\nPG\r\npG\r\nSG\r\nySPM\r\nA2\r\n");
+
+        if (arabic) {
+            // Reserve a separate row for the Arabic description above the QR.
+            appendQrLabelText(label, heading, 10, 84, 19);
+            appendQrLabelText(label, information, 7, 72, 7);
+        } else {
+            appendQrLabelText(label, heading, 11, 82, 19);
+            appendQrLabelText(label, information, 8, 64, 7);
+        }
+
+        // Move the QR and its aligned details together toward the addinfo.
+        label.append(String.format(java.util.Locale.US, "1W1d44000%04d0006", qrBottom))
+                .append(barcode).append("\r\r");
+        // Use the condensed font's own weight without extra bolding on the details.
+        label.append("FB-\r\n");
+        for (int i = 0; i < detailLines.size(); i++) {
+            label.append(String.format(java.util.Locale.US, "1911S00%04d%04dP%03dP%03d",
+                    detailRow - i * lineSpacing, textX, detailPoints, detailWidthPoints))
+                    .append(detailLines.get(i)).append("\r\n");
+        }
+        byte[] arabicFields = new byte[0];
+        if (arabic) {
+            arabicFields = addToDataVault(arabicFields,
+                    qrArabicField(arabicDesc, 6, 62, 7));
+        }
+        if (style == QrPriceStyle.SINGLE) {
+            label.append("FB+\r\n");
+            int pricePoints = arabic ? 9 : fitQrLabelText(priceText, 12, textWidth);
+            int lastDetailRow = detailRow - (detailLines.size() - 1) * lineSpacing;
+            int priceRow = Math.min(qrBottom,
+                    lastDetailRow - (int) Math.ceil(pricePoints * 100.0 / 72.0) - 2);
+            appendQrRegularText(label, priceText, pricePoints, priceRow, textX);
+            if (arabic) {
+                arabicFields = addToDataVault(arabicFields,
+                        qrArabicField(qrArabicPrice(price), 7, 3, textX));
+            }
+        } else {
+            // Compact prices share a row below the two detail rows.
+            String oldPrice = formatQrPrice(was);
+            String oldHeading = qrLabelText(wasHead);
+            String newHeading = qrLabelText(nowHead);
+            if (oldHeading.isEmpty()) oldHeading = "Was";
+            if (newHeading.isEmpty()) newHeading = "Now";
+            String wasText = oldHeading + " " + oldPrice;
+            String nowText = newHeading + " " + priceText;
+            int wasPoints = fitQrLabelText(wasText, 6, 68);
+            int nowPoints = fitQrLabelText(nowText, 6, 69);
+            label.append("FB-\r\n");
+            appendQrRegularText(label, wasText, wasPoints, 23, textX);
+            int strikeStart = textX + (int) qrLabelTextWidth(oldHeading + " ", wasPoints);
+            int strikeEnd = Math.min(120, textX + (int) qrLabelTextWidth(wasText, wasPoints));
+            label.append(strikeLine(27, strikeStart, 27, strikeEnd));
+            label.append("FB+\r\n");
+            appendQrRegularText(label, nowText, nowPoints, 23, 124);
+            label.append("FB-\r\n");
+            if (arabic) {
+                String arabicWas = qrArabicPrice(was);
+                arabicFields = addToDataVault(arabicFields,
+                        qrArabicField(arabicWas, 6, 12, textX));
+                arabicFields = addToDataVault(arabicFields,
+                        strikeLine(16, textX, 16, Math.min(120,
+                                textX + arabicWas.length() * 4)).getBytes(StandardCharsets.US_ASCII));
+                arabicFields = addToDataVault(arabicFields,
+                        qrArabicField(qrArabicPrice(price), 6, 12, 124));
+            }
+            if (style == QrPriceStyle.WAS_NOW_PERCENT) {
+                String saving = qrLabelText(savePerc);
+                if (!saving.endsWith("%")) saving += " %";
+                appendQrLabelText(label, "Save " + saving, 6, 2, textX);
+            }
+        }
+        // Arabic is emitted as shaped UTF-16BE, never through the ASCII string encoder.
+        byte[] printData = addToDataVault(label.toString().getBytes(StandardCharsets.US_ASCII),
+                arabicFields);
+        return addToDataVault(printData, "FB-\r\nQ0001\r\nE\r\n".getBytes(StandardCharsets.US_ASCII));
+    }
+
+    private static String formatQrPrice(String price) {
+        String text = qrLabelText(price);
+        String currency = qrLabelText(Global.getFcCode());
+        if (currency.isEmpty()) currency = "AED";
+        return !text.isEmpty() && Character.isDigit(text.charAt(0))
+                ? currency + " " + text : text;
+    }
+
+    private static void appendQrRegularText(StringBuilder label, String text,
+                                            int points, int row, int column) {
+        label.append(String.format(java.util.Locale.US, "1911S01%04d%04dP%03dP%03d",
+                row, column, points, points)).append(text).append("\r\n");
+    }
+
+    private byte[] qrArabicField(String text, int points, int row, int column) {
+        byte[] field = String.format(java.util.Locale.US, "1911%s%04d%04dP%03dP%03d",
+                ARABIC_PRICE_FONT_ID, row, column, points, points)
+                .getBytes(StandardCharsets.US_ASCII);
+        field = addToDataVault(field, arabicToUtf16BeBytes(qrLabelText(text)));
+        return addToDataVault(field, "\r\n".getBytes(StandardCharsets.US_ASCII));
+    }
+
+    private String qrArabicPrice(String price) {
+        String text = qrLabelText(price);
+        String number = text.substring(text.lastIndexOf(' ') + 1);
+        // Match the Arabic currency notation used by the existing barcode labels.
+        return "ر.ق " + arabicizePrice(number);
+    }
+
+    private static String qrLabelText(String text) {
+        return text == null ? "" : text.replaceAll("[\\r\\n\\t]+", " ").trim();
+    }
+
+    private static float qrLabelTextWidth(String text, int points) {
+        android.graphics.Paint paint = new android.graphics.Paint();
+        paint.setTypeface(android.graphics.Typeface.create(
+                "sans-serif-condensed", android.graphics.Typeface.BOLD));
+        paint.setTextSize(points * 100f / 72f);
+        // Allow for differences between the printer's resident font and Android's font.
+        return paint.measureText(text) * 1.1f;
+    }
+
+    private static int fitQrLabelText(String text, int maxPoints, int width) {
+        int points = maxPoints;
+        while (points > 4 && qrLabelTextWidth(text, points) > width) {
+            points--;
+        }
+        return points;
+    }
+
+    private static java.util.List<String> wrapQrLabelDetails(String text, int width, int widthPoints) {
+        java.util.List<String> lines = new java.util.ArrayList<>();
+        String remaining = text.trim();
+        // Print only what fits in two lines; discard overflow without shrinking the font.
+        while (!remaining.isEmpty() && lines.size() < 2) {
+            int end = 1;
+            while (end < remaining.length()
+                    && qrLabelTextWidth(remaining.substring(0, end + 1), widthPoints) <= width) {
+                end++;
+            }
+            lines.add(remaining.substring(0, end).trim());
+            remaining = remaining.substring(end).trim();
+        }
+        return lines;
+    }
+
+    private static void appendQrLabelText(StringBuilder label, String text,
+                                          int points, int row, int column) {
+        // Resident CG Triumvirate Bold Condensed, used only by getSlashingQrCode.
+        label.append(String.format(java.util.Locale.US, "1911S00%04d%04dP%03dP%03d",
+                row, column, points, points)).append(text).append("\r\n");
     }
 
     public byte[] getSlashingBarcodeWasNowArabic(String mainHead, String subHead, String itemCode, String itemName, String barcode, String trfno, String was, String now, String mark,

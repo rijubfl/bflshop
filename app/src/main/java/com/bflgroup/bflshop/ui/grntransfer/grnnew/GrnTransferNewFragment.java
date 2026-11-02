@@ -752,7 +752,7 @@ public class GrnTransferNewFragment extends Fragment {
                 if (i == KeyEvent.KEYCODE_ENTER) {
                     if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                         isPopupScan = startTime != 0L && (System.currentTimeMillis() - startTime) <= SCAN_TOTAL_INPUT_MS;
-                        if (objPosGlobal.getTypePassRequired().equalsIgnoreCase("Y")) {
+                        if ("Y".equalsIgnoreCase(objPosGlobal.getTypePassRequired())) {
                             if (!isPopupScan) {
                                 Toast.makeText(getContext(), "Manager Pasword Required to type the itemcode, otherwise Scan the barcode", Toast.LENGTH_LONG).show();
                                 openPopupPassword();
@@ -791,7 +791,7 @@ public class GrnTransferNewFragment extends Fragment {
         bt_popup_grn_transfer_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (objPosGlobal.getTypePassRequired().equalsIgnoreCase("Y"))
+                if ("Y".equalsIgnoreCase(objPosGlobal.getTypePassRequired()))
                     openPopupPassword();
                 else
                     itemAdd();

@@ -190,7 +190,7 @@ public class GinVerificationFragment extends Fragment {
         String toteTrfId = et_gin_verification_trf_tote_id.getText().toString().trim().toUpperCase();
         b_Result = objGinVerificationControl.validateTrfno(toteTrfId, et_gin_verification_ginno.getText().toString());
         if (!b_Result) {
-            okMessage("GinVerificationFragment:et_gin_verification_trf_tote_id", objGlobal.getErrorMessage());
+            okMessage("Message", objGlobal.getErrorMessage());
             vibrate(500);
             et_gin_verification_trf_tote_id.setText("");
             et_gin_verification_trf_tote_id.requestFocus();

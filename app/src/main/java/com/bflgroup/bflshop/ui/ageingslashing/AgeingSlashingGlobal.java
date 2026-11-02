@@ -23,6 +23,7 @@ public class AgeingSlashingGlobal {
     private static String batchno;
     private static String arabicDesc;
     private static String arabicBrand;
+    private static String subClass;
 
 
     public static String getPdaPrefix() {
@@ -121,6 +122,13 @@ public class AgeingSlashingGlobal {
     public static void setArabicDesc(String arabicDesc) {
         AgeingSlashingGlobal.arabicDesc = arabicDesc;
     }
+    public static String getSubClass() {
+        return subClass;
+    }
+
+    public static void setSubClass(String subClass) {
+        AgeingSlashingGlobal.subClass = subClass;
+    }
     public static String getArabicBrand() {
         return arabicBrand;
     }
@@ -134,5 +142,6 @@ public class AgeingSlashingGlobal {
         }
         return instance;
     }
+
 
 }

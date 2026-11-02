@@ -98,6 +98,7 @@ public class Controls {
         try {
             objGlobal.setEnterQty(false);
             objGlobal.setHideKeyPad(true);
+            objPosGlobal.setTypePassRequired("N");
             objPosGlobal.setApplyGroupDiscount("N");
             objPosGlobal.setApplyItemDiscount("N");
             objPosGlobal.setSlashedItemDisc("N");

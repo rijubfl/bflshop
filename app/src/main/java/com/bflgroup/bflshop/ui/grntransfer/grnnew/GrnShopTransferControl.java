@@ -123,7 +123,7 @@ public class GrnShopTransferControl {
         if (!b_Result) {
             return false;
         }
-
+        String rfid="",serializedCode="",barcode="";
         try {
             rs = dbConnection.getResultSet("select itemcode,TrfQty=sum(TrfQty),ScanQty=sum(ScanQty),DiffQty=sum(ScanQty)-sum(TrfQty),Rfid,SerializedCode from tmpGrnScanItems where " +
                     "DeviceId='" + objGlobal.getDeviceName() + "' group by itemcode,Rfid,SerializedCode", objGlobal.getConnection());
@@ -137,8 +137,12 @@ public class GrnShopTransferControl {
             }
             objGlobal.getCloudCon().setAutoCommit(false);
             objGlobal.getConnection().setAutoCommit(false);
-            rs = dbConnection.getResultSet("select a.*,b.SalesPrice from itemmaster a,StoreDetail b where a.ItemCode=b.ItemCode and b.EntryNo='" + entryno + "'", objGlobal.getCloudCon());
+            rs = dbConnection.getResultSet("select a.*,b.SalesPrice,RFID=isnull(b.RFID,''),SerializedCode=isnull(b.SerializedCode,''),barcode=b.itemcode+'/'+cast(b.SalesPrice as varchar)+'/0000' from itemmaster a,StoreDetail b where a.ItemCode=b.ItemCode and b.EntryNo='" + entryno + "'", objGlobal.getCloudCon());
             while (rs.next()) {
+                rfid = rs.getString("RFID");
+                serializedCode = rs.getString("SerializedCode");
+                barcode= rs.getString("barcode");
+                if (rfid.isEmpty()) rfid = serializedCode;
                 b_Result = dbConnection.insertUpdate("delete from ItemMaster where ItemCode='" + rs.getString("ItemCode") + "'", objGlobal.getConnection());
                 if (!b_Result) {
                     objGlobal.getCloudCon().rollback();
@@ -173,6 +177,41 @@ public class GrnShopTransferControl {
                     objGlobal.getCloudCon().rollback();
                     objGlobal.getConnection().rollback();
                     return false;
+                }
+                if (!serializedCode.isEmpty()) {
+                    b_Result = dbConnection.insertUpdate("insert into RFUnPair(InvDate,InvNo,Itemcode,RFID,PairDate,Barcode,SerializedCode) select convert(varchar,getdate(),103),'HO'," +
+                            "Itemcode,RFID,EntryDate,Barcode,SerializedCode from RFPair where SerializedCode='" + serializedCode + "'", objGlobal.getConnection());
+                    if (!b_Result) {
+                        objGlobal.getCloudCon().rollback();
+                        objGlobal.getConnection().rollback();
+                        return false;
+                    }
+                    b_Result = dbConnection.insertUpdate("delete from RFPair where SerializedCode='" + serializedCode + "'", objGlobal.getConnection());
+                    if (!b_Result) {
+                        objGlobal.getCloudCon().rollback();
+                        objGlobal.getConnection().rollback();
+                        return false;
+                    }
+                    b_Result = dbConnection.insertUpdate("insert into RFUnPair(InvDate,InvNo,Itemcode,RFID,PairDate,Barcode,SerializedCode) select convert(varchar,getdate(),103),'HO'," +
+                            "Itemcode,RFID,EntryDate,Barcode,SerializedCode from RFPair where RFID='" + rfid + "'", objGlobal.getConnection());
+                    if (!b_Result) {
+                        objGlobal.getCloudCon().rollback();
+                        objGlobal.getConnection().rollback();
+                        return false;
+                    }
+                    b_Result = dbConnection.insertUpdate("delete from RFPair where RFID='" + rfid + "'", objGlobal.getConnection());
+                    if (!b_Result) {
+                        objGlobal.getCloudCon().rollback();
+                        objGlobal.getConnection().rollback();
+                        return false;
+                    }
+                    b_Result = dbConnection.insertUpdate("insert into RFPair(ShopName,TrfNo,Itemcode,RFID,EntryDate,Barcode,Shop,TrnTime,NotScannableRFID,SerializedCode) values ('" + objPosGlobal.getShopName() + "'," +
+                            "'SS-TR','" + rs.getString("itemcode") + "','" + rfid + "',convert(varchar,getdate(),103),'" + barcode + "','Y',convert(varchar,getdate(),8),'N','" + serializedCode + "')", objGlobal.getConnection());
+                    if (!b_Result) {
+                        objGlobal.getCloudCon().rollback();
+                        objGlobal.getConnection().rollback();
+                        return false;
+                    }
                 }
             }
             b_Result = dbConnection.insertUpdate("update StoreDetail set RecQty=a.scan from bfldata.dbo.tmpDiffDetailsNew a,StoreDetail b where a.DeviceId='" + objGlobal.getDeviceName() + "' and a.EntryNo=b.EntryNo " +

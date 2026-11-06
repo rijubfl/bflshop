@@ -40,7 +40,6 @@ public class SlashingQrPrintTest {
             assertTrue(commands.contains(INFO));
             assertTrue(commands.contains(ITEM));
             assertTrue(commands.contains(SHOP));
-            assertTrue(commands.contains("45"));
             assertFalse(commands.contains("1W1j"));
             assertEquals(i >= 2, commands.contains("Was QAR 100.00"));
             assertEquals(i >= 2, commands.contains("Now QAR 80.00"));
@@ -59,7 +58,11 @@ public class SlashingQrPrintTest {
                         "EXTREMELY LONG SUBCLASS THAT MUST NOT CREATE A THIRD LINE " +
                         "TRUNCATED_SUFFIX",
                 "QAR 80.00"), StandardCharsets.ISO_8859_1);
-        assertEquals(2, count(commands, "P009P006"));
+        java.util.regex.Matcher details = java.util.regex.Pattern
+                .compile("(?m)^1911S01\\d{4}0052P007P007").matcher(commands);
+        int detailCount = 0;
+        while (details.find()) detailCount++;
+        assertEquals(2, detailCount);
         assertFalse(commands.contains("TRUNCATED_SUFFIX"));
         assertTrue(commands.contains("QAR 80.00"));
         assertTrue(commands.endsWith("FB-\r\nQ0001\r\nE\r\n"));
@@ -98,6 +101,31 @@ public class SlashingQrPrintTest {
         assertTrue(commands.contains("Was QAR 100.00"));
         assertTrue(commands.contains("Now QAR 80.00"));
         assertFalse(commands.contains("null"));
+    }
+
+    @Test
+    public void normalQrUsesOnlySupportedBarcodeFontSizes() {
+        BarcodePrinting printer = new BarcodePrinting();
+        String[] prices = {"AED 19", "AED 1234567.89", "AED 123456789012.34"};
+        for (String price : prices) {
+            String commands = new String(printer.getSlashingQrCode(
+                    COMPANY, INFO, QR, ITEM, SHOP, SUBCLASS, price),
+                    StandardCharsets.ISO_8859_1);
+            assertTrue(commands.contains("1911A1000820019" + COMPANY));
+            assertTrue(commands.contains("1911A0800640007" + INFO));
+            assertFalse(commands.contains("1911S00"));
+            assertTrue(commands.contains("P007P007"));
+            java.util.regex.Matcher fonts = java.util.regex.Pattern
+                    .compile("(?m)^1911A(\\d{2})\\d{8}").matcher(commands);
+            int fontCount = 0;
+            while (fonts.find()) {
+                int size = Integer.parseInt(fonts.group(1));
+                assertTrue("Unsupported A font size: " + size,
+                        size == 6 || size == 8 || size == 10 || size == 12);
+                fontCount++;
+            }
+            assertTrue(fontCount >= 3);
+        }
     }
 
     private static int count(String text, String value) {

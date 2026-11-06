@@ -214,18 +214,19 @@ public class BarcodePrinting {
         final int textX = 52;
         final int textWidth = 141;
         final int qrBottom = 16;
+        final boolean barcodeFont = style == QrPriceStyle.SINGLE && !arabic;
         String heading = qrLabelText(mainHead);
         String information = qrLabelText(addinfo);
         String itemAndShop = qrLabelText(itemCode) + "  " + qrLabelText(shopcode);
         String subclassText = qrLabelText(subclass);
 
         // Keep both font dimensions fixed. Wrap by available width, not character count.
-        final int detailPoints = 9;
-        final int detailWidthPoints = 6;
+        final int detailPoints = barcodeFont ? 7 : 9;
+        final int detailWidthPoints = barcodeFont ? detailPoints : 6;
         final int detailRow = qrBottom + 44 - (int) Math.ceil(detailPoints * 100.0 / 72.0);
         final int lineSpacing = (int) Math.ceil(detailPoints * 100.0 / 72.0);
         java.util.List<String> detailLines = wrapQrLabelDetails(
-                itemAndShop + "  " + subclassText , textWidth, detailWidthPoints);
+                itemAndShop + "  " + subclassText, textWidth, detailWidthPoints, barcodeFont);
 
         String priceText = formatQrPrice(price);
 
@@ -239,6 +240,9 @@ public class BarcodePrinting {
             // Reserve a separate row for the Arabic description above the QR.
             appendQrLabelText(label, heading, 10, 84, 19);
             appendQrLabelText(label, information, 7, 72, 7);
+        } else if (barcodeFont) {
+            appendQrBarcodeFontText(label, heading, 10, 82, 19);
+            appendQrBarcodeFontText(label, information, 8, 64, 7);
         } else {
             appendQrLabelText(label, heading, 11, 82, 19);
             appendQrLabelText(label, information, 8, 64, 7);
@@ -247,12 +251,18 @@ public class BarcodePrinting {
         // Move the QR and its aligned details together toward the addinfo.
         label.append(String.format(java.util.Locale.US, "1W1d44000%04d0006", qrBottom))
                 .append(barcode).append("\r\r");
-        // Use the condensed font's own weight without extra bolding on the details.
+        // Keep extra bolding off for the detail text.
         label.append("FB-\r\n");
         for (int i = 0; i < detailLines.size(); i++) {
-            label.append(String.format(java.util.Locale.US, "1911S00%04d%04dP%03dP%03d",
-                    detailRow - i * lineSpacing, textX, detailPoints, detailWidthPoints))
-                    .append(detailLines.get(i)).append("\r\n");
+            if (barcodeFont) {
+                // Scalable regular CG Triumvirate supports 7pt; the A-size table has no A07.
+                appendQrRegularText(label, detailLines.get(i), detailPoints,
+                        detailRow - i * lineSpacing, textX);
+            } else {
+                label.append(String.format(java.util.Locale.US, "1911S00%04d%04dP%03dP%03d",
+                        detailRow - i * lineSpacing, textX, detailPoints, detailWidthPoints))
+                        .append(detailLines.get(i)).append("\r\n");
+            }
         }
         byte[] arabicFields = new byte[0];
         if (arabic) {
@@ -261,11 +271,15 @@ public class BarcodePrinting {
         }
         if (style == QrPriceStyle.SINGLE) {
             label.append("FB+\r\n");
-            int pricePoints = arabic ? 9 : fitQrLabelText(priceText, 12, textWidth);
+            int pricePoints = arabic ? 9 : fitQrLabelText(priceText, 12, textWidth, barcodeFont);
             int lastDetailRow = detailRow - (detailLines.size() - 1) * lineSpacing;
             int priceRow = Math.min(qrBottom,
                     lastDetailRow - (int) Math.ceil(pricePoints * 100.0 / 72.0) - 2);
-            appendQrRegularText(label, priceText, pricePoints, priceRow, textX);
+            if (barcodeFont) {
+                appendQrBarcodeFontText(label, priceText, pricePoints, priceRow, textX);
+            } else {
+                appendQrRegularText(label, priceText, pricePoints, priceRow, textX);
+            }
             if (arabic) {
                 arabicFields = addToDataVault(arabicFields,
                         qrArabicField(qrArabicPrice(price), 7, 3, textX));
@@ -345,36 +359,64 @@ public class BarcodePrinting {
     }
 
     private static float qrLabelTextWidth(String text, int points) {
+        return qrLabelTextWidth(text, points, false);
+    }
+
+    private static float qrLabelTextWidth(String text, int points, boolean barcodeFont) {
         android.graphics.Paint paint = new android.graphics.Paint();
         paint.setTypeface(android.graphics.Typeface.create(
-                "sans-serif-condensed", android.graphics.Typeface.BOLD));
+                barcodeFont ? "sans-serif" : "sans-serif-condensed",
+                barcodeFont ? android.graphics.Typeface.NORMAL : android.graphics.Typeface.BOLD));
         paint.setTextSize(points * 100f / 72f);
         // Allow for differences between the printer's resident font and Android's font.
         return paint.measureText(text) * 1.1f;
     }
 
     private static int fitQrLabelText(String text, int maxPoints, int width) {
-        int points = maxPoints;
-        while (points > 4 && qrLabelTextWidth(text, points) > width) {
-            points--;
+        return fitQrLabelText(text, maxPoints, width, false);
+    }
+
+    private static int fitQrLabelText(String text, int maxPoints, int width, boolean barcodeFont) {
+        int points = barcodeFont ? qrBarcodeFontSize(maxPoints) : maxPoints;
+        int minPoints = barcodeFont ? 6 : 4;
+        while (points > minPoints && qrLabelTextWidth(text, points, barcodeFont) > width) {
+            points = barcodeFont ? qrBarcodeFontSize(points - 1) : points - 1;
         }
         return points;
     }
 
-    private static java.util.List<String> wrapQrLabelDetails(String text, int width, int widthPoints) {
+    private static java.util.List<String> wrapQrLabelDetails(
+            String text, int width, int widthPoints, boolean barcodeFont) {
         java.util.List<String> lines = new java.util.ArrayList<>();
         String remaining = text.trim();
         // Print only what fits in two lines; discard overflow without shrinking the font.
         while (!remaining.isEmpty() && lines.size() < 2) {
             int end = 1;
             while (end < remaining.length()
-                    && qrLabelTextWidth(remaining.substring(0, end + 1), widthPoints) <= width) {
+                    && qrLabelTextWidth(remaining.substring(0, end + 1), widthPoints, barcodeFont) <= width) {
                 end++;
             }
             lines.add(remaining.substring(0, end).trim());
             remaining = remaining.substring(end).trim();
         }
         return lines;
+    }
+
+    private static int qrBarcodeFontSize(int requestedPoints) {
+        // Smooth Font 9 supports these A sizes on 203 DPI printers.
+        // In particular, A07/A09/A11 are not valid size selections.
+        int[] supportedSizes = {48, 36, 30, 24, 18, 14, 12, 10, 8, 6};
+        for (int size : supportedSizes) {
+            if (requestedPoints >= size) return size;
+        }
+        return 6;
+    }
+
+    private static void appendQrBarcodeFontText(StringBuilder label, String text,
+                                                int points, int row, int column) {
+        // Same resident font selection as getSlashingBarcode(), using supported sizes only.
+        label.append(String.format(java.util.Locale.US, "1911A%02d%04d%04d",
+                qrBarcodeFontSize(points), row, column)).append(text).append("\r\n");
     }
 
     private static void appendQrLabelText(StringBuilder label, String text,

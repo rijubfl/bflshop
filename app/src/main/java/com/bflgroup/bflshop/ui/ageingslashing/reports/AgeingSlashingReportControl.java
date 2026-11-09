@@ -93,7 +93,7 @@ public class AgeingSlashingReportControl {
             if(sortField.equals("Print Qty")) sortField="PrintQty";
             if(sortField.equals("Balance Qty")) sortField="Diff";
             listAgeingSlashingItemsReports.clear();
-            b_Result = dbConnection.insertUpdate("create table #agreport(BatchNo varchar(10),Itemcode varchar(15),ElgQty int,ScanQty int,PrintQty int,Diff int)", objGlobal.getConnection());
+            b_Result = dbConnection.insertUpdate("create table #agreport(BatchNo varchar(25),Itemcode varchar(15),ElgQty int,ScanQty int,PrintQty int,Diff int)", objGlobal.getConnection());
             if (b_Result == false) {
                 return null;
             }
